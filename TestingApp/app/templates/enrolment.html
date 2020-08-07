@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+<h2>Explore Some Questions</h2>
+{%for unit in units %}  
+{{ unit.name }}
+{{ unit.description }}
+{%endfor%}

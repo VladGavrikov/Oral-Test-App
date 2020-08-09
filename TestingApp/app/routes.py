@@ -7,12 +7,14 @@ from werkzeug.urls import url_parse
 from flask_login import current_user, login_user
 from flask_login import logout_user
 from flask_login import login_required
-from app.models import User, Unit
+from app.models import User, Unit, Test, Question
 from app import db
 from app.forms import RegistrationForm
+from app.forms import CreateUnitForm
+from app.forms import CreateQuestionForm
+from app.forms import CreateTestForm
 
-
-@app.route('/dashbord')
+@app.route('/dashboard')
 @login_required
 def dashboard():
     user = User.query.filter_by(username=current_user.username).first_or_404()
@@ -28,12 +30,57 @@ def dashboard():
     ]
     return render_template('dashboard.html', title='Home', user=user, posts=posts)
 
+@app.route('/unitManager', methods=['GET', 'POST'])
+@login_required
+def unitManager():
+    user = User.query.filter_by(username=current_user.username).first_or_404()
+    if(user.isTeacher==False):
+        return redirect(url_for('dashboard'))
+    else:
+        form = CreateUnitForm()
+        if form.validate_on_submit():
+            unit = Unit(name=form.name.data, description=form.description.data)
+            db.session.add(unit)
+            db.session.commit()
+            return redirect(url_for('unitManager'))
+        units = Unit.query.all()
+        return render_template('unitManager.html', units=units,form=form)
+
+@app.route('/testCreated/<test>', methods=['GET', 'POST'])
+@login_required
+def testCreated(test):
+    createdTest = Test.query.filter_by(id=test).first()
+    createdTest.isFinalized = True
+    db.session.commit()
+    return render_template('testCreationSuccess.html')
+
 @app.route('/enrolment')
 @login_required
 def enrolment():
     units = Unit.query.all()
     return render_template('enrolment.html', units=units)
 
+@app.route("/unitManager/<unitpage>", methods=['GET', 'POST'])
+def unitpage(unitpage):
+    unit = Unit.query.filter_by(name=unitpage).first()
+    tests = Test.query.filter_by(unit_id=unitpage).all()
+    testForm = CreateTestForm()
+    if testForm.validate_on_submit():
+        test = Test(body =testForm.name.data,unit_id=unit.name)
+        db.session.add(test)
+        db.session.commit()
+    return render_template('unitpage.html', unit=unit,form=testForm, tests=tests)
+
+@app.route("/unitManager/<unitpage>/<test>", methods=['GET', 'POST'])
+def test(unitpage, test):
+    unit = Unit.query.filter_by(name=unitpage).first()
+    questions = Question.query.filter_by(test_id=test).all()
+    questionForm = CreateQuestionForm()
+    if questionForm.validate_on_submit():
+        question = Question(questiontext =questionForm.name.data,test_id=test)
+        db.session.add(question)
+        db.session.commit()
+    return render_template('test.html',unit=unit, form=questionForm, questions=questions, test = test)
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])

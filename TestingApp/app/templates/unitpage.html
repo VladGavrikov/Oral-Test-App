@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<h1>Welcome to unit page of {{unit.name}}</h1>
+<h3>Here you can manage this unit</h3>
+<h3>You can create a test for the unit, manage people that enrolled and proceed to marking of the test</h3>
+{%for test in tests %} 
+    {% if test.isFinalized %}
+        <p style="color:red;"> {{ test.body }} test have been finalized!</p>
+    {% else %}
+        <a href= "{{ url_for('test', unitpage = unit.name, test= test.id)  }}">{{ test.body }}</a>
+        <br>
+    {% endif %}
+{%endfor%}
+<h1>Create Test</h1>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.name.label }}<br>
+            {{ form.name(size=150) }}<br>
+            {% for error in form.name.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+<!--<a href= "{{ url_for('test',unitpage = unit.name,test= 'Test1')  }}">Create a Test</a></h3>-->
+{% endblock %}

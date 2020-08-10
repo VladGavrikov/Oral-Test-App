@@ -58,6 +58,14 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+@app.route('/profile/<username>')
+@login.login_required
+def profile(username):
+    user = User.query.filter_by(username = username).first_or_404
+    test_completed = TestComplete.query.filter_by(user_id = user.id)
+    # enrolled_units = Unit.query.filter_by(students = user.id)
+    return render_template('profile.html', title = 'profile', user = user, test_completed = test_completed )
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:

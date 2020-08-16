@@ -26,7 +26,7 @@ body {
     height: 375px;
     width: 430px;
     top: 290px;
-    border: 1px solid rgba(0,0,0,0.5);
+    border: 1px solid #8F8F8F;
     border-radius: 48px;
     padding: 15px;
     background-color: #ffffff;
@@ -44,7 +44,7 @@ body {
     font-family: 'Lato', sans-serif;
     font-size: 18px;
     text-transform: uppercase;
-    letter-spacing: 2;
+    letter-spacing: 3;
 }
 
 .form-control {

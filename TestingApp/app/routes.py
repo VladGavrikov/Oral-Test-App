@@ -13,22 +13,37 @@ from app.forms import RegistrationForm
 from app.forms import CreateUnitForm
 from app.forms import CreateQuestionForm
 from app.forms import CreateTestForm
+from app.forms import CreateAnswerForm
 
 @app.route('/dashboard')
 @login_required
 def dashboard():
+    user = User.query.filter_by(username=current_user.username).first_or_404()  
+    test = Test.query.first()
+    return render_template('dashboard.html', title='Dashboard', user=user, test = test)
+
+@app.route('/attempt/<test>/<studentNumber>')
+@login_required
+def attempt(test, studentNumber):
+    user = User.query.filter_by(username=current_user.username).first_or_404()  
+    testQ = Test.query.filter_by(id=test).first()
+    return render_template('testInProgress.html', title='Test', user=user, test = testQ)
+
+@app.route('/attempt/<test>/<studentNumber>/<questionNumber>', methods=['GET', 'POST'])
+@login_required
+def testQuestion(test, studentNumber, questionNumber):
     user = User.query.filter_by(username=current_user.username).first_or_404()
-    posts = [
-        {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        }
-    ]
-    return render_template('dashboard.html', title='Home', user=user, posts=posts)
+    questions = Question.query.filter_by(test_id = test).all()
+    qnumb = int(questionNumber)-1
+    form = CreateAnswerForm()
+    if form.validate_on_submit():
+        if ((qnumb+1) == len(questions)):
+            return render_template('testSubmittedSuccess.html')
+        else: 
+            qnumber = int(questionNumber)+1
+            print(questionNumber)
+            return redirect(url_for('testQuestion',test = test, studentNumber = user.id, questionNumber = qnumber))
+    return render_template('answer.html', user=user, question = questions[qnumb], questionNumber = questionNumber, form = form)
 
 @app.route('/unitManager', methods=['GET', 'POST'])
 @login_required
@@ -57,6 +72,13 @@ def testCreated(test):
 @app.route('/enrolment')
 @login_required
 def enrolment():
+    units = Unit.query.all()
+    return render_template('enrolment.html', units=units)
+
+@app.route('/<test>/<studentID>')
+@login_required
+def TestStart(test,user):
+    questions = Question.query.filter_by(unit_id=test.id).all()
     units = Unit.query.all()
     return render_template('enrolment.html', units=units)
 

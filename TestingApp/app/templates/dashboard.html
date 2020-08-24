@@ -2,7 +2,10 @@
 
 {% block content %}
     <h1>Hi, {{ current_user.username }}!</h1>
-    {% for post in posts %}
-    <div><p>{{ post.author.username }} says: <b>{{ post.body }}</b></p></div>
-    {% endfor %}
+    <h2>You are enrolled in, {{ current_user.unit_name }}!</h2>
+    <h3>Active Tests</h3>
+    <a href="{{ url_for('attempt',test = test.id, studentNumber = user.id)  }}">{{ test.body }}</a></h3>
+    <hr>
+    <h3>Feedback</h3>
+    <hr>
 {% endblock %}

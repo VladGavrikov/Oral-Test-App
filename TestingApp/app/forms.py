@@ -39,3 +39,7 @@ class CreateTestForm(FlaskForm):
 class CreateQuestionForm(FlaskForm):
     name = StringField('Question', validators=[DataRequired()])
     submit = SubmitField('Add Question')
+
+class CreateAnswerForm(FlaskForm):
+    body = StringField('Answer', validators=[DataRequired()])
+    submit = SubmitField('Submit answer')

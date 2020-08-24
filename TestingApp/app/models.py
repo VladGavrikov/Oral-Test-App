@@ -10,13 +10,14 @@ from flask_login import UserMixin
 def load_user(id):
     return User.query.get(int(id))
 
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     isTeacher = db.Column(db.Boolean, default=False)
-    posts = db.relationship('Post', backref='author', lazy='dynamic')
+    answer = db.relationship('Answer', backref='user', lazy='dynamic')
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
@@ -26,15 +27,6 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
-
-
-class Post(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    body = db.Column(db.String(140))
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-
-    def __repr__(self):
-        return '<Post {}>'.format(self.body)
 
 class Unit(db.Model):
     name = db.Column(db.String(20), primary_key=True)
@@ -58,6 +50,17 @@ class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     questiontext = db.Column(db.String(140))
     test_id = db.Column(db.Integer, db.ForeignKey('test.id'))
+    answer = db.relationship('Answer', backref='answer', lazy='dynamic')
 
     def __repr__(self):
         return '<Question {}>'.format(self.body)
+
+class Answer(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.String(140))
+    question_id = db.Column(db.Integer, db.ForeignKey('question.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    
+
+    def __repr__(self):
+        return '<Answer {}>'.format(self.body)

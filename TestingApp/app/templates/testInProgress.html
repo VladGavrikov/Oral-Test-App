@@ -4,5 +4,9 @@
     <h3>Press Confirm</h3>
     <p>The test will have to be completed in one sitting</p>
     <p>After listening the recording press save and upload - this will upload the recording and save your Response</p>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>{{ form.submit() }}</p>
+    </form>
     <a href="{{ url_for('testQuestion',test = test.id, studentNumber = user.id, questionNumber = 1)  }}">Confirm</a></h3>
 {% endblock %}

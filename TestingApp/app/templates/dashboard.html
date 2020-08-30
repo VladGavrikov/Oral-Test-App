@@ -2,9 +2,13 @@
 
 {% block content %}
     <h1>Hi, {{ current_user.username }}!</h1>
-    <h2>You are enrolled in, {{ current_user.unit_name }}!</h2>
+    <h2>You are enrolled in, {{ current_user.unit_id }}!</h2>
     <h3>Active Tests</h3>
-    <a href="{{ url_for('attempt',test = test.id, studentNumber = user.id)  }}">{{ test.body }}</a></h3>
+    {%for test in tests %}
+        {% if test.testWasStarted == False %}
+        <a href="{{ url_for('attempt',test = test.test_id, studentNumber = user.id)  }}">{{ test.test_id }}</a></h3><br>
+        {% endif %}
+    {%endfor%}
     <hr>
     <h3>Feedback</h3>
     <hr>

@@ -7,7 +7,7 @@ class LoginForm(FlaskForm):
     username = StringField('Student Number', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember Me')
-    submit = SubmitField('Sign In')
+    submit = SubmitField('Login')
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -43,3 +43,10 @@ class CreateQuestionForm(FlaskForm):
 class CreateAnswerForm(FlaskForm):
     body = StringField('Answer', validators=[DataRequired()])
     submit = SubmitField('Submit answer')
+
+class CreateFeedbackForm(FlaskForm):
+    body = StringField('Feedback', validators=[DataRequired()])
+    submit = SubmitField('Submit feedback')
+
+class StartTest(FlaskForm):
+    submit = SubmitField('Start Test')

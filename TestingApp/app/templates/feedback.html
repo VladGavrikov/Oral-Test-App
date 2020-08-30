@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
     <h3>{{question.body}}</h3>
+    <h4>{{answerToQuestion.body}}</h4>
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <p>

@@ -11,6 +11,13 @@ from app.models import User, Unit
 from app import db
 from app.forms import RegistrationForm
 
+import flask.views
+import os
+import functools
+import flask
+import wavio 
+from subprocess import PIPE, run
+
 
 @app.route('/dashbord')
 @login_required
@@ -79,5 +86,20 @@ def register():
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
+@app.route('/record')
+def record():
+    #wavio.write("static/music/test1.wav")
+    return render_template('record.html')
+ 
+
+class Music(flask.views.MethodView):
+    
+    def get(self):
+        songs = os.listdir('app/static/music')
+        return flask.render_template("music.html", songs=songs)
+
+app.add_url_rule('/music/',
+                 view_func=Music.as_view('music'),
+                 methods=['GET'])
 
 

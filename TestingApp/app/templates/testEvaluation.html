@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Please mark the test:</h2>
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.mark1.label }}<br>
+        {{ form.mark1(size=32) }}<br>
+        {% for error in form.mark1.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.mark2.label }}<br>
+        {{ form.mark2(size=32) }}<br>
+        {% for error in form.mark2.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.mark3.label }}<br>
+        {{ form.mark3(size=32) }}<br>
+        {% for error in form.mark3.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.mark4.label }}<br>
+        {{ form.mark4(size=32) }}<br>
+        {% for error in form.mark4.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </p>
+    <p>{{ form.submit() }}</p>
+</form>
+{% endblock %}}

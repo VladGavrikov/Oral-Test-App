@@ -16,6 +16,8 @@ from app.forms import CreateTestForm
 from app.forms import CreateAnswerForm
 from app.forms import StartTest
 from app.forms import CreateFeedbackForm
+from app.forms import TestEvaluationForm
+from app.forms import ReleaseFeedbackForm
 
 @app.route('/dashboard')
 @login_required
@@ -47,6 +49,7 @@ def viewFeedback(test, studentNumber):
     user = User.query.filter_by(username=current_user.username).first_or_404()  
     questions = Question.query.filter_by(test_id=test).all()
     testQ = Test.query.filter_by(id=test).first()
+    testMarks = TestMark.query.filter_by(user_id = studentNumber).filter_by(test_id = test).first()
     feedbacks = []
     numOfQuestions = len(questions)
     answers = []
@@ -54,7 +57,7 @@ def viewFeedback(test, studentNumber):
         tempAnswer = Answer.query.filter_by(user_id=user.id).filter_by(question_id=question.id).first()
         answers.append(tempAnswer)
         feedbacks.append(Feedback.query.filter_by(answer_id = tempAnswer.id).order_by(Feedback.id.desc()).first())
-    return render_template('viewFeedback.html', title='Test', user=user, questions = questions,answers=answers, test=testQ, numOfQuestions = numOfQuestions, feedbacks = feedbacks)
+    return render_template('viewFeedback.html', title='Test', user=user, questions = questions,answers=answers, test=testQ, numOfQuestions = numOfQuestions, feedbacks = feedbacks, testMarks = testMarks)
 
 @app.route('/marking/<test>')
 @login_required
@@ -62,12 +65,33 @@ def markings(test):
     tests = TestMark.query.filter_by(test_id=test).all()
     return render_template('allTestsForMarking.html', title='Test', tests = tests)
 
+@app.route('/releaseFeedback/<test>', methods=['GET', 'POST'])
+@login_required
+def releaseFeedback(test):
+    form = ReleaseFeedbackForm()
+    tests = TestMark.query.filter_by(test_id=test).all()
+    if form.validate_on_submit():
+        for test in tests: 
+            test.feedbackReleased = True
+            db.session.commit()
+            flash('Feedback has been released')
+            return redirect(url_for('unitManager'))
+    return render_template('releaseFeedback.html', form = form)
+
 @app.route('/evaluation/<test>/<studentNumber>', methods=['GET', 'POST'])
 @login_required
 def testEvaluation(test, studentNumber):
-    testMarking = testMark.query.filter_by(test_id=test).filter_by(user_id = studentNumber).first()
-
-    return render_template('testEvaluation.html', questions = questions,answers=answers, test=testQ, numOfQuestions = numOfQuestions, feedbacks = feedbacks)
+    testMarking = TestMark.query.filter_by(test_id=test).filter_by(user_id = studentNumber).first()
+    form = TestEvaluationForm()
+    if form.validate_on_submit():
+        testMarking.hasBeenMarked = True
+        testMarking.mark1 = form.mark1.data
+        testMarking.mark2 = form.mark2.data
+        testMarking.mark3 = form.mark3.data
+        testMarking.mark4 = form.mark4.data
+        db.session.commit()
+        return render_template('testHasBeenMarked.html')
+    return render_template('testEvaluation.html', form = form)
 
 @app.route('/attempt/<test>/<studentNumber>/<questionNumber>', methods=['GET', 'POST'])
 @login_required
@@ -108,7 +132,8 @@ def markingTest(test, studentNumber, questionNumber):
             feedback = Feedback(body=form.body.data, question_id=questions[qnumb].id, answer_id = answerToQuestion.id)
             db.session.add(feedback)
             db.session.commit()
-            return render_template('testHasBeenMarked.html')
+            return redirect(url_for('testEvaluation',test = test, studentNumber = studentNumber))
+            #return render_template('testHasBeenMarked.html')
         else: 
             feedback = Feedback(body=form.body.data, question_id=questions[qnumb].id, answer_id = answerToQuestion.id)
             db.session.add(feedback)

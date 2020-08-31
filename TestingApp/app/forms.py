@@ -50,3 +50,13 @@ class CreateFeedbackForm(FlaskForm):
 
 class StartTest(FlaskForm):
     submit = SubmitField('Start Test')
+
+class ReleaseFeedbackForm(FlaskForm):
+    submit = SubmitField('Release Feedback')
+
+class TestEvaluationForm(FlaskForm):
+    mark1 = StringField('Accuracy', validators=[DataRequired()])
+    mark2 = StringField('Fluency', validators=[DataRequired()])
+    mark3 = StringField('Grammar', validators=[DataRequired()])
+    mark4 = StringField('Vocabulary', validators=[DataRequired()])
+    submit = SubmitField('Finish Marking')

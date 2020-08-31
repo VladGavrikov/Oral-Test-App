@@ -2,10 +2,18 @@
 {% block content %}
 {%for test in tests %} 
     {% if test.hasBeenMarked == False %}
-        <a style="color: red;" href= "{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = 1) }}">Student Number: {{ test.user_id }}</a><br>
+        <a style="color: red;" href= "{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = 1) }}">Student Number: {{ test.user_id }}</a>
+        {% if test.testWasStarted == False %}
+        <p>Test Wasn't attempted yet</p>
+        {% endif %}
+        <br>
     {% else %}
-        <a style="color: green;" href= "{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = 1) }}">Student Number: {{ test.user_id }}</a><br>
+        <a style="color: green;" href= "{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = 1) }}">Student Number: {{ test.user_id }}</a>
+        {% if test.testWasStarted == False %}
+        <p>Test Wasn't attempted yet</p>
+        {% endif %}
+        <br>
     {% endif %}
 {%endfor%}
-<a href= "">Release The Feedback</a><br>
+<a href= "{{ url_for('releaseFeedback', test = tests[0].test_id) }}">Release The Feedback</a><br>
 {% endblock %}

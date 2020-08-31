@@ -17,6 +17,11 @@
         <a href="{{url_for('music')}}">music</a>
 		<a href="{{url_for('record')}}">Record</a>
         {% endif %}
+	{% if current_user.isTeacher == True %}
+        <a href="{{ url_for('unitManager') }}">Manage Units</a>
+        <a href="{{url_for('music')}}">music</a>
+		<a href="{{url_for('record')}}">Record</a>
+        {% endif %}      
     </div>
         <hr>
         {% with messages = get_flashed_messages() %}

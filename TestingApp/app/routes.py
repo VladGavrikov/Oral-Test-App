@@ -40,12 +40,34 @@ def attempt(test, studentNumber):
         return redirect(url_for('testQuestion',test = test, studentNumber = user.id, questionNumber = 1))
     return render_template('testInProgress.html', title='Test', user=user, test = testQ ,form=form)
 
+
+@app.route('/feedback/<test>/<studentNumber>', methods=['GET', 'POST'])
+@login_required
+def viewFeedback(test, studentNumber):
+    user = User.query.filter_by(username=current_user.username).first_or_404()  
+    questions = Question.query.filter_by(test_id=test).all()
+    testQ = Test.query.filter_by(id=test).first()
+    feedbacks = []
+    numOfQuestions = len(questions)
+    answers = []
+    for question in questions:
+        tempAnswer = Answer.query.filter_by(user_id=user.id).filter_by(question_id=question.id).first()
+        answers.append(tempAnswer)
+        feedbacks.append(Feedback.query.filter_by(answer_id = tempAnswer.id).order_by(Feedback.id.desc()).first())
+    return render_template('viewFeedback.html', title='Test', user=user, questions = questions,answers=answers, test=testQ, numOfQuestions = numOfQuestions, feedbacks = feedbacks)
+
 @app.route('/marking/<test>')
 @login_required
 def markings(test):
     tests = TestMark.query.filter_by(test_id=test).all()
     return render_template('allTestsForMarking.html', title='Test', tests = tests)
 
+@app.route('/evaluation/<test>/<studentNumber>', methods=['GET', 'POST'])
+@login_required
+def testEvaluation(test, studentNumber):
+    testMarking = testMark.query.filter_by(test_id=test).filter_by(user_id = studentNumber).first()
+
+    return render_template('testEvaluation.html', questions = questions,answers=answers, test=testQ, numOfQuestions = numOfQuestions, feedbacks = feedbacks)
 
 @app.route('/attempt/<test>/<studentNumber>/<questionNumber>', methods=['GET', 'POST'])
 @login_required
@@ -83,6 +105,9 @@ def markingTest(test, studentNumber, questionNumber):
     form = CreateFeedbackForm()
     if form.validate_on_submit():
         if ((qnumb+1) == len(questions)):
+            feedback = Feedback(body=form.body.data, question_id=questions[qnumb].id, answer_id = answerToQuestion.id)
+            db.session.add(feedback)
+            db.session.commit()
             return render_template('testHasBeenMarked.html')
         else: 
             feedback = Feedback(body=form.body.data, question_id=questions[qnumb].id, answer_id = answerToQuestion.id)

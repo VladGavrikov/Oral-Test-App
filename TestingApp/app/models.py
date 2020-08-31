@@ -83,6 +83,12 @@ class TestMark(db.Model):
     #Will be separated in 4 mark rubrics
     mark = db.Column(db.Integer, default=-1)
     testWasStarted = db.Column(db.Boolean, default=False)
+    feedbackReleased = db.Column(db.Boolean, default=False)
+    hasBeenMarked = db.Column(db.Boolean, default=False)
+    mark1 = db.Column(db.Integer)
+    mark2 = db.Column(db.Integer)
+    mark3 = db.Column(db.Integer)
+    mark4 = db.Column(db.Integer)
 
     users = db.relationship(User)
     tests = db.relationship(Test)

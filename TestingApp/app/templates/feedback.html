@@ -2,6 +2,9 @@
 {% block content %}
     <h3>{{question.body}}</h3>
     <h4>{{answerToQuestion.body}}</h4>
+    {% if answerToQuestion.body == Null %}
+        <h4>Question Unnatempted</h4>
+    {% endif%}
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <p>

@@ -153,6 +153,7 @@ def unitpage(unitpage):
         test = Test(body =testForm.name.data,unit_id=unit.name)
         db.session.add(test)
         db.session.commit()
+        return redirect(url_for('unitpage',unitpage = unit.name))
     return render_template('unitpage.html', unit=unit,form=testForm, tests=tests)
 
 @app.route("/unitManager/<unitpage>/<test>", methods=['GET', 'POST'])
@@ -164,6 +165,7 @@ def test(unitpage, test):
         question = Question(body =questionForm.name.data,test_id=test)
         db.session.add(question)
         db.session.commit()
+        return redirect(url_for('test', unitpage = unit.name, test= test))
     return render_template('test.html',unit=unit, form=questionForm, questions=questions, test = test)
 
 @app.route('/', methods=['GET', 'POST'])

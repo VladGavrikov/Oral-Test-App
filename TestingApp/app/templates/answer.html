@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+    <h3>{{question.questiontext}}</h3>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.body.label }}<br>
+            {{ form.body(size=32) }}<br>
+            {% for error in form.body.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+    <h5>Questions: {{questionNumber}}</h5>
+    <!--<a href="{{ url_for('testQuestion',test = test, studentNumber = user.id, questionNumber = 1)  }}">Next Question</a></h3>-->
+{% endblock %}

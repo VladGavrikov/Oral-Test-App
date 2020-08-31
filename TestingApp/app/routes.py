@@ -21,7 +21,7 @@ from app.forms import CreateFeedbackForm
 @login_required
 def dashboard():
     user = User.query.filter_by(username=current_user.username).first_or_404()  
-    test = TestMark.query.filter_by(unit_id=user.unit_id).all()
+    test = TestMark.query.filter_by(unit_id=user.unit_id).filter_by(user_id = user.id).all()
     return render_template('dashboard.html', title='Dashboard', user=user, tests = test)
 
 @app.route('/attempt/<test>/<studentNumber>', methods=['GET', 'POST'])
@@ -29,7 +29,7 @@ def dashboard():
 def attempt(test, studentNumber):
     user = User.query.filter_by(username=current_user.username).first_or_404()  
     testQ = Test.query.filter_by(id=test).first()
-    testAttempted = TestMark.query.filter_by(test_id=test).first()
+    testAttempted = TestMark.query.filter_by(test_id=test).filter_by(user_id =user.id).first()
     form = StartTest()
     if form.validate_on_submit():
         #markFB = TestMark(user_id=user.id, test_id=int(test)) 

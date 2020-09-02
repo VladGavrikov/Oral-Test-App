@@ -2,6 +2,7 @@ from flask import render_template
 from app import app
 from app.forms import LoginForm
 from flask import render_template, flash, redirect, url_for
+from flask import Flask
 from flask import request
 from werkzeug.urls import url_parse
 from flask_login import current_user, login_user
@@ -99,15 +100,27 @@ def testQuestion(test, studentNumber, questionNumber):
     user = User.query.filter_by(username=current_user.username).first_or_404()
     questions = Question.query.filter_by(test_id = test).all()
     qnumb = int(questionNumber)-1
+    prefix = "app/"
+    path = "/static/music/ID"+studentNumber+"Test"+test+"QNum"+questionNumber+".wav"
     form = CreateAnswerForm()
-    if form.validate_on_submit():
+    if request.method == "POST" or form.validate_on_submit():
+        if 'audio_data' in request.files:
+            print("posted")
+            f = request.files['audio_data']
+            with open((prefix+path), 'wb') as audio:
+                f.save(audio)
+            flash("File was successfully uploaded")
         if ((qnumb+1) == len(questions)):
-            answer = Answer(body=form.body.data, question_id=questions[qnumb].id, user_id = user.id)
+            print("1")
+            answer = Answer(body=path, question_id=questions[qnumb].id, user_id = user.id)
             db.session.add(answer)
             db.session.commit()
+            print("dbcommited")
             return render_template('testSubmittedSuccess.html')
+
         else: 
-            answer = Answer(body=form.body.data, question_id=questions[qnumb].id, user_id = user.id)
+            print("2")
+            answer = Answer(body=path, question_id=questions[qnumb].id, user_id = user.id)
             db.session.add(answer)
             db.session.commit()
             qnumber = int(questionNumber)+1
@@ -123,19 +136,27 @@ def markingTest(test, studentNumber, questionNumber):
     questions = Question.query.filter_by(test_id = test).all()
     print(questions)
     qnumb = int(questionNumber)-1
+    prefix = "app/"
+    path = "/static/music/ID"+studentNumber+"Test"+test+"QNum"+questionNumber+"FB"+".wav"
     answerToQuestion = Answer.query.filter_by(user_id = studentNumber).filter_by(question_id=questions[qnumb].id).first()
     print("QUESTION ID",questions[qnumb].id)
     print(answerToQuestion)
     form = CreateFeedbackForm()
-    if form.validate_on_submit():
+    if request.method == "POST" or form.validate_on_submit():
+        if 'audio_data' in request.files:
+            print("posted")
+            f = request.files['audio_data']
+            with open((prefix+path), 'wb') as audio:
+                f.save(audio)
+            flash("File was successfully uploaded")
         if ((qnumb+1) == len(questions)):
-            feedback = Feedback(body=form.body.data, question_id=questions[qnumb].id, answer_id = answerToQuestion.id)
+            feedback = Feedback(body=form.body.data, path=path, question_id=questions[qnumb].id, answer_id = answerToQuestion.id)
             db.session.add(feedback)
             db.session.commit()
             return redirect(url_for('testEvaluation',test = test, studentNumber = studentNumber))
             #return render_template('testHasBeenMarked.html')
         else: 
-            feedback = Feedback(body=form.body.data, question_id=questions[qnumb].id, answer_id = answerToQuestion.id)
+            feedback = Feedback(body=form.body.data, path=path, question_id=questions[qnumb].id, answer_id = answerToQuestion.id)
             db.session.add(feedback)
             db.session.commit()
             qnumber = int(questionNumber)+1

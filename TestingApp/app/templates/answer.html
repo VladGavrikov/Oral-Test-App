@@ -1,15 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
     <h3>{{question.body}}</h3>
-    <form action="" method="post" novalidate>
+    <div id="controls">
+        <button id="recordButton">Record</button>
+        <button id="pauseButton" disabled>Pause</button>
+        <button id="stopButton" disabled>Stop</button>
+       </div>
+       <div id="formats">Format: start recording to see sample rate</div>
+       <p><strong>Recordings:</strong></p>
+       <ol id="recordingsList"></ol>
+       <!-- inserting these scripts at the end to be able to use all the elements in the DOM -->
+    <form action="" method="post" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
-        <p>
-            {{ form.body.label }}<br>
-            {{ form.body(size=32) }}<br>
-            {% for error in form.body.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
         <p>{{ form.submit() }}</p>
     </form>
     <h5>Questions: {{questionNumber}}</h5>

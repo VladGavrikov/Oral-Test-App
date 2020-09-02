@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from flask_wtf.file import FileField, FileRequired
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from app.models import User
 
@@ -41,7 +42,7 @@ class CreateQuestionForm(FlaskForm):
     submit = SubmitField('Add Question')
 
 class CreateAnswerForm(FlaskForm):
-    body = StringField('Answer', validators=[DataRequired()])
+    audio = FileField(validators=[FileRequired()])
     submit = SubmitField('Submit answer')
 
 class CreateFeedbackForm(FlaskForm):

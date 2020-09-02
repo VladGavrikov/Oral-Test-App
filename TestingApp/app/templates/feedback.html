@@ -2,10 +2,20 @@
 {% block content %}
     <h3>{{question.body}}</h3>
     <h4>{{answerToQuestion.body}}</h4>
+    <audio src={{answerToQuestion.body}} id= "player" controls="controls" autoplay="autoplay"></audio>
     {% if answerToQuestion.body == Null %}
         <h4>Question Unnatempted</h4>
     {% endif%}
-    <form action="" method="post" novalidate>
+    <div id="controls">
+        <button id="recordButton">Record</button>
+        <button id="pauseButton" disabled>Pause</button>
+        <button id="stopButton" disabled>Stop</button>
+       </div>
+       <div id="formats">Format: start recording to see sample rate</div>
+       <p><strong>Recordings:</strong></p>
+       <ol id="recordingsList"></ol>
+       <!-- inserting these scripts at the end to be able to use all the elements in the DOM -->
+    <form action="" method="post" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         <p>
             {{ form.body.label }}<br>

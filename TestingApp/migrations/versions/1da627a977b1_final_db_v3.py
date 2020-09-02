@@ -1,8 +1,8 @@
-"""final db
+"""final db v3
 
-Revision ID: bddffbbe64eb
+Revision ID: 1da627a977b1
 Revises: 
-Create Date: 2020-08-31 09:28:49.432631
+Create Date: 2020-09-02 20:57:09.686814
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'bddffbbe64eb'
+revision = '1da627a977b1'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -46,6 +46,7 @@ def upgrade():
     op.create_table('question',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('body', sa.String(length=140), nullable=True),
+    sa.Column('path', sa.String(length=140), nullable=True),
     sa.Column('test_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['test_id'], ['test.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -57,6 +58,12 @@ def upgrade():
     sa.Column('unit_id', sa.String(length=20), nullable=True),
     sa.Column('mark', sa.Integer(), nullable=True),
     sa.Column('testWasStarted', sa.Boolean(), nullable=True),
+    sa.Column('feedbackReleased', sa.Boolean(), nullable=True),
+    sa.Column('hasBeenMarked', sa.Boolean(), nullable=True),
+    sa.Column('mark1', sa.Integer(), nullable=True),
+    sa.Column('mark2', sa.Integer(), nullable=True),
+    sa.Column('mark3', sa.Integer(), nullable=True),
+    sa.Column('mark4', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['test_id'], ['test.id'], ),
     sa.ForeignKeyConstraint(['unit_id'], ['unit.name'], ),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
@@ -74,6 +81,7 @@ def upgrade():
     op.create_table('feedback',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('body', sa.String(length=140), nullable=True),
+    sa.Column('path', sa.String(length=140), nullable=True),
     sa.Column('question_id', sa.Integer(), nullable=True),
     sa.Column('answer_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['answer_id'], ['answer.id'], ),

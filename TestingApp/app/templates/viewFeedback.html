@@ -3,8 +3,9 @@
 <h3>Feedback for the test</h3>
 {%for i in range(numOfQuestions) %} 
     <h4>{{ questions[i].body }}</h4>
-    <h5>{{ answers[i].body}}</h5>
+    <audio src={{answers[i].body}} id= "player" controls="controls"></audio>
     <h5>{{ feedbacks[i].body}}</h5>
+    <audio src={{feedbacks[i].path}} id= "player" controls="controls"></audio>
     <hr>
 {%endfor%}
     <p>Accuracy: {{testMarks.mark1}}</p>

@@ -50,6 +50,7 @@ class Test(db.Model):
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(140))
+    path = db.Column(db.String(140))
     test_id = db.Column(db.Integer, db.ForeignKey('test.id'))
     answer = db.relationship('Answer', backref='answer', lazy='dynamic')
 
@@ -69,6 +70,7 @@ class Answer(db.Model):
 class Feedback(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(140))
+    path = db.Column(db.String(140))
     question_id = db.Column(db.Integer, db.ForeignKey('question.id'))
     answer_id = db.Column(db.Integer, db.ForeignKey('answer.id'))
 

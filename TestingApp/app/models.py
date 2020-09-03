@@ -14,6 +14,7 @@ def load_user(id):
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
+    unit_id = db.Column(db.String(20), db.ForeignKey('unit.name'))
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     isTeacher = db.Column(db.Boolean, default=False)
@@ -34,7 +35,7 @@ class Unit(db.Model):
     tests = db.relationship('Test', backref='author', lazy='dynamic')
 
     def __repr__(self):
-        return '<Unit {}>'.format(self.body)
+        return '<Unit {}>'.format(self.description)
 
 class Test(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -48,7 +49,8 @@ class Test(db.Model):
 
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    questiontext = db.Column(db.String(140))
+    body = db.Column(db.String(140))
+    path = db.Column(db.String(140))
     test_id = db.Column(db.Integer, db.ForeignKey('test.id'))
     answer = db.relationship('Answer', backref='answer', lazy='dynamic')
 
@@ -64,3 +66,33 @@ class Answer(db.Model):
 
     def __repr__(self):
         return '<Answer {}>'.format(self.body)
+
+class Feedback(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.String(140))
+    path = db.Column(db.String(140))
+    question_id = db.Column(db.Integer, db.ForeignKey('question.id'))
+    answer_id = db.Column(db.Integer, db.ForeignKey('answer.id'))
+
+    def __repr__(self):
+        return '<Feedback {}>'.format(self.body)
+
+class TestMark(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    test_id = db.Column(db.Integer, db.ForeignKey('test.id'))
+    unit_id = db.Column(db.String(20), db.ForeignKey('unit.name'))
+    #Will be separated in 4 mark rubrics
+    mark = db.Column(db.Integer, default=-1)
+    testWasStarted = db.Column(db.Boolean, default=False)
+    feedbackReleased = db.Column(db.Boolean, default=False)
+    hasBeenMarked = db.Column(db.Boolean, default=False)
+    mark1 = db.Column(db.Integer)
+    mark2 = db.Column(db.Integer)
+    mark3 = db.Column(db.Integer)
+    mark4 = db.Column(db.Integer)
+
+    users = db.relationship(User)
+    tests = db.relationship(Test)
+    def __repr__(self):
+        return '<TestMark {}>'.format(self.id)

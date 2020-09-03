@@ -1,3 +1,7 @@
+html, body {
+    height: 100%;
+}
+
 body {
     background-image: url(../img/login-background.jpg);
     background-repeat: no-repeat;
@@ -21,16 +25,26 @@ body {
     margin-bottom: 15px;
 }
 
-.login-items {
-    height: 375px;
-    width: 430px;
+.login-items, .register-items {
     top: 290px;
     border: 1px solid #8F8F8F;
     border-radius: 48px;
     padding: 15px;
     background-color: #ffffff;
+}
+
+.login-items {
+    height: 390px;
+    width: 430px;
     padding-left: 70px;
     padding-right: 70px;
+}
+
+.register-items {
+    height: 520px;
+    width: 450px;
+    padding-left: 50px;
+    padding-right: 50px;
 }
 
 #login-btn {
@@ -44,6 +58,8 @@ body {
     font-size: 18px;
     text-transform: uppercase;
     letter-spacing: 3;
+    margin-top: 15px;
+    margin-bottom: 12px;
 }
 
 .form-control {
@@ -51,20 +67,74 @@ body {
     border: none;
     border-bottom: 1.5px solid #8593A5;
     border-radius: 0;
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+    position: relative;
+    height: 45px;
+    font-size: 15px;
+    padding-bottom: 0px;
+}
+
+.form-control:active, .form-control:focus {
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    border-bottom: 3px solid #1EB69E;
+    background-color: #EBEBEB;
+}
+
+.remember-me {
+    color: #5B595F;
+    font-size: 14px;
+    line-height: 14px;
 }
 
 #sign-up {
     position: absolute;
     font-size: 13px;
     color: #5B595F;
-    margin-top: 330px;
+    margin-top: 350px;
 }
 
-#sign-up a {
+#sign-in {
+    position: absolute;
+    font-size: 13px;
+    color: #5B595F;
+    margin-top: 480px;
+}
+
+#sign-up a, #sign-in a {
     color: #496C7F;
 }
 
-#sign-up a:hover {
+#sign-up a:hover, #sign-in a:hover {
     color: #1EB69E;
     text-decoration: none;
+}
+
+.error {
+    color: #FF0000;
+    font-size: 12px;
+    position: absolute;
+}
+
+input:focus + .floating-label,
+input:not(:focus):valid + .floating-label {
+    font-size: 12px;
+    opacity: 1;
+    transform: translate(10px,-46px);
+    color: #1EB69E;
+    font-weight: bold;
+}
+
+.floating-label {
+    position: absolute;
+    pointer-events: none;
+    z-index: 99999;
+    transform-origin: top left;
+    transform: translate(15px,-30px);
+    transition: 0.2s ease all;
+    color: #495057;
+    opacity: 0.9;
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: 400;
 }

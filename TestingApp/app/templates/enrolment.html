@@ -5,7 +5,7 @@
 {%for unit in units %}  
     {{ unit.name }}
     {{ unit.description }}
-    <button>enroll</button>
+    <a href= "{{ url_for('unitEnrolled', unit= unit.name)  }}">Enroll</a>
     <br>
 {%endfor%}
 {% endblock %}

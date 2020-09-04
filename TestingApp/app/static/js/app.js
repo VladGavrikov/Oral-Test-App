@@ -18,9 +18,19 @@ recordButton.addEventListener("click", startRecording);
 stopButton.addEventListener("click", stopRecording);
 pauseButton.addEventListener("click", pauseRecording);
 
+function openModal() {
+	document.getElementById('modal').style.display = 'block';
+	document.getElementById('fade').style.display = 'block';
+}
+
+function closeModal() {
+	document.getElementById('modal').style.display = 'none';
+	document.getElementById('fade').style.display = 'none';
+}
+
+
 function startRecording() {
 	console.log("recordButton clicked");
-
 	/*
 		Simple constraints object, for more advanced audio features see
 		https://addpipe.com/blog/audio-constraints-getusermedia/
@@ -95,8 +105,9 @@ function pauseRecording(){
 }
 
 function stopRecording() {
+	openModal();
 	console.log("stopButton clicked");
-
+	//openModal();
 	//disable the stop button, enable the record too allow for new recordings
 	stopButton.disabled = true;
 	recordButton.disabled = false;
@@ -148,7 +159,8 @@ function createDownloadLink(blob) {
 		  var xhr=new XMLHttpRequest();
 		  xhr.onload=function(e) {
 		      if(this.readyState === 4) {
-		          console.log("Server returned: ",e.target.responseText);
+				  console.log("Server returned: ",e.target.responseText);
+				  closeModal();
 		      }
 		  };
 		  var fd=new FormData();

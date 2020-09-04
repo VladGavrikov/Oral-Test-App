@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from flask_wtf.file import FileField, FileRequired
+from wtforms.fields.html5 import DateField  
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from app.models import User
 
@@ -35,6 +36,7 @@ class CreateUnitForm(FlaskForm):
 
 class CreateTestForm(FlaskForm):
     name = StringField('Test Name', validators=[DataRequired()])
+    deadline = DateField('Deadline', format='%Y-%m-%d')
     submit = SubmitField('Add Test')
 
 class CreateQuestionForm(FlaskForm):

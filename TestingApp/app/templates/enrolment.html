@@ -1,6 +1,11 @@
 {% extends "base.html" %}
+
+{% block content %}
 <h2>Explore Some Questions</h2>
 {%for unit in units %}  
-{{ unit.name }}
-{{ unit.description }}
+    {{ unit.name }}
+    {{ unit.description }}
+    <a href= "{{ url_for('unitEnrolled', unit= unit.name)  }}">Enroll</a>
+    <br>
 {%endfor%}
+{% endblock %}

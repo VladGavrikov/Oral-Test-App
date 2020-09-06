@@ -158,6 +158,11 @@ a:hover {
 }
 
 /* Table styling */
+.table {
+    height: 95%;
+    padding-top: 30px;
+}
+
 .table-list {
     width: 95%;
     margin: 0 auto;
@@ -181,10 +186,6 @@ a:hover {
 .table-list th, .table-list td,  .table-list tr {
     width: 100%;
     display: flex;
-}
-
-.table {
-    height: 95%;
 }
 
 #unit-list tbody {

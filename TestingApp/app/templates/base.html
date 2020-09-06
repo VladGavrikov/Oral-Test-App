@@ -1,71 +1,80 @@
 <html>
     <head>
-        {% if title %}
-        <title>{{ title }} - Oral Testing App</title>
-        {% else %}
-        <title>microblog</title>
-        {% endif %}
-    <style>
-        #fade {
-    display: none;
-    position:absolute;
-    top: 0%;
-    left: 0%;
-    width: 100%;
-    height: 100%;
-    background-color: #ababab;
-    z-index: 1001;
-    -moz-opacity: 0.8;
-    opacity: .70;
-    filter: alpha(opacity=80);
-}
+        <title>Oral Test App - {{ title }}</title>
 
-#modal {
-    display: none;
-    position: absolute;
-    top: 45%;
-    left: 45%;
-    width: 64px;
-    height: 64px;
-    padding:30px 15px 0px;
-    border: 3px solid #ababab;
-    box-shadow:1px 1px 10px #ababab;
-    border-radius:20px;
-    background-color: white;
-    z-index: 1002;
-    text-align:center;
-    overflow: auto;
-}
-    </style>
+        <!-- Bootstrap -->
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
+
+        <!-- Bootstrap js -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+        <!-- Bootstrap js bundle -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Google fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Cabin&family=DM+Sans&family=Mulish&family=Roboto&family=Ubuntu:wght@300&display=swap" rel="stylesheet">
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+        <!-- Icons -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css">
     </head>
+
     <body>
-      <div>
-        Oral Testing App
-        
-        {% if current_user.is_authenticated %}
-        {% if current_user.isTeacher == False %}
-        <a href="{{ url_for('dashboard') }}">Dashboard</a>
-        {% if current_user.unit_id == None %}
-            <a href="{{ url_for('enrolment') }}">Enrolment</a>
+        {% if current_user.isTeacher %}
+            <div class="sidenav">
+                <h1 class="website-title"> Oral Test App</h1>
+                <div class="nav-parent">
+                    <a href="{{ url_for('unitManager') }}">Units</a>
+                </div>
+                {% for unit in units %}
+                <div class="nav-child">
+                    <a class="nav-child" href="{{ url_for('unitpage', unitpage = unit.name) }}">{{ unit.name }}
+                        <span class="nav-icon"><i class="fas fa-chevron-right"></i></span>
+                    </a>
+                </div>
+                {% endfor %}
+                <div class="nav-parent">
+                    <a href="#">Manage Students</a>
+                </div>
+                <div class="nav-parent">
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                </div>
+            </div>
+
+            <div class="topbar">
+                <p class="username">Admin
+                    <a href="{{ (url_for('logout')) }}">
+                        <i id="logout-icon" class="fas fa-sign-out-alt"></i>
+                    </a>
+                </p>
+            </div>
+
+            <div class="main">
+        {% else %}
+            <div class="student-topbar">
+                <a href="{{ url_for('dashboard') }}">Dashboard  </a>|
+                {% if current_user.unit_id == None %}
+                    <a href="{{ url_for('enrolment') }}"> Enrolment </a>|
+                {% endif %}
+                
+                <span class="username"> {{ current_user.username }}
+                    <a href="{{ (url_for('logout')) }}">
+                        <i id="logout-icon" class="fas fa-sign-out-alt"></i>
+                    </a>
+                </span>
+            </div>
+
+            <div class="student-main">
         {% endif %}
-        {% endif %}
-        <a href="{{ url_for('logout') }}">Logout</a>
-        {% endif %}
-        {% if current_user.isTeacher == True %}
-        <a href="{{ url_for('unitManager') }}">Manage Units</a>
-        {% endif %}
-    </div>
-        <hr>
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul>
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-        {% block content %}{% endblock %}
+                {% block content %} {% endblock %}
+            </div>
+
         <script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
         <script src="/static/js/app.js"></script>
     </body>

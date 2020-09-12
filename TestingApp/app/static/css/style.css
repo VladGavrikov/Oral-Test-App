@@ -24,13 +24,36 @@ html, body {
 }
 
 .page-title {
-    color: #000000;
+    /* color: #000000; */
     font-size: 20px;
     line-height: 25px;
     font-family: 'Mulish', sans-serif;
     font-weight: bold;
+}
+
+.page-title:after {
+    content: ""; 
+    display: block; 
+    width: 50px; 
+    padding-top: 5px;
     border-bottom: 2px solid var(--testapp-green);
-    width: 40px;
+}
+
+.subheading {
+    color: #000000;
+    font-size: 16px;
+    font-family: 'Mulish', sans-serif;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin: 15px 0 0 10px;
+}
+
+.subheading:after {
+    content: ""; 
+    display: block; 
+    width: 100px; 
+    padding-top: 5px;
+    border-bottom: 2px solid var(--testapp-green);
 }
 
 a {
@@ -158,8 +181,13 @@ a:hover {
 }
 
 /* Table styling */
-.table {
+.table-full {
     height: 95%;
+    padding-top: 30px;
+}
+
+.table-half {
+    height: 40%;
     padding-top: 30px;
 }
 
@@ -208,7 +236,11 @@ a:hover {
 .green-btn:hover {
     background-color: #1A9E8A;
     color: #FFFFFF;
-  }
+}
+
+#manage-students-btn {
+    margin-right: 5px;
+}
 
 /* Modals */
 .modal {

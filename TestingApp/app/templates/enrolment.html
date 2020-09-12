@@ -1,11 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Explore Some Questions</h2>
+<h2>Enroll into unit</h2>
+<p>Please be careful when unenrolling and enrolling in the middle of semester as active tests will become unavaliable
+</p>
 {%for unit in units %}  
     {{ unit.name }}
     {{ unit.description }}
+    {% if user.unit_id != unit.name %}
     <a href= "{{ url_for('unitEnrolled', unit= unit.name)  }}">Enroll</a>
+    {% endif %}
     <br>
 {%endfor%}
 {% endblock %}

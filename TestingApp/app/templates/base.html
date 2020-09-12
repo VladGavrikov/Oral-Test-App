@@ -45,9 +45,7 @@
         {% if current_user.is_authenticated %}
         {% if current_user.isTeacher == False %}
         <a href="{{ url_for('dashboard') }}">Dashboard</a>
-        {% if current_user.unit_id == None %}
-            <a href="{{ url_for('enrolment') }}">Enrolment</a>
-        {% endif %}
+        <a href="{{ url_for('enrolment') }}">Enrolment</a>
         {% endif %}
         <a href="{{ url_for('logout') }}">Logout</a>
         {% endif %}

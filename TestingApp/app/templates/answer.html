@@ -18,6 +18,9 @@
         {{ form.hidden_tag() }}
         <p>{{ form.submit() }}</p>
     </form>
+    {% for question in range(numbOfQuestions)%}
+    <a href="{{url_for('testQuestion',test = test, studentNumber = user.id, questionNumber = (question+1))}}">{{(question+1)}}</a>
+    {% endfor %}
     <h5>Questions: {{questionNumber}}</h5>
     <!--<a href="{{ url_for('testQuestion',test = test, studentNumber = user.id, questionNumber = 1)  }}">Next Question</a></h3>-->
 {% endblock %}

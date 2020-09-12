@@ -31,5 +31,6 @@
         </p>
         <p>{{ form.submit() }}</p>
     </form>
+    <a href= "{{ url_for('manageStudents', unitpage = unit.name)  }}">Manage Students</a>
 <!--<a href= "{{ url_for('test',unitpage = unit.name,test= 'Test1')  }}">Create a Test</a></h3>-->
 {% endblock %}

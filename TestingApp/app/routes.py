@@ -24,8 +24,10 @@ from app.forms import ReleaseFeedbackForm
 @login_required
 def dashboard():
     user = User.query.filter_by(username=current_user.username).first_or_404()  
-    test = TestMark.query.filter_by(unit_id=user.unit_id).filter_by(user_id = user.id).all()
-    return render_template('dashboard.html', title='Dashboard', user=user, tests = test)
+    testFB = TestMark.query.filter_by(unit_id=user.unit_id).filter_by(user_id = user.id).all()
+    test = Test.query.join(TestMark).filter_by(unit_id=user.unit_id).filter_by(user_id = user.id).all()
+    print(test)
+    return render_template('dashboard.html', title='Dashboard', user=user, tests = test, testFB = testFB)
 
 @app.route('/attempt/<test>/<studentNumber>', methods=['GET', 'POST'])
 @login_required
@@ -59,6 +61,8 @@ def viewFeedback(test, studentNumber):
         answers.append(tempAnswer)
         feedbacks.append(Feedback.query.filter_by(answer_id = tempAnswer.id).order_by(Feedback.id.desc()).first())
     return render_template('viewFeedback.html', title='Test', user=user, questions = questions,answers=answers, test=testQ, numOfQuestions = numOfQuestions, feedbacks = feedbacks, testMarks = testMarks)
+
+
 
 @app.route('/marking/<test>')
 @login_required
@@ -126,7 +130,7 @@ def testQuestion(test, studentNumber, questionNumber):
             qnumber = int(questionNumber)+1
             print(questionNumber)
             return redirect(url_for('testQuestion',test = test, studentNumber = user.id, questionNumber = qnumber))
-    return render_template('answer.html', user=user, question = questions[qnumb], questionNumber = questionNumber, form = form)
+    return render_template('answer.html',test = test, user=user, question = questions[qnumb], questionNumber = questionNumber, form = form, numbOfQuestions = len(questions))
 
 #FUTURE WORKS MARKING
 @app.route('/marking/<test>/<studentNumber>/<questionNumber>', methods=['GET', 'POST'])
@@ -206,7 +210,8 @@ def unitEnrolled(unit):
 @login_required
 def enrolment():
     units = Unit.query.all()
-    return render_template('enrolment.html', units=units)
+    user = User.query.filter_by(username=current_user.username).first_or_404()
+    return render_template('enrolment.html', units=units, user=user)
 
 @app.route('/<test>/<studentID>')
 @login_required
@@ -227,6 +232,12 @@ def unitpage(unitpage):
         return redirect(url_for('unitpage',unitpage = unit.name))
     return render_template('unitpage.html', unit=unit,form=testForm, tests=tests)
 
+@app.route("/unitManager/<unitpage>/ManageStudents", methods=['GET', 'POST'])
+def manageStudents(unitpage):
+    unit = Unit.query.filter_by(name=unitpage).first()
+    students = User.query.filter_by(unit_id = unit.name).all()
+    return render_template('manageStudents.html', unit=unit, students=students)
+
 @app.route("/unitManager/<unitpage>/<test>", methods=['GET', 'POST'])
 def test(unitpage, test):
     unit = Unit.query.filter_by(name=unitpage).first()
@@ -246,14 +257,17 @@ def login():
         return redirect(url_for('dashboard'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
+        user = User.query.filter_by(email=form.email.data).first()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
             return redirect(url_for('dashboard'))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('dashboard')
+            if (user.isTeacher == False):
+                next_page = url_for('dashboard')
+            else:
+                next_page = url_for('unitManager')
         return redirect(next_page)
     return render_template('login.html', title='Sign In', form=form)
 

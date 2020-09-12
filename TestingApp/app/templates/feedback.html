@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
+    <div id="fade"></div>
+    <div id="modal">
+        <img id="loader" src="{{ url_for('static', filename='img/loading.gif') }}" />
+    </div>  
     <h3>{{question.body}}</h3>
     <h4>{{answerToQuestion.body}}</h4>
     <audio src={{answerToQuestion.body}} id= "player" controls="controls" autoplay="autoplay"></audio>

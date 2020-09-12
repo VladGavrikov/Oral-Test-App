@@ -3,21 +3,21 @@
 {% block content %}
 
 <div class="row mx-2">
-    <h2 class="page-title">{{ unit.description }} / <span style="color:red">test.body *to implement*</span></h2>
+    <h2 class="page-title">{{ unit.description }} / {{ t.body }}</h2>
     <div class="btns">
         <!-- <button id="add-unit-btn" class="btn green-btn" data-toggle="modal" data-target="#add-unit-modal">New unit <i class="fas fa-plus"></i></button> -->
     </div>
 </div>
 
 <div class="content-container">
-    <h1>Create test for {{unit.name}}</h1>
-    <h3>Here you can create an oral assessment</h3>
-    <h1>Questions</h1>
+    <h3 class="subheading">Questions</h3>
     {%for question in questions %}  
-        {{ question.body }}
+        <b>Q{{ loop.index }}:</b> {{ question.body }}
         <br>
     {%endfor%}
     <br>
+
+
     <form action="" method="post">
         {{ form.hidden_tag() }}
         <p>
@@ -29,7 +29,7 @@
         </p>
         <p>{{ form.submit() }}</p>
     </form>
-    <a href= "{{ url_for('testCreated', test= test)  }}">Finalize Test</a>
+    <!-- <a href= "{{ url_for('testCreated', test= test)  }}">Finalize Test</a> -->
     
 </div>
 

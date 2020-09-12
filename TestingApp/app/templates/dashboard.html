@@ -46,8 +46,8 @@
                 <tr>
                     <td>{{ test.body }}</td>
                     {% if testFB[loop.index0].feedbackReleased == True %}
-                        <td style="padding-top:3px; padding-bottom:3px"> 
-                            <button class="btn green-btn"><a href="{{ url_for('viewFeedback',test = testFB[loop.index0].test_id, studentNumber = user.id)  }}">View</a></button>
+                        <td class="td-btns" style="padding-top:4px; padding-bottom:4px"> 
+                            <button class="btn table-btn"><a href="{{ url_for('viewFeedback',test = testFB[loop.index0].test_id, studentNumber = user.id)  }}">View</a></button>
                         </td>
                     {% else %}
                         <td>No feedback currently available</td>

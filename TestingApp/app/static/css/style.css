@@ -45,7 +45,11 @@ html, body {
     font-family: 'Mulish', sans-serif;
     font-weight: bold;
     text-transform: uppercase;
-    margin: 15px 0 0 10px;
+    margin: 30px 0 0 10px;
+}
+
+.subheading:first-child {
+    margin: 10px 0 0 10px;
 }
 
 .subheading:after {
@@ -188,7 +192,7 @@ a:hover {
 
 .table-half {
     height: 40%;
-    padding-top: 30px;
+    padding-top: 20px;
 }
 
 .table-list {
@@ -220,6 +224,11 @@ a:hover {
     height: 100%;
 }
 
+#task-list tbody {
+    height: 100%;
+    overflow-y: auto;
+}
+
 /* Buttons */
 .btns {
     position: absolute;
@@ -235,6 +244,38 @@ a:hover {
 
 .green-btn:hover {
     background-color: #1A9E8A;
+    color: #FFFFFF;
+}
+
+.table-btn, .table-btn-static {
+    background-color: var(--testapp-green);
+    color: #FFFFFF;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 15px;
+}
+
+.table-btn:hover, .table-btn a:hover {
+    background-color: #1A9E8A;
+    color: #FFFFFF;
+}
+
+.table-btn-static {
+    background-color: var(--testapp-green);
+    color: #FFFFFF;
+    pointer-events: none;
+}
+
+.table-btn-navy {
+    background-color: var(--testapp-navy);
+    color: #FFFFFF;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 15px;
+}
+
+.table-btn-navy:hover, .table-btn-navy a:hover {
+    background-color: #385463;
     color: #FFFFFF;
 }
 

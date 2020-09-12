@@ -13,7 +13,7 @@
 
 <div class="content-container">
     <h3 class="subheading">Active Tasks</h3>
-    <div class="table-half">
+    <div class="table-half table-responsive">
         <table id="task-list" class="table table-hover table-striped table-list">
             <thead>
                 <tr>
@@ -28,9 +28,15 @@
                 <tr>
                     <td>{{ test.body }}</td>
                     <td>Deadline</a></td>
-                    <td>
-                        <a href= "{{ url_for('test', unitpage = unit.name, test= test.id)  }}">Edit</a> | 
-                        Unavailable | Delete
+                    <td class="td-btns" style="padding-top:4px; padding-bottom:4px">
+                        <button class="btn table-btn"><a href= "{{ url_for('test', unitpage = unit.name, test= test.id)  }}">Edit</a></button> 
+                        {% if not test.isFinalized %}
+                            <button class="btn table-btn-navy"><a href= "{{ url_for('testCreated', test= test)  }}">Make available</a></button>
+                        {% else %}
+                            <button class="btn table-btn-static">Available</button>
+                        {% endif %}
+                        <button class="btn table-btn">Delete</button>
+                        <!-- Unavailable | Delete -->
                     </td>
                 </tr>
                 {% endif %}
@@ -40,7 +46,7 @@
     </div>
 
     <h3 class="subheading">Completed Tasks</h3>
-    <div class="table-half">
+    <div class="table-half table-responsive">
         <table id="task-list" class="table table-hover table-striped table-list">
             <thead>
                 <tr>

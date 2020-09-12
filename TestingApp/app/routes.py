@@ -242,6 +242,7 @@ def manageStudents(unitpage):
 @app.route("/unitManager/<unitpage>/<test>", methods=['GET', 'POST'])
 def test(unitpage, test):
     unit = Unit.query.filter_by(name=unitpage).first()
+    t = Test.query.filter_by(id=test).first()
     questions = Question.query.filter_by(test_id=test).all()
     questionForm = CreateQuestionForm()
     if questionForm.validate_on_submit():
@@ -249,7 +250,7 @@ def test(unitpage, test):
         db.session.add(question)
         db.session.commit()
         return redirect(url_for('test', unitpage = unit.name, test= test))
-    return render_template('test.html',unit=unit, form=questionForm, questions=questions, test = test)
+    return render_template('test.html',unit=unit, form=questionForm, questions=questions, numbOfQuestions = len(questions), test = test, t = t)
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])

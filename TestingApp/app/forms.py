@@ -4,9 +4,10 @@ from flask_wtf.file import FileField, FileRequired
 from wtforms.fields.html5 import DateField  
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from app.models import User
+from wtforms.fields.html5 import EmailField
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
+    email = EmailField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember me')
     submit = SubmitField('Login')

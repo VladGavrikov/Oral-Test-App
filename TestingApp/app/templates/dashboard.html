@@ -5,15 +5,15 @@
     <h2>You are enrolled in, {{ current_user.unit_id }}!</h2>
     <h3>Active Tests</h3>
     {%for test in tests %}
-        {% if test.testWasStarted == False %}
-        <a href="{{ url_for('attempt',test = test.test_id, studentNumber = user.id)  }}">{{ test.test_id }}</a></h3><br>
+        {% if testFB[loop.index0].testWasStarted == False %}
+        <a href="{{ url_for('attempt',test = testFB[loop.index0].test_id, studentNumber = user.id)  }}">{{ test.body }}</a><br>
         {% endif %}
     {%endfor%}
     <hr>
     <h3>Feedback</h3>
     {%for test in tests %}
-        {% if test.feedbackReleased == True %}
-            <a href="{{ url_for('viewFeedback',test = test.test_id, studentNumber = user.id)  }}">{{ test.test_id }}</a></h3><br>
+        {% if testFB[loop.index0].feedbackReleased == True %}
+            <a href="{{ url_for('viewFeedback',test = testFB[loop.index0].test_id, studentNumber = user.id)  }}">{{ test.body }}</a><br>
         {% endif %}
     {%endfor%}
     <hr>

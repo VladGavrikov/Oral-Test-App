@@ -24,10 +24,11 @@ from app.forms import ReleaseFeedbackForm
 @login_required
 def dashboard():
     user = User.query.filter_by(username=current_user.username).first_or_404()  
+    unit = Unit.query.filter_by(name=user.unit_id).first()
     testFB = TestMark.query.filter_by(unit_id=user.unit_id).filter_by(user_id = user.id).all()
     test = Test.query.join(TestMark).filter_by(unit_id=user.unit_id).filter_by(user_id = user.id).all()
     print(test)
-    return render_template('dashboard.html', title='Dashboard', user=user, tests = test, testFB = testFB)
+    return render_template('dashboard.html', title='Dashboard', user=user, tests = test, testFB = testFB, unit=unit)
 
 @app.route('/attempt/<test>/<studentNumber>', methods=['GET', 'POST'])
 @login_required

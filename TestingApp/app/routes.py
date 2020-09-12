@@ -23,7 +23,7 @@ from app.forms import ReleaseFeedbackForm
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    user = User.query.filter_by(username=current_user.username).first_or_404()  
+    user = User.query.filter_by(email=current_user.email).first_or_404()  
     testFB = TestMark.query.filter_by(unit_id=user.unit_id).filter_by(user_id = user.id).all()
     test = Test.query.join(TestMark).filter_by(unit_id=user.unit_id).filter_by(user_id = user.id).all()
     print(test)
@@ -32,7 +32,7 @@ def dashboard():
 @app.route('/attempt/<test>/<studentNumber>', methods=['GET', 'POST'])
 @login_required
 def attempt(test, studentNumber):
-    user = User.query.filter_by(username=current_user.username).first_or_404()  
+    user = User.query.filter_by(email=current_user.email).first_or_404()  
     testQ = Test.query.filter_by(id=test).first()
     testAttempted = TestMark.query.filter_by(test_id=test).filter_by(user_id =user.id).first()
     form = StartTest()
@@ -49,7 +49,7 @@ def attempt(test, studentNumber):
 @app.route('/feedback/<test>/<studentNumber>', methods=['GET', 'POST'])
 @login_required
 def viewFeedback(test, studentNumber):
-    user = User.query.filter_by(username=current_user.username).first_or_404()  
+    user = User.query.filter_by(email=current_user.email).first_or_404()  
     questions = Question.query.filter_by(test_id=test).all()
     testQ = Test.query.filter_by(id=test).first()
     testMarks = TestMark.query.filter_by(user_id = studentNumber).filter_by(test_id = test).first()
@@ -101,7 +101,7 @@ def testEvaluation(test, studentNumber):
 @app.route('/attempt/<test>/<studentNumber>/<questionNumber>', methods=['GET', 'POST'])
 @login_required
 def testQuestion(test, studentNumber, questionNumber):
-    user = User.query.filter_by(username=current_user.username).first_or_404()
+    user = User.query.filter_by(email=current_user.email).first_or_404()
     questions = Question.query.filter_by(test_id = test).all()
     qnumb = int(questionNumber)-1
     prefix = "app/"
@@ -136,7 +136,7 @@ def testQuestion(test, studentNumber, questionNumber):
 @app.route('/marking/<test>/<studentNumber>/<questionNumber>', methods=['GET', 'POST'])
 @login_required
 def markingTest(test, studentNumber, questionNumber):
-    user = User.query.filter_by(username=current_user.username).first_or_404()
+    user = User.query.filter_by(email=current_user.email).first_or_404()
     questions = Question.query.filter_by(test_id = test).all()
     print(questions)
     qnumb = int(questionNumber)-1
@@ -171,7 +171,7 @@ def markingTest(test, studentNumber, questionNumber):
 @app.route('/unitManager', methods=['GET', 'POST'])
 @login_required
 def unitManager():
-    user = User.query.filter_by(username=current_user.username).first_or_404()
+    user = User.query.filter_by(email=current_user.email).first_or_404()
     if(user.isTeacher==False):
         return redirect(url_for('dashboard'))
     else:
@@ -200,7 +200,7 @@ def testCreated(test):
 @app.route('/enrolment/<unit>', methods=['GET', 'POST'])
 @login_required
 def unitEnrolled(unit):
-    user = User.query.filter_by(username=current_user.username).first_or_404()
+    user = User.query.filter_by(email=current_user.email).first_or_404()
     user.unit_id = unit
     db.session.commit()
     return render_template('unitEnrollmentSuccess.html')
@@ -210,7 +210,7 @@ def unitEnrolled(unit):
 @login_required
 def enrolment():
     units = Unit.query.all()
-    user = User.query.filter_by(username=current_user.username).first_or_404()
+    user = User.query.filter_by(email=current_user.email).first_or_404()
     return render_template('enrolment.html', units=units, user=user)
 
 @app.route('/<test>/<studentID>')
@@ -282,7 +282,7 @@ def register():
         return redirect(url_for('dashbord'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data)
+        user = User(id=form.studentNumber.data, email=form.email.data, firstName= form.firstName.data, LastName = form.lastName.data)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()

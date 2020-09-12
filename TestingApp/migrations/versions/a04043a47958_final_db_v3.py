@@ -1,8 +1,8 @@
 """final db v3
 
-Revision ID: c570b656200d
+Revision ID: a04043a47958
 Revises: 
-Create Date: 2020-09-04 18:07:09.555081
+Create Date: 2020-09-13 00:28:14.553243
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'c570b656200d'
+revision = 'a04043a47958'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -33,16 +33,17 @@ def upgrade():
     )
     op.create_table('user',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('username', sa.String(length=64), nullable=True),
     sa.Column('unit_id', sa.String(length=20), nullable=True),
     sa.Column('email', sa.String(length=120), nullable=True),
+    sa.Column('firstName', sa.String(length=64), nullable=True),
+    sa.Column('LastName', sa.String(length=64), nullable=True),
     sa.Column('password_hash', sa.String(length=128), nullable=True),
     sa.Column('isTeacher', sa.Boolean(), nullable=True),
     sa.ForeignKeyConstraint(['unit_id'], ['unit.name'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('id')
     )
     op.create_index(op.f('ix_user_email'), 'user', ['email'], unique=True)
-    op.create_index(op.f('ix_user_username'), 'user', ['username'], unique=True)
     op.create_table('question',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('body', sa.String(length=140), nullable=True),
@@ -97,7 +98,6 @@ def downgrade():
     op.drop_table('answer')
     op.drop_table('test_mark')
     op.drop_table('question')
-    op.drop_index(op.f('ix_user_username'), table_name='user')
     op.drop_index(op.f('ix_user_email'), table_name='user')
     op.drop_table('user')
     op.drop_table('test')

@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField
 from flask_wtf.file import FileField, FileRequired
 from wtforms.fields.html5 import DateField  
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
@@ -13,19 +13,23 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Login')
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    email = StringField('Email', validators=[DataRequired(), Email()])
+    studentNumber = IntegerField('Student Number', validators=[DataRequired()])
+    email = EmailField('Email', validators=[DataRequired(), Email()])
+    firstName = StringField('First Name', validators=[DataRequired()])
+    lastName = StringField('Last Name', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     password2 = PasswordField(
         'Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Register')
 
-    def validate_username(self, username):
-        user = User.query.filter_by(username=username.data).first()
+    def validate_studentNumber(self, studentNumber):
+        print("++++++++++++++++++I AM HERE++++++++++++++++++")
+        user = User.query.filter_by(id=studentNumber.data).first()
         if user is not None:
-            raise ValidationError('Please use a different username.')
+            raise ValidationError('Please use a different student number.')
 
     def validate_email(self, email):
+        print("++++++++++++++++++I AM HERE2++++++++++++++++++")
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Please use a different email address.')

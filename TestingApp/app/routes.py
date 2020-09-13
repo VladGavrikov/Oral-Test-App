@@ -250,7 +250,7 @@ def test(unitpage, test):
         db.session.add(question)
         db.session.commit()
         return redirect(url_for('test', unitpage = unit.name, test= test))
-    return render_template('test.html',unit=unit, form=questionForm, questions=questions, numbOfQuestions = len(questions), test = test, t = t)
+    return render_template('test.html',unit=unit, form=questionForm, questions=questions, test = test, t = t)
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])

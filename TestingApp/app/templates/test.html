@@ -2,11 +2,12 @@
 
 {% block content %}
 
-<div class="row mx-2">
-    <h2 class="page-title">{{ unit.description }} / {{ t.body }}</h2>
-    <div class="btns">
-        <!-- <button id="add-unit-btn" class="btn green-btn" data-toggle="modal" data-target="#add-unit-modal">New unit <i class="fas fa-plus"></i></button> -->
-    </div>
+<h2 class="page-title">{{ unit.description }} / {{ t.body }}</h2>
+<div class="row btns mx-2">
+    <button id="rename-task-btn" class="btn green-btn" data-toggle="modal" data-target="#rename-task-modal">Rename</button>
+    <button id="save-task-btn" class="btn green-btn"><a href="{{ url_for('unitpage', unitpage = unit.name) }}">Save & exit</a></button>
+    <!-- <button id="make-available-btn" class="btn green-btn" data-toggle="modal" data-target="#make-available-modal">Make available</button> -->
+
 </div>
 
 <div class="content-container">
@@ -27,7 +28,7 @@
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
-        <p>{{ form.submit() }}</p>
+        {{ form.submit(class_="btn green-btn") }}
     </form>
     <!-- <a href= "{{ url_for('testCreated', test= test)  }}">Finalize Test</a> -->
     

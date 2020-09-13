@@ -23,7 +23,7 @@
                 <tr>
                     <td>{{ test.body }}</td>
                     <td>Deadline</a></td>
-                    <td><a href="{{ url_for('attempt',test = testFB[loop.index0].test_id, studentNumber = user.id)  }}">{{ test.body }}</a></td>
+                    <td style="padding-top:4px; padding-bottom: 4px;"><button class="btn table-btn"><a href="{{ url_for('attempt',test = testFB[loop.index0].test_id, studentNumber = user.id)  }}">Start task</a></button></td>
                 </tr>
                 {% endif %}
                 {% endfor %}
@@ -42,7 +42,7 @@
             </thead>
             <tbody>
                 {% for test in tests %}
-                
+                {% if testFB[loop.index0].testWasStarted == True %}
                 <tr>
                     <td>{{ test.body }}</td>
                     {% if testFB[loop.index0].feedbackReleased == True %}
@@ -53,7 +53,7 @@
                         <td>No feedback currently available</td>
                     {% endif %}
                 </tr>
-                
+                {% endif %}
                 {% endfor %}
             </tbody>
         </table>

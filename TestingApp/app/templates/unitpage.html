@@ -31,7 +31,7 @@
                     <td class="td-btns" style="padding-top:4px; padding-bottom:4px">
                         <button class="btn table-btn"><a href= "{{ url_for('test', unitpage = unit.name, test= test.id)  }}">Edit</a></button> 
                         {% if not test.isFinalized %}
-                            <button class="btn table-btn-navy"><a href= "{{ url_for('testCreated', test= test)  }}">Make available</a></button>
+                            <button class="btn table-btn-navy"><a href= "{{ url_for('testCreated', test= test.id)  }}">Make available</a></button>
                         {% else %}
                             <button class="btn table-btn-static">Available</button>
                         {% endif %}

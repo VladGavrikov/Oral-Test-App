@@ -4,8 +4,8 @@
 
 <h2 class="page-title">{{ unit.description }} / {{ t.body }}</h2>
 <div class="row btns mx-2">
-    <button id="rename-task-btn" class="btn green-btn" data-toggle="modal" data-target="#rename-task-modal">Rename</button>
-    <button id="save-task-btn" class="btn green-btn"><a href="{{ url_for('unitpage', unitpage = unit.name) }}">Save & exit</a></button>
+    <button id="rename-task-btn" class="btn green-btn btn-margin" data-toggle="modal" data-target="#rename-task-modal">Rename</button>
+    <button id="save-task-btn" class="btn green-btn btn-margin"><a href="{{ url_for('unitpage', unitpage = unit.name) }}">Save & exit</a></button>
     <!-- <button id="make-available-btn" class="btn green-btn" data-toggle="modal" data-target="#make-available-modal">Make available</button> -->
 
 </div>
@@ -23,7 +23,7 @@
         {{ form.hidden_tag() }}
         <p>
             {{ form.name.label }}<br>
-            {{ form.name(size=150) }}<br>
+            {{ form.name(class_="form-control", size=150, style="resize: none;") }}<br>
             {% for error in form.name.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}

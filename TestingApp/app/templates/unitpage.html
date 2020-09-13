@@ -6,7 +6,7 @@
 <div class="row mx-2">
     <h2 class="page-title">{{ unit.description }}</h2>
     <div class="btns">
-        <button id="manage-students-btn" class="btn green-btn" data-toggle="modal" data-target="#manage-students-modal">Manage students <i class="fas fa-users"></i></button>
+        <button id="manage-students-btn" class="btn green-btn btn-margin" data-toggle="modal" data-target="#manage-students-modal">Manage students <i class="fas fa-users"></i></button>
         <button id="add-task-btn" class="btn green-btn" data-toggle="modal" data-target="#add-task-modal">New task <i class="fas fa-plus"></i></button>
     </div>
 </div>
@@ -19,7 +19,7 @@
                 <tr>
                     <th>Task name</th>
                     <th>Deadline</th>
-                    <th>Task options</th>
+                    <th style="width: 900px;">Task options</th>
                 </tr>
             </thead>
             <tbody>
@@ -27,16 +27,15 @@
                 {% if not test.isFinalized %}
                 <tr>
                     <td>{{ test.body }}</td>
-                    <td>Deadline</a></td>
-                    <td class="td-btns" style="padding-top:4px; padding-bottom:4px">
-                        <button class="btn table-btn"><a href= "{{ url_for('test', unitpage = unit.name, test= test.id)  }}">Edit</a></button> 
+                    <td>{{ test.due_date }} {{ test.due_time }}</a></td>
+                    <td style="width: 900px; padding-top:4px; padding-bottom:4px">
+                        <button class="btn table-btn btn-margin"><a href= "{{ url_for('test', unitpage = unit.name, test= test.id)  }}">Edit</a></button> 
                         {% if not test.isFinalized %}
-                            <button class="btn table-btn-navy"><a href= "{{ url_for('testCreated', test= test.id)  }}">Make available</a></button>
+                            <button class="btn table-btn-navy btn-margin"><a href= "{{ url_for('testCreated', test= test.id)  }}">Make available</a></button>
                         {% else %}
-                            <button class="btn table-btn-static">Available</button>
+                            <button class="btn table-btn-static btn-margin">Available</button>
                         {% endif %}
                         <button class="btn table-btn">Delete</button>
-                        <!-- Unavailable | Delete -->
                     </td>
                 </tr>
                 {% endif %}
@@ -51,7 +50,8 @@
             <thead>
                 <tr>
                     <th>Task name</th>
-                    <th>Mark</th>
+                    <th>Mark tasks</th>
+                    <th>Release marks & feedback</th>
                 </tr>
             </thead>
             <tbody>
@@ -59,7 +59,16 @@
                 {% if test.isFinalized %}
                 <tr>
                     <td>{{ test.body }}</td>
-                    <td><a href="{{ url_for('markings',test= test.id)  }}">Marked/mark</a></td>
+                    <td style="padding-top:4px; padding-bottom: 4px;"><button class="btn table-btn-navy"><a href="{{ url_for('markings',test= test.id)  }}">Mark</a></button></td>
+                    <!-- !!!!!!!! MAKE BUTTON table-btn if already marked ALL tests -->
+                    {% if test.hasBeenMarked == False %}
+                    <td style="padding-top:4px; padding-bottom: 4px;">  
+                        <button class="btn table-btn-navy"><a href= "{{ url_for('releaseFeedback', test = tests[0].test_id) }}">Release marks</a></button>
+                    {% else %}
+                    <td>
+                        Already released
+                    {% endif %}
+                    </td>
                 </tr>
                 {% endif %}
                 {% endfor %}
@@ -79,18 +88,25 @@
             <div class="modal-body">
                 <form action="" method="post">
                     {{ form.hidden_tag() }}
-                    <div class="form-group mb-3">
-                        {{ form.name(class_="form-control", size=150) }}
-                        {{ form.name.label(class_="floating-label") }}<br>
+                    <div class="form-group mb-5">
+                        {{ form.name.label(class_="form-label") }}
+                        {{ form.name(class_="form-control form-styling", size=150, placeholder="e.g. Week 1 task") }}
                         {% for error in form.name.errors %}
-                        <span class="error">*{{ error }}</span>
+                            <span class="error">*{{ error }}</span>
                         {% endfor %}
                     </div>
                     <div class="form-group mb-5">
-                        {{ form.deadline(class_="form-control") }}
-                        {{ form.deadline.label(class_="floating-label") }}
-                        {% for error in form.deadline.errors %}
-                        <span class="error">*{{ error }}</span>
+                        {{  form.due_date.label(class_="form-label") }}
+                        {{  form.due_date(class_="form-control form-styling") }}
+                        {% for error in form.due_date.errors %}
+                            <span class="error">*{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group mb-5">
+                        {{  form.due_time.label(class_="form-label") }}
+                        {{  form.due_time(class_="form-control form-styling") }}
+                        {% for error in form.due_time.errors %}
+                            <span class="error">*{{ error }}</span>
                         {% endfor %}
                     </div>
                     <div class="text-center">

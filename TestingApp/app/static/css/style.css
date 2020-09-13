@@ -147,9 +147,9 @@ a:hover {
     text-align: right;
 }
 
-.username {
+.name {
     text-align: right;
-    margin-right: 20px;
+    margin-right: 2%;
 	font-size: 16px;
 	line-height: 60px;
 }
@@ -280,7 +280,7 @@ a:hover {
     color: #FFFFFF;
 }
 
-#manage-students-btn, #rename-task-btn, #save-task-btn {
+.btn-margin {
     margin-right: 5px;
 }
 
@@ -318,12 +318,16 @@ a:hover {
 }
 
 #add-unit-modal-content {
-    height: 400px;
+    height: 430px;
     width: 430px;
 }
 
+#add-task-modal-content {
+    height: 560px;
+}
+
 /* Forms */
-.form-control {
+.form-styling {
     font-family: 'Ubuntu', sans-serif;
     border: none;
     border-bottom: 1.5px solid #8593A5;
@@ -336,11 +340,19 @@ a:hover {
     padding-bottom: 0px;
 }
 
-.form-control:active, .form-control:focus {
+.form-styling:active, .form-styling:focus {
     box-shadow: none;
     -webkit-box-shadow: none;
     border-bottom: 3px solid var(--testapp-green);
     background-color: var(--testapp-light-grey);
+}
+
+.form-label {
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 15px;
+    color: var(--testapp-green);
+    font-weight: bold;
+    margin-bottom: 0;
 }
 
 .floating-label {

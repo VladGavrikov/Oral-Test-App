@@ -40,15 +40,12 @@
                 </div>
                 {% endfor %}
                 <div class="nav-parent">
-                    <a href="#">Manage Students</a>
-                </div>
-                <div class="nav-parent">
                     <a href="{{ url_for('logout') }}">Logout</a>
                 </div>
             </div>
 
             <div class="topbar">
-                <p class="username">Admin
+                <p class="name">Admin
                     <a href="{{ (url_for('logout')) }}">
                         <i id="logout-icon" class="fas fa-sign-out-alt"></i>
                     </a>
@@ -63,7 +60,7 @@
                     <a href="{{ url_for('enrolment') }}"> Enrolment </a>|
                 {% endif %}
                 
-                <span class="username"> {{ current_user.username }}
+                <span class="name"> {{ current_user.firstName }} {{ current_user.lastName }}
                     <a href="{{ (url_for('logout')) }}">
                         <i id="logout-icon" class="fas fa-sign-out-alt"></i>
                     </a>

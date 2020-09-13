@@ -19,11 +19,12 @@ from app.forms import StartTest
 from app.forms import CreateFeedbackForm
 from app.forms import TestEvaluationForm
 from app.forms import ReleaseFeedbackForm
+from datetime import datetime
 
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    user = User.query.filter_by(username=current_user.username).first_or_404()  
+    user = User.query.filter_by(email=current_user.email).first_or_404()
     unit = Unit.query.filter_by(name=user.unit_id).first()
     testFB = TestMark.query.filter_by(unit_id=user.unit_id).filter_by(user_id = user.id).all()
     test = Test.query.join(TestMark).filter_by(unit_id=user.unit_id).filter_by(user_id = user.id).all()
@@ -33,7 +34,7 @@ def dashboard():
 @app.route('/attempt/<test>/<studentNumber>', methods=['GET', 'POST'])
 @login_required
 def attempt(test, studentNumber):
-    user = User.query.filter_by(username=current_user.username).first_or_404()  
+    user = User.query.filter_by(email=current_user.email).first_or_404()  
     testQ = Test.query.filter_by(id=test).first()
     testAttempted = TestMark.query.filter_by(test_id=test).filter_by(user_id =user.id).first()
     form = StartTest()
@@ -50,7 +51,7 @@ def attempt(test, studentNumber):
 @app.route('/feedback/<test>/<studentNumber>', methods=['GET', 'POST'])
 @login_required
 def viewFeedback(test, studentNumber):
-    user = User.query.filter_by(username=current_user.username).first_or_404()  
+    user = User.query.filter_by(email=current_user.email).first_or_404()  
     questions = Question.query.filter_by(test_id=test).all()
     testQ = Test.query.filter_by(id=test).first()
     testMarks = TestMark.query.filter_by(user_id = studentNumber).filter_by(test_id = test).first()
@@ -102,12 +103,13 @@ def testEvaluation(test, studentNumber):
 @app.route('/attempt/<test>/<studentNumber>/<questionNumber>', methods=['GET', 'POST'])
 @login_required
 def testQuestion(test, studentNumber, questionNumber):
-    user = User.query.filter_by(username=current_user.username).first_or_404()
+    user = User.query.filter_by(email=current_user.email).first_or_404()
     questions = Question.query.filter_by(test_id = test).all()
     qnumb = int(questionNumber)-1
     prefix = "app/"
     path = "/static/music/ID"+studentNumber+"Test"+test+"QNum"+questionNumber+".wav"
     form = CreateAnswerForm()
+    submission = TestMark.query.filter_by(user_id = user.id).filter_by(test_id=test).first()
     if request.method == "POST" or form.validate_on_submit():
         if 'audio_data' in request.files:
             print("posted")
@@ -118,6 +120,8 @@ def testQuestion(test, studentNumber, questionNumber):
         if ((qnumb+1) == len(questions)):
             print("1")
             answer = Answer(body=path, question_id=questions[qnumb].id, user_id = user.id)
+            submission.due_date = datetime.now().date()
+            submission.due_time = datetime.now().time()
             db.session.add(answer)
             db.session.commit()
             print("dbcommited")
@@ -137,7 +141,7 @@ def testQuestion(test, studentNumber, questionNumber):
 @app.route('/marking/<test>/<studentNumber>/<questionNumber>', methods=['GET', 'POST'])
 @login_required
 def markingTest(test, studentNumber, questionNumber):
-    user = User.query.filter_by(username=current_user.username).first_or_404()
+    user = User.query.filter_by(email=current_user.email).first_or_404()
     questions = Question.query.filter_by(test_id = test).all()
     print(questions)
     qnumb = int(questionNumber)-1
@@ -147,6 +151,15 @@ def markingTest(test, studentNumber, questionNumber):
     print("QUESTION ID",questions[qnumb].id)
     print(answerToQuestion)
     form = CreateFeedbackForm()
+    testTime = Test.query.filter_by(id = test).first()
+    submissionTime = TestMark.query.filter_by(user_id = studentNumber).filter_by(test_id=test).first()
+    if(submissionTime.due_date <= testTime.due_date):
+        if(submissionTime.due_time <= testTime.due_time):
+            submissionInTime = True
+        else:
+            submissionInTime = False
+    else:
+            submissionInTime = False
     if request.method == "POST" or form.validate_on_submit():
         if 'audio_data' in request.files:
             print("posted")
@@ -167,12 +180,12 @@ def markingTest(test, studentNumber, questionNumber):
             qnumber = int(questionNumber)+1
             print(questionNumber)
             return redirect(url_for('markingTest',test = test, studentNumber = studentNumber, questionNumber = qnumber))
-    return render_template('feedback.html', user=user, question = questions[qnumb], questionNumber = questionNumber, form = form, answerToQuestion = answerToQuestion)
+    return render_template('feedback.html', user=user, question = questions[qnumb], questionNumber = questionNumber, form = form, answerToQuestion = answerToQuestion, submissionInTime= submissionInTime)
 
 @app.route('/unitManager', methods=['GET', 'POST'])
 @login_required
 def unitManager():
-    user = User.query.filter_by(username=current_user.username).first_or_404()
+    user = User.query.filter_by(email=current_user.email).first_or_404()
     if(user.isTeacher==False):
         return redirect(url_for('dashboard'))
     else:
@@ -201,7 +214,7 @@ def testCreated(test):
 @app.route('/enrolment/<unit>', methods=['GET', 'POST'])
 @login_required
 def unitEnrolled(unit):
-    user = User.query.filter_by(username=current_user.username).first_or_404()
+    user = User.query.filter_by(email=current_user.email).first_or_404()
     user.unit_id = unit
     db.session.commit()
     return render_template('unitEnrollmentSuccess.html')
@@ -211,7 +224,7 @@ def unitEnrolled(unit):
 @login_required
 def enrolment():
     units = Unit.query.all()
-    user = User.query.filter_by(username=current_user.username).first_or_404()
+    user = User.query.filter_by(email=current_user.email).first_or_404()
     return render_template('enrolment.html', units=units, user=user)
 
 @app.route('/<test>/<studentID>')
@@ -227,7 +240,7 @@ def unitpage(unitpage):
     tests = Test.query.filter_by(unit_id=unitpage).all()
     testForm = CreateTestForm()
     if testForm.validate_on_submit():
-        test = Test(body =testForm.name.data,unit_id=unit.name)
+        test = Test(body =testForm.name.data,due_date=testForm.due_date.data,due_time=testForm.due_time.data,unit_id=unit.name)
         db.session.add(test)
         db.session.commit()
         return redirect(url_for('unitpage',unitpage = unit.name))
@@ -246,7 +259,7 @@ def test(unitpage, test):
     questions = Question.query.filter_by(test_id=test).all()
     questionForm = CreateQuestionForm()
     if questionForm.validate_on_submit():
-        question = Question(body =questionForm.name.data,test_id=test)
+        question = Question(body =repr(questionForm.name.data.encode())[2:-1],test_id=test)
         db.session.add(question)
         db.session.commit()
         return redirect(url_for('test', unitpage = unit.name, test= test))
@@ -284,7 +297,7 @@ def register():
         return redirect(url_for('dashbord'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data)
+        user = User(id=form.studentNumber.data, email=form.email.data, firstName= form.firstName.data, LastName = form.lastName.data)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()

@@ -22,7 +22,7 @@
                 {% if testFB[loop.index0].testWasStarted == False %}
                 <tr>
                     <td>{{ test.body }}</td>
-                    <td>Deadline</a></td>
+                    <td>{{ test.due_date}} {{ test.due_time}}</a></td>
                     <td style="padding-top:4px; padding-bottom: 4px;"><button class="btn table-btn"><a href="{{ url_for('attempt',test = testFB[loop.index0].test_id, studentNumber = user.id)  }}">Start task</a></button></td>
                 </tr>
                 {% endif %}

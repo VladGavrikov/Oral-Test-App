@@ -238,13 +238,14 @@ def TestStart(test,user):
 def unitpage(unitpage):
     unit = Unit.query.filter_by(name=unitpage).first()
     tests = Test.query.filter_by(unit_id=unitpage).all()
+    testmark = TestMark.query.filter_by(unit_id=unitpage).all()
     testForm = CreateTestForm()
     if testForm.validate_on_submit():
         test = Test(body =testForm.name.data,due_date=testForm.due_date.data,due_time=testForm.due_time.data,unit_id=unit.name)
         db.session.add(test)
         db.session.commit()
         return redirect(url_for('unitpage',unitpage = unit.name))
-    return render_template('unitpage.html', unit=unit,form=testForm, tests=tests)
+    return render_template('unitpage.html', unit=unit,form=testForm, tests=tests, testmark = testmark)
 
 @app.route("/unitManager/<unitpage>/ManageStudents", methods=['GET', 'POST'])
 def manageStudents(unitpage):

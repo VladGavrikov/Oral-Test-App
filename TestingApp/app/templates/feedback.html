@@ -4,7 +4,7 @@
     <div id="modal">
         <img id="loader" src="{{ url_for('static', filename='img/loading.gif') }}" />
     </div>  
-    {% if submittionInTime == False %}
+    {% if submissionInTime == False %}
         <h4>WARNING TEST WAS SUBMITTED PAST DEADLINE</h4>
     {% endif%}
     <h3>{{question.body}}</h3>

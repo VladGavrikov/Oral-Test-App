@@ -61,12 +61,16 @@
                     <td>{{ test.body }}</td>
                     <td style="padding-top:4px; padding-bottom: 4px;"><button class="btn table-btn-navy"><a href="{{ url_for('markings',test= test.id)  }}">Mark</a></button></td>
                     <!-- !!!!!!!! MAKE BUTTON table-btn if already marked ALL tests -->
-                    {% if test.hasBeenMarked == False %}
-                    <td style="padding-top:4px; padding-bottom: 4px;">  
-                        <button class="btn table-btn-navy"><a href= "{{ url_for('releaseFeedback', test = tests[0].test_id) }}">Release marks</a></button>
-                    {% else %}
-                    <td>
+                    {% if testmark.feedbackReleased == True %}
+                        <td> 
                         Already released
+                    {% elif testmark.feedbackReleased == False %}
+                        <td style="padding-top:4px; padding-bottom: 4px;">  
+                            <button class="btn table-btn-navy"><a href= "{{ url_for('releaseFeedback', test = tests[0].test_id) }}">Release marks</a></button>
+                    {% else %}
+                        <td>
+                            {{ testmark.unit_id }}
+                        <!-- No attempts -->
                     {% endif %}
                     </td>
                 </tr>

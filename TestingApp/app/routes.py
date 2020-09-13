@@ -72,6 +72,15 @@ def markings(test):
     tests = TestMark.query.filter_by(test_id=test).all()
     return render_template('allTestsForMarking.html', title='Test', tests = tests)
 
+@app.route('/unenroll/<studentNumber>')
+@login_required
+def unenroll(studentNumber):
+    user = User.query.filter_by(id = studentNumber).first()
+    user.unit_id = None
+    db.session.commit()
+    return render_template('studentUnenrolledSuccess.html')
+
+
 @app.route('/releaseFeedback/<test>', methods=['GET', 'POST'])
 @login_required
 def releaseFeedback(test):

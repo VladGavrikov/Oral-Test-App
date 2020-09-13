@@ -25,13 +25,11 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Register')
 
     def validate_studentNumber(self, studentNumber):
-        print("++++++++++++++++++I AM HERE++++++++++++++++++")
         user = User.query.filter_by(id=studentNumber.data).first()
         if user is not None:
             raise ValidationError('Please use a different student number.')
 
     def validate_email(self, email):
-        print("++++++++++++++++++I AM HERE2++++++++++++++++++")
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Please use a different email address.')
@@ -43,8 +41,8 @@ class CreateUnitForm(FlaskForm):
 
 class CreateTestForm(FlaskForm):
     name = StringField('Test Name', validators=[DataRequired()])
-    due_date = DateField('Start date')
-    due_time = TimeField('Start time')
+    due_date = DateField('Set Due Date')
+    due_time = TimeField('Set Due Time')
     submit = SubmitField('Add Test')
 
 class CreateQuestionForm(FlaskForm):

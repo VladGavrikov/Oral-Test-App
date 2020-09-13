@@ -6,7 +6,7 @@
 <div class="row mx-2">
     <h2 class="page-title">{{ unit.description }}</h2>
     <div class="btns">
-        <button id="manage-students-btn" class="btn green-btn btn-margin" data-toggle="modal" data-target="#manage-students-modal">Manage students <i class="fas fa-users"></i></button>
+        <button id="manage-students-btn" class="btn green-btn btn-margin" data-toggle="modal" data-target="#manage-students-modal"><a href= "{{ url_for('manageStudents', unitpage = unit.name)  }}">Manage Students</a><i class="fas fa-users"></i></button>
         <button id="add-task-btn" class="btn green-btn" data-toggle="modal" data-target="#add-task-modal">New task <i class="fas fa-plus"></i></button>
     </div>
 </div>

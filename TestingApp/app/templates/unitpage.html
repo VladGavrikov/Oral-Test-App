@@ -13,7 +13,7 @@
 
 <div class="content-container">
     <h3 class="subheading">Active Tasks</h3>
-    <div class="table-half table-responsive">
+    <div class="table-half">
         <table id="task-list" class="table table-hover table-striped table-list">
             <thead>
                 <tr>
@@ -64,15 +64,11 @@
                     {% if testmark.feedbackReleased == True %}
                         <td> 
                         Already released
-                    {% elif testmark.feedbackReleased == False %}
+                    {% else %}
                         <td style="padding-top:4px; padding-bottom: 4px;">  
                             <button class="btn table-btn-navy"><a href= "{{ url_for('releaseFeedback', test = tests[0].test_id) }}">Release marks</a></button>
-                    {% else %}
-                        <td>
-                            {{ testmark.unit_id }}
-                        <!-- No attempts -->
-                    {% endif %}
                     </td>
+                    {% endif %}
                 </tr>
                 {% endif %}
                 {% endfor %}

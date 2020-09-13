@@ -21,12 +21,17 @@
             {{ form.name.label }}<br>
             {{ form.name(size=150) }}<br>
             {% for error in form.name.errors %}
-            <span style="color: red;">[{{ error }}]</span>
+                <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-            {{  form.deadline.label }}
-            {{  form.deadline }}
-            {% for error in form.deadline.errors %}
-            <span style="color: red;">[{{ error }}]</span>
+            {{  form.due_date.label }}
+            {{  form.due_date }}
+            {% for error in form.due_date.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+            {{  form.due_time.label }}
+            {{  form.due_time }}
+            {% for error in form.due_time.errors %}
+                <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
         <p>{{ form.submit() }}</p>

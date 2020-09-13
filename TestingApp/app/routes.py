@@ -19,6 +19,7 @@ from app.forms import StartTest
 from app.forms import CreateFeedbackForm
 from app.forms import TestEvaluationForm
 from app.forms import ReleaseFeedbackForm
+from datetime import datetime
 
 @app.route('/dashboard')
 @login_required
@@ -107,6 +108,7 @@ def testQuestion(test, studentNumber, questionNumber):
     prefix = "app/"
     path = "/static/music/ID"+studentNumber+"Test"+test+"QNum"+questionNumber+".wav"
     form = CreateAnswerForm()
+    submittion = TestMark.query.filter_by(user_id = user.id).filter_by(test_id=test).first()
     if request.method == "POST" or form.validate_on_submit():
         if 'audio_data' in request.files:
             print("posted")
@@ -117,6 +119,8 @@ def testQuestion(test, studentNumber, questionNumber):
         if ((qnumb+1) == len(questions)):
             print("1")
             answer = Answer(body=path, question_id=questions[qnumb].id, user_id = user.id)
+            submittion.due_date = datetime.now().date()
+            submittion.due_time = datetime.now().time()
             db.session.add(answer)
             db.session.commit()
             print("dbcommited")
@@ -146,6 +150,15 @@ def markingTest(test, studentNumber, questionNumber):
     print("QUESTION ID",questions[qnumb].id)
     print(answerToQuestion)
     form = CreateFeedbackForm()
+    testTime = Test.query.filter_by(id = test).first()
+    submittionTime = TestMark.query.filter_by(user_id = studentNumber).filter_by(test_id=test).first()
+    if(submittionTime.due_date <= testTime.due_date):
+        if(submittionTime.due_time <= testTime.due_time):
+            submittionInTime = True
+        else:
+            submittionInTime = False
+    else:
+            submittionInTime = False
     if request.method == "POST" or form.validate_on_submit():
         if 'audio_data' in request.files:
             print("posted")
@@ -166,7 +179,7 @@ def markingTest(test, studentNumber, questionNumber):
             qnumber = int(questionNumber)+1
             print(questionNumber)
             return redirect(url_for('markingTest',test = test, studentNumber = studentNumber, questionNumber = qnumber))
-    return render_template('feedback.html', user=user, question = questions[qnumb], questionNumber = questionNumber, form = form, answerToQuestion = answerToQuestion)
+    return render_template('feedback.html', user=user, question = questions[qnumb], questionNumber = questionNumber, form = form, answerToQuestion = answerToQuestion, submittionInTime= submittionInTime)
 
 @app.route('/unitManager', methods=['GET', 'POST'])
 @login_required
@@ -226,7 +239,7 @@ def unitpage(unitpage):
     tests = Test.query.filter_by(unit_id=unitpage).all()
     testForm = CreateTestForm()
     if testForm.validate_on_submit():
-        test = Test(body =testForm.name.data,unit_id=unit.name)
+        test = Test(body =testForm.name.data,due_date=testForm.due_date.data,due_time=testForm.due_time.data,unit_id=unit.name)
         db.session.add(test)
         db.session.commit()
         return redirect(url_for('unitpage',unitpage = unit.name))

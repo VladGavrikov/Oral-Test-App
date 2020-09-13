@@ -41,6 +41,8 @@ class Unit(db.Model):
 class Test(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(140))
+    due_date = db.Column(db.Date)
+    due_time = db.Column(db.Time)
     isFinalized = db.Column(db.Boolean, default=False)
     unit_id = db.Column(db.String(20), db.ForeignKey('unit.name'))
     questions = db.relationship('Question', backref='author', lazy='dynamic')
@@ -88,6 +90,8 @@ class TestMark(db.Model):
     testWasStarted = db.Column(db.Boolean, default=False)
     feedbackReleased = db.Column(db.Boolean, default=False)
     hasBeenMarked = db.Column(db.Boolean, default=False)
+    due_date = db.Column(db.Date)
+    due_time = db.Column(db.Time)
     mark1 = db.Column(db.Integer)
     mark2 = db.Column(db.Integer)
     mark3 = db.Column(db.Integer)

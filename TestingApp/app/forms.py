@@ -1,10 +1,11 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField
 from flask_wtf.file import FileField, FileRequired
-from wtforms.fields.html5 import DateField  
-from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
+from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, NumberRange
 from app.models import User
 from wtforms.fields.html5 import EmailField
+from wtforms import Form
+from wtforms.fields.html5 import DateField, TimeField, DateTimeField
 
 class LoginForm(FlaskForm):
     email = EmailField('Email', validators=[DataRequired(), Email()])
@@ -41,7 +42,8 @@ class CreateUnitForm(FlaskForm):
 
 class CreateTestForm(FlaskForm):
     name = StringField('Test Name', validators=[DataRequired()])
-    deadline = DateField('Deadline', format='%Y-%m-%d')
+    due_date = DateField('Start date')
+    due_time = TimeField('Start time')
     submit = SubmitField('Add Test')
 
 class CreateQuestionForm(FlaskForm):
@@ -63,8 +65,8 @@ class ReleaseFeedbackForm(FlaskForm):
     submit = SubmitField('Release Feedback')
 
 class TestEvaluationForm(FlaskForm):
-    mark1 = StringField('Accuracy', validators=[DataRequired()])
-    mark2 = StringField('Fluency', validators=[DataRequired()])
-    mark3 = StringField('Grammar', validators=[DataRequired()])
-    mark4 = StringField('Vocabulary', validators=[DataRequired()])
+    mark1 = IntegerField('Accuracy', validators=[DataRequired(),NumberRange(min=0,max=25)])
+    mark2 = IntegerField('Fluency', validators=[DataRequired(),NumberRange(min=0,max=25)])
+    mark3 = IntegerField('Grammar', validators=[DataRequired(),NumberRange(min=0,max=25)])
+    mark4 = IntegerField('Vocabulary', validators=[DataRequired(),NumberRange(min=0,max=25)])
     submit = SubmitField('Finish Marking')

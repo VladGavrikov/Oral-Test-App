@@ -6,7 +6,7 @@
     <h3>Active Tests</h3>
     {%for test in tests %}
         {% if testFB[loop.index0].testWasStarted == False %}
-        <a href="{{ url_for('attempt',test = testFB[loop.index0].test_id, studentNumber = user.id)  }}">{{ test.body }}</a><br>
+            <a href="{{ url_for('attempt',test = testFB[loop.index0].test_id, studentNumber = user.id)  }}">{{ test.body }}</a><p>Due Date: {{ test.due_date}} {{ test.due_time}}</p><br>
         {% endif %}
     {%endfor%}
     <hr>

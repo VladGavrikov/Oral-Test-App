@@ -18,9 +18,19 @@ recordButton.addEventListener("click", startRecording);
 stopButton.addEventListener("click", stopRecording);
 pauseButton.addEventListener("click", pauseRecording);
 
+function openModal() {
+	document.getElementById('modal').style.display = 'block';
+	document.getElementById('fade').style.display = 'block';
+}
+
+function closeModal() {
+	document.getElementById('modal').style.display = 'none';
+	document.getElementById('fade').style.display = 'none';
+}
+
+
 function startRecording() {
 	console.log("recordButton clicked");
-
 	/*
 		Simple constraints object, for more advanced audio features see
 		https://addpipe.com/blog/audio-constraints-getusermedia/
@@ -95,8 +105,9 @@ function pauseRecording(){
 }
 
 function stopRecording() {
+	openModal();
 	console.log("stopButton clicked");
-
+	//openModal();
 	//disable the stop button, enable the record too allow for new recordings
 	stopButton.disabled = true;
 	recordButton.disabled = false;
@@ -137,7 +148,7 @@ function createDownloadLink(blob) {
 	li.appendChild(au);
 	
 	//add the filename to the li
-	li.appendChild(document.createTextNode(filename+".wav "))
+	//li.appendChild(document.createTextNode(filename+".wav "))
 
 	//add the save to disk link to li
 	li.appendChild(link);
@@ -145,19 +156,17 @@ function createDownloadLink(blob) {
 	//upload link
 	var upload = document.createElement('a');
 	upload.href="#";
-	upload.innerHTML = "Upload";
-	upload.addEventListener("click", function(event){
 		  var xhr=new XMLHttpRequest();
 		  xhr.onload=function(e) {
 		      if(this.readyState === 4) {
-		          console.log("Server returned: ",e.target.responseText);
+				  console.log("Server returned: ",e.target.responseText);
+				  closeModal();
 		      }
 		  };
 		  var fd=new FormData();
 		  fd.append("audio_data",blob, filename);
 		  xhr.open("POST",window.location.href,true);
 		  xhr.send(fd);
-	})
 	li.appendChild(document.createTextNode (" "))//add a space in between
 	li.appendChild(upload)//add the upload link to li
 

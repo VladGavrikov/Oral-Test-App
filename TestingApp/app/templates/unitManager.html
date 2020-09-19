@@ -1,33 +1,81 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Manage Units</h2>
-{%for unit in units %}  
-    <a href="{{ url_for('unitpage',unitpage = unit.name)  }}">{{ unit.name }}</a></h3>
-    {{ unit.description }}
-    <br>
-    
 
-{%endfor%}
-<h1>Create Unit</h1>
-    <form action="" method="post">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.name.label }}<br>
-            {{ form.name(size=32) }}<br>
-            {% for error in form.name.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.description.label }}<br>
-            {{ form.description(size=64) }}<br>
-            {% for error in form.description.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
+<div class="row mx-2">
+    <h2 class="page-title">Units</h2>
+    <div class="btns">
+        <button id="add-unit-btn" class="btn green-btn" data-toggle="modal" data-target="#add-unit-modal">New unit <i class="fas fa-plus"></i></button>
+    </div>
+</div>
+
+<div class="content-container">
+    {% if units %}
+    <div class="table-full">
+        <table id="unit-list" class="table table-hover table-striped table-list">
+            <thead>
+                <tr>
+                    <th>Unit Code</th>
+                    <th>Unit Name</th>
+                    <th style="width:180px;">Delete?</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for unit in units %}  
+                <tr>
+                    <td><a href="{{ url_for('unitpage',unitpage = unit.name)  }}">{{ unit.name }}</a></td>
+                    <td><a href="{{ url_for('unitpage',unitpage = unit.name)  }}">{{ unit.description }}</a></td>
+                    <td style="width:180px;"><a href=#><i class="fas fa-trash"></i></a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="center">
+        <h3 class="information">There are currently no units created</h3>
+    </div>
+    {% endif %}
+    
+</div>
+
+<!-- Modal for new unit -->
+<div id="add-unit-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div id="add-unit-modal-content" class="modal-content">
+            <h3 class="modal-title">Create a Unit</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <div class="modal-body">
+                <form action="" method="post">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group mb-5">
+                        {{ form.name.label(class_="form-label") }}
+                        {{ form.name(class_="form-control form-styling", size=32, placeholder="e.g. KORE1401") }}
+                        {% for error in form.name.errors %}
+                            <span class="error">*{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group mb-5">
+                        {{ form.description.label(class_="form-label") }}
+                        {{ form.description(class_="form-control form-styling", size=64, placeholder="e.g. Korean 1") }}
+                        {% for error in form.description.errors %}
+                            <span class="error">*{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="text-center">
+                        {{ form.submit(class="btn green-btn") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- <a href="">Database Cleanup</a></h3>
+<p>This button cleans up database for new semester. It will delete all student accounts, delete unit pages and clean up stored recordings</p> -->
 
 
 {% endblock %}

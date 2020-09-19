@@ -25,7 +25,7 @@
                     <td>{{ unit.name }}</td>
                     <td>{{ unit.description }}</td>
                     {# if user.unit_id != unit.name #}
-                        <td><button class="btn table-btn"><a href= "{{ url_for('unitEnrolled', unit= unit.name)  }}">Enrol</a></td>
+                        <td style="padding-top:4px; padding-bottom:4px"><button class="btn table-btn"><a href= "{{ url_for('unitEnrolled', unit= unit.name)  }}">Enrol</a></td>
                     {# endif #}
                 </tr>
                 {% endfor %}

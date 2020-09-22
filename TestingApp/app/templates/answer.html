@@ -5,14 +5,15 @@
         <img id="loader" src="{{ url_for('static', filename='img/loading.gif') }}" />
     </div>
     <h3>{{question.body}}</h3>
+    <audio src={{question.path}} id= "player" controls="controls"></audio><br><br>
     <div id="controls">
         <button id="recordButton">Record</button>
         <button id="pauseButton" disabled>Pause</button>
         <button id="stopButton" disabled>Stop</button>
-       </div>
-       <div id="formats">Format: start recording to see sample rate</div>
-       <p><strong>Recordings:</strong></p>
-       <ol id="recordingsList"></ol>
+    </div>
+    <div id="formats">Format: start recording to see sample rate</div>
+    <p><strong>Recordings:</strong></p>
+    <ol id="recordingsList"></ol>
        <!-- inserting these scripts at the end to be able to use all the elements in the DOM -->
     <form action="" method="post" enctype="multipart/form-data">
         {{ form.hidden_tag() }}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Feedback for the test</h3>
+    {% for testMark in testmarks %}  
+        <p>Student Name: {{testMark[0].firstName}} Student LastName: {{testMark[0].LastName}} ||| Total: {{ testMark[1].mark1+testMark[1].mark2+testMark[1].mark3+testMark[1].mark4}}</p>
+        <!--<p>Accuracy: {{testMark[1].mark1}} Fluency: {{testMark[1].mark2}} Grammar: {{testMark[1].mark3}} Vocabulary: {{testMark[1].mark4}}</p>-->
+        <p></p>
+        <hr>
+    {% endfor %}
+{% endblock %}

@@ -13,7 +13,7 @@
 
 <div class="content-container">
     <h3 class="subheading">Active Tasks</h3>
-    <div class="table-half table-responsive">
+    <div class="table-half">
         <table id="task-list" class="table table-hover table-striped table-list">
             <thead>
                 <tr>
@@ -51,6 +51,8 @@
                 <tr>
                     <th>Task name</th>
                     <th>Mark tasks</th>
+                    <th>Feedback</th>
+                    <th>Download</th>
                     <th>Release marks & feedback</th>
                 </tr>
             </thead>
@@ -60,15 +62,17 @@
                 <tr>
                     <td>{{ test.body }}</td>
                     <td style="padding-top:4px; padding-bottom: 4px;"><button class="btn table-btn-navy"><a href="{{ url_for('markings',test= test.id)  }}">Mark</a></button></td>
+                    <td style="padding-top:4px; padding-bottom: 4px;"><button class="btn table-btn-navy"><a href="{{ url_for('feedback',unitpage = test.unit_id, test=test.id)  }}">Feedback</a></button></td>
+                    <td style="padding-top:4px; padding-bottom: 4px;"><button class="btn table-btn-navy"><a href="{{ url_for('feedback',unitpage = test.unit_id, test=test.id)  }}">Download</a></button></td>
                     <!-- !!!!!!!! MAKE BUTTON table-btn if already marked ALL tests -->
-                    {% if test.hasBeenMarked == False %}
-                    <td style="padding-top:4px; padding-bottom: 4px;">  
-                        <button class="btn table-btn-navy"><a href= "{{ url_for('releaseFeedback', test = tests[0].test_id) }}">Release marks</a></button>
-                    {% else %}
-                    <td>
+                    {% if testmark.feedbackReleased == True %}
+                        <td> 
                         Already released
-                    {% endif %}
+                    {% else %}
+                        <td style="padding-top:4px; padding-bottom: 4px;">  
+                            <button class="btn table-btn-navy"><a href= "{{ url_for('releaseFeedback', test = tests[0].test_id) }}">Release marks</a></button>
                     </td>
+                    {% endif %}
                 </tr>
                 {% endif %}
                 {% endfor %}

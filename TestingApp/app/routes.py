@@ -2,7 +2,8 @@ from flask import render_template
 from app import app
 from app.forms import LoginForm
 from flask import render_template, flash, redirect, url_for
-from flask import Flask
+from flask import Flask, json
+import tempfile
 from flask import request
 from werkzeug.urls import url_parse
 from flask_login import current_user, login_user
@@ -20,6 +21,8 @@ from app.forms import CreateFeedbackForm
 from app.forms import TestEvaluationForm
 from app.forms import ReleaseFeedbackForm
 from datetime import datetime
+import numpy as np
+
 
 @app.route('/dashboard')
 @login_required
@@ -58,11 +61,26 @@ def viewFeedback(test, studentNumber):
     feedbacks = []
     numOfQuestions = len(questions)
     answers = []
+    frequencyAnswer = []
+    frequencyFeedback = []
+    import parselmouth
     for question in questions:
         tempAnswer = Answer.query.filter_by(user_id=user.id).filter_by(question_id=question.id).first()
         answers.append(tempAnswer)
-        feedbacks.append(Feedback.query.filter_by(answer_id = tempAnswer.id).order_by(Feedback.id.desc()).first())
-    return render_template('viewFeedback.html', title='Test', user=user, questions = questions,answers=answers, test=testQ, numOfQuestions = numOfQuestions, feedbacks = feedbacks, testMarks = testMarks)
+        tempFeedback = Feedback.query.filter_by(answer_id = tempAnswer.id).order_by(Feedback.id.desc()).first()
+        feedbacks.append(tempFeedback) 
+        sound = parselmouth.Sound("app"+tempAnswer.body)
+        pitch_track = sound.to_pitch().selected_array['frequency']
+
+
+        sound2 = parselmouth.Sound("app"+tempFeedback.path)
+        pitch_track2 = sound2.to_pitch().selected_array['frequency']
+        data2 = json.dumps(pitch_track2.tolist())
+        data = json.dumps(pitch_track.tolist())
+        if(pitch_track!=pitch_track2):
+            print("NOT EQUAL")
+
+    return render_template('viewFeedback.html', title='Test', user=user, questions = questions,answers=answers, test=testQ, numOfQuestions = numOfQuestions, feedbacks = feedbacks, testMarks = testMarks, frequencyFeedbacks = frequencyFeedback, data = data, data2 = data2)
 
 
 
@@ -247,13 +265,23 @@ def TestStart(test,user):
 def unitpage(unitpage):
     unit = Unit.query.filter_by(name=unitpage).first()
     tests = Test.query.filter_by(unit_id=unitpage).all()
+    testmark = TestMark.query.filter_by(unit_id=unitpage).all()
     testForm = CreateTestForm()
     if testForm.validate_on_submit():
         test = Test(body =testForm.name.data,due_date=testForm.due_date.data,due_time=testForm.due_time.data,unit_id=unit.name)
         db.session.add(test)
         db.session.commit()
         return redirect(url_for('unitpage',unitpage = unit.name))
-    return render_template('unitpage.html', unit=unit,form=testForm, tests=tests)
+    return render_template('unitpage.html', unit=unit,form=testForm, tests=tests, testmark = testmark)
+
+@app.route("/unitManager/<unitpage>/<test>/feedback", methods=['GET', 'POST'])
+@login_required
+def feedback(unitpage, test):
+    #test = Test.query.join(TestMark).filter_by(unit_id=user.unit_id).filter_by(user_id = user.id).all()
+    #join(TestMark).filter_by(unit_id=user.unit_id)
+    #testmarks = TestMark.query.filter_by(test_id = test).join(User, User.id==TestMark.user_id).all()
+    testmarks = db.session.query(User, TestMark).outerjoin(TestMark, User.id==TestMark.user_id).filter_by(test_id=test).order_by(User.LastName).all()
+    return render_template('feedbackTeacher.html', testmarks = testmarks)
 
 @app.route("/unitManager/<unitpage>/ManageStudents", methods=['GET', 'POST'])
 def manageStudents(unitpage):
@@ -267,11 +295,20 @@ def test(unitpage, test):
     t = Test.query.filter_by(id=test).first()
     questions = Question.query.filter_by(test_id=test).all()
     questionForm = CreateQuestionForm()
-    if questionForm.validate_on_submit():
-        question = Question(body =repr(questionForm.name.data.encode())[2:-1],test_id=test)
-        db.session.add(question)
-        db.session.commit()
-        return redirect(url_for('test', unitpage = unit.name, test= test))
+    prefix = "app/"
+    path = "/static/music/Test"+test+"QNum"+str(len(questions)+1)+".wav"
+    if request.method == "POST" or questionForm.validate_on_submit():
+        if 'audio_data' in request.files:
+            print("posted")
+            f = request.files['audio_data']
+            with open((prefix+path), 'wb') as audio:
+                f.save(audio)
+            flash("File was successfully uploaded")
+        if questionForm.validate_on_submit():
+            question = Question(body =repr(questionForm.name.data.encode())[2:-1],path=path,test_id=test)
+            db.session.add(question)
+            db.session.commit()
+            return redirect(url_for('test', unitpage = unit.name, test= test))
     return render_template('test.html',unit=unit, form=questionForm, questions=questions, test = test, t = t)
 
 @app.route('/', methods=['GET', 'POST'])

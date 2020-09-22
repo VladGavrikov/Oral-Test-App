@@ -25,18 +25,7 @@
     </head>
 
     <body>
-		<!-- This header will contain error messages for failed logins. Feel free to move it to be styled-->
-		<hr>
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul>
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-        <div class="container-fluid">
+		<div class="container-fluid">
             <div class="wrapper justify-content-center">
                 {% block content %}
                 {% endblock %}

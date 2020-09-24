@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Feedback for the test</h3>
+    <p>Accuracy: {{testMarks.mark1}}</p>
+    <p>Fluency: {{testMarks.mark2}}</p>
+    <p>Grammar: {{testMarks.mark3}}</p>
+    <p>Vocabulary: {{testMarks.mark4}}</p>
+    <p>Total: {{testMarks.mark1+testMarks.mark2+ testMarks.mark3+testMarks.mark4}}</p>
+{%for i in range(numOfQuestions) %} 
+    <h4>{{ questions[i].body }}</h4>
+    <audio src={{questions[i].path}} id= "player" controls="controls"></audio><br>
+    <h4>Answer:</h4>
+    <audio src={{answers[i].body}} id= "player" controls="controls"></audio>
+    <h4>Feedback:</h4>
+    <h5>{{ feedbacks[i].body}}</h5>
+    <audio src={{feedbacks[i].path}} id= "player" controls="controls"></audio>
+    <hr>
+    <div id="plot" style="width:600px;height:600px;"></div>
+    <div id="plot2" style="width:500px;height:500px;"></div>
+    <div id="plot3" style="width:500px;height:500px;"></div>
+    {% block javascript %}
+    <script type="text/javascript">
+            data = JSON.parse({{ data | tojson }})
+            data2 = JSON.parse({{ data2 | tojson }})
+            
+            var Answer = {
+                type: "Scatter",
+                mode: "lines",
+                name: "Answer",
+                x:[...Array(data.length).keys()],
+                y:data.map(function(data) { return data == 0.0 ? undefined : data; }),
+                line: {color :'#17BECF'}
+            };
+            var Feedback = {
+                type: "Scatter",
+                mode: "lines",
+                name: "Feedback",
+                x:[...Array(data2.length).keys()],
+                y:data2.map(function(data2) { return data2 == 0.0 ? undefined : data2; }),
+                line: {color :'#7F7F7F'}
+            };
+
+            var Chart = [Answer,Feedback];
+
+            var Layout = {
+                title = 'Pitch Analysis',
+                xaxis:{type: 'time'},
+                yaxis:{type: 'Pitch'}
+            };
+
+
+            Plotly.newPlot("plot", [{ x: [...Array(data.length).keys()],
+                y: data.map(function(data) { return data == 0.0 ? undefined : data; }),
+                   type: "line" }]);
+            Plotly.newPlot("plot2", 
+                                    [{ x: [...Array(data2.length).keys()],y: data2.map(function(data2) { return data2 == 0.0 ? undefined : data2; }),
+                                        type: "line"}],{title: 'Feedback Pitch'}
+                            );
+            Plotly.newPlot("plot3",Chart,Layout)                
+    </script>
+    {% endblock %}
+{%endfor%}
+    
+    
+{% endblock %}

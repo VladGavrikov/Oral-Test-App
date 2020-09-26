@@ -63,7 +63,7 @@
                     <td>{{ test.body }}</td>
                     <td style="padding-top:4px; padding-bottom: 4px;"><button class="btn table-btn-navy"><a href="{{ url_for('markings',test= test.id)  }}">Mark</a></button></td>
                     <td style="padding-top:4px; padding-bottom: 4px;"><button class="btn table-btn-navy"><a href="{{ url_for('feedback',unitpage = test.unit_id, test=test.id)  }}">Feedback</a></button></td>
-                    <td style="padding-top:4px; padding-bottom: 4px;"><button class="btn table-btn-navy"><a href="{{ url_for('feedback',unitpage = test.unit_id, test=test.id)  }}">Download</a></button></td>
+                    <td style="padding-top:4px; padding-bottom: 4px;"><i class="fas fa-download btn table-btn-navy"><a href="{{ url_for('feedbackDownload',unitpage = test.unit_id, test=test.id)  }}"> Download</a></i></td>
                     <!-- !!!!!!!! MAKE BUTTON table-btn if already marked ALL tests -->
                     {% if testmark.feedbackReleased == True %}
                         <td> 

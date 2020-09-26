@@ -24,6 +24,9 @@ from datetime import datetime
 import numpy as np
 import os.path
 
+import io
+import csv
+from flask import make_response
 
 @app.route('/dashboard')
 @login_required
@@ -301,6 +304,23 @@ def feedback(unitpage, test):
     #testmarks = TestMark.query.filter_by(test_id = test).join(User, User.id==TestMark.user_id).all()
     testmarks = db.session.query(User, TestMark).outerjoin(TestMark, User.id==TestMark.user_id).filter_by(test_id=test).order_by(User.LastName).all()
     return render_template('feedbackTeacher.html', testmarks = testmarks)
+
+@app.route("/unitManager/<unitpage>/<test>/feedbackDownload", methods=['GET', 'POST'])
+@login_required
+def feedbackDownload(unitpage, test):
+    testmarks = db.session.query(User, TestMark).outerjoin(TestMark, User.id==TestMark.user_id).filter_by(test_id=test).order_by(User.LastName).all()
+    test = Test.query.filter_by(id=test).first()
+    csv = ''
+    print(testmarks)
+    for testmark in testmarks:
+        print(testmark)
+        csv = csv +(testmark[0].firstName +","+testmark[0].LastName+","+str(testmark[1].mark1+testmark[1].mark2+testmark[1].mark3+testmark[1].mark4)+"\n")
+    response = make_response(csv)
+    cd = 'attachment; filename='+unitpage+test.body+'FB.csv'
+    response.headers['Content-Disposition'] = cd 
+    response.mimetype='text/csv'
+
+    return response
 
 @app.route("/unitManager/<unitpage>/ManageStudents", methods=['GET', 'POST'])
 def manageStudents(unitpage):

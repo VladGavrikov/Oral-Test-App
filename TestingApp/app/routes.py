@@ -55,6 +55,7 @@ def attempt(test, studentNumber):
 @login_required
 def viewFeedback(test, studentNumber):
     user = User.query.filter_by(email=current_user.email).first_or_404()  
+    unit  = Unit.query.filter_by(name=current_user.unit_id).first_or_404()  
     questions = Question.query.filter_by(test_id=test).all()
     testQ = Test.query.filter_by(id=test).first()
     testMarks = TestMark.query.filter_by(user_id = studentNumber).filter_by(test_id = test).first()
@@ -64,23 +65,23 @@ def viewFeedback(test, studentNumber):
     frequencyAnswer = []
     frequencyFeedback = []
     import parselmouth
+    data="[0.0]"
     for question in questions:
         tempAnswer = Answer.query.filter_by(user_id=user.id).filter_by(question_id=question.id).first()
         answers.append(tempAnswer)
         tempFeedback = Feedback.query.filter_by(answer_id = tempAnswer.id).order_by(Feedback.id.desc()).first()
         feedbacks.append(tempFeedback) 
-        sound = parselmouth.Sound("app"+tempAnswer.body)
-        pitch_track = sound.to_pitch().selected_array['frequency']
-
+        if(tempAnswer.body!="empty"):
+            sound = parselmouth.Sound("app"+tempAnswer.body)
+            pitch_track = sound.to_pitch().selected_array['frequency']
+            data = json.dumps(pitch_track.tolist())
 
         sound2 = parselmouth.Sound("app"+tempFeedback.path)
         pitch_track2 = sound2.to_pitch().selected_array['frequency']
         data2 = json.dumps(pitch_track2.tolist())
-        data = json.dumps(pitch_track.tolist())
-        if(pitch_track!=pitch_track2):
-            print("NOT EQUAL")
-
-    return render_template('viewFeedback.html', title='Test', user=user, questions = questions,answers=answers, test=testQ, numOfQuestions = numOfQuestions, feedbacks = feedbacks, testMarks = testMarks, frequencyFeedbacks = frequencyFeedback, data = data, data2 = data2)
+        
+        
+    return render_template('viewFeedback.html', title='Test', user=user, questions = questions,answers=answers, test=testQ, numOfQuestions = numOfQuestions, feedbacks = feedbacks, testMarks = testMarks, frequencyFeedbacks = frequencyFeedback, data = data, data2 = data2, unit = unit)
 
 
 
@@ -116,6 +117,8 @@ def releaseFeedback(test):
 @login_required
 def testEvaluation(test, studentNumber):
     testMarking = TestMark.query.filter_by(test_id=test).filter_by(user_id = studentNumber).first()
+    user = User.query.filter_by(id=studentNumber).first_or_404()
+    unit = Unit.query.filter_by(name=user.unit_id).first_or_404()
     form = TestEvaluationForm()
     if form.validate_on_submit():
         testMarking.hasBeenMarked = True
@@ -125,7 +128,7 @@ def testEvaluation(test, studentNumber):
         testMarking.mark4 = form.mark4.data
         db.session.commit()
         return render_template('testHasBeenMarked.html')
-    return render_template('testEvaluation.html', form = form)
+    return render_template('testEvaluation.html', form = form, unit=unit)
 
 @app.route('/attempt/<test>/<studentNumber>/<questionNumber>', methods=['GET', 'POST'])
 @login_required
@@ -137,16 +140,21 @@ def testQuestion(test, studentNumber, questionNumber):
     path = "/static/music/ID"+studentNumber+"Test"+test+"QNum"+questionNumber+".wav"
     form = CreateAnswerForm()
     submission = TestMark.query.filter_by(user_id = user.id).filter_by(test_id=test).first()
+    successfullySubmitted = False
     if request.method == "POST" or form.validate_on_submit():
         if 'audio_data' in request.files:
             print("posted")
             f = request.files['audio_data']
             with open((prefix+path), 'wb') as audio:
                 f.save(audio)
+            successfullySubmitted = True 
             flash("File was successfully uploaded")
         if ((qnumb+1) == len(questions)):
             print("1")
-            answer = Answer(body=path, question_id=questions[qnumb].id, user_id = user.id)
+            if(successfullySubmitted):
+                answer = Answer(body=path, question_id=questions[qnumb].id, user_id = user.id)
+            else:
+                answer = Answer(body="empty", question_id=questions[qnumb].id, user_id = user.id)
             submission.due_date = datetime.now().date()
             submission.due_time = datetime.now().time()
             db.session.add(answer)
@@ -218,7 +226,7 @@ def unitManager():
     else:
         form = CreateUnitForm()
         if form.validate_on_submit():
-            unit = Unit(name=form.name.data, description=form.description.data)
+            unit = Unit(name=form.name.data, description=form.description.data, mark1Criteria=form.mark1Criteria.data,mark2Criteria=form.mark2Criteria.data,mark3Criteria=form.mark3Criteria.data,mark4Criteria=form.mark4Criteria.data)
             db.session.add(unit)
             db.session.commit()
             return redirect(url_for('unitManager'))

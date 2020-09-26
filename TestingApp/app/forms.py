@@ -37,6 +37,10 @@ class RegistrationForm(FlaskForm):
 class CreateUnitForm(FlaskForm):
     name = StringField('Unit Name', validators=[DataRequired()])
     description = StringField('Unit Description', validators=[DataRequired()])
+    mark1Criteria = StringField('Criteria 1', validators=[DataRequired()])
+    mark2Criteria = StringField('Criteria 2', validators=[DataRequired()])
+    mark3Criteria = StringField('Criteria 3', validators=[DataRequired()])
+    mark4Criteria = StringField('Criteria 4', validators=[DataRequired()])
     submit = SubmitField('Create Unit')
 
 class CreateTestForm(FlaskForm):

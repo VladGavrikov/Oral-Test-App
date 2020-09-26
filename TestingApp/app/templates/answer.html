@@ -1,5 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
+    {% block javascript %}
+        <script>
+        navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(function(stream) {
+            console.log('You let me use your mic!')
+        })
+        .catch(function(err) {
+            console.log('No mic for you!')
+        });
+        </script>
+    {% endblock %}
     <div id="fade"></div>
     <div id="modal">
         <img id="loader" src="{{ url_for('static', filename='img/loading.gif') }}" />

@@ -33,6 +33,10 @@ class User(UserMixin, db.Model):
 class Unit(db.Model):
     name = db.Column(db.String(20), primary_key=True)
     description = db.Column(db.String(50))
+    mark1Criteria = db.Column(db.String(50))
+    mark2Criteria = db.Column(db.String(50))
+    mark3Criteria = db.Column(db.String(50))
+    mark4Criteria = db.Column(db.String(50))
     tests = db.relationship('Test', backref='author', lazy='dynamic')
 
     def __repr__(self):

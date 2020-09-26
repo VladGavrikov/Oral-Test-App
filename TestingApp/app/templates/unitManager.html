@@ -64,6 +64,34 @@
                             <span class="error">*{{ error }}</span>
                         {% endfor %}
                     </div>
+                    <div class="form-group mb-5">
+                        {{ form.mark1Criteria.label(class_="form-label") }}
+                        {{ form.mark1Criteria(class_="form-control form-styling", size=64, placeholder="e.g. Accuracy") }}
+                        {% for error in form.mark1Criteria.errors %}
+                            <span class="error">*{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group mb-5">
+                        {{ form.mark2Criteria.label(class_="form-label") }}
+                        {{ form.mark2Criteria(class_="form-control form-styling", size=64, placeholder="e.g. Fluency") }}
+                        {% for error in form.mark2Criteria.errors %}
+                            <span class="error">*{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group mb-5">
+                        {{ form.mark3Criteria.label(class_="form-label") }}
+                        {{ form.mark3Criteria(class_="form-control form-styling", size=64, placeholder="e.g. Grammar") }}
+                        {% for error in form.mark3Criteria.errors %}
+                            <span class="error">*{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group mb-5">
+                        {{ form.mark4Criteria.label(class_="form-label") }}
+                        {{ form.mark4Criteria(class_="form-control form-styling", size=64, placeholder="e.g. Vocabulary") }}
+                        {% for error in form.mark4Criteria.errors %}
+                            <span class="error">*{{ error }}</span>
+                        {% endfor %}
+                    </div>
                     <div class="text-center">
                         {{ form.submit(class="btn green-btn") }}
                     </div>

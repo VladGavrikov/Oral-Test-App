@@ -57,9 +57,7 @@
         {% else %}
             <div class="student-topbar">
                 <a href="{{ url_for('dashboard') }}">Dashboard  </a>|
-                {% if current_user.unit_id == None %}
-                    <a href="{{ url_for('enrolment') }}"> Enrolment </a>|
-                {% endif %}
+                <a href="{{ url_for('enrolment') }}"> Enrolment </a>|
                 
                 <span class="name"> {{ current_user.firstName }} {{ current_user.lastName }}
                     <a href="{{ (url_for('logout')) }}">

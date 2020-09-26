@@ -1,6 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% block javascript %}
+        <script>
+        navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(function(stream) {
+            console.log('You let me use your mic!')
+        })
+        .catch(function(err) {
+            console.log('No mic for you!')
+        });
+        </script>
+    {% endblock %}
 
 <h2 class="page-title">{{ unit.description }} / {{ t.body }}</h2>
 <div class="row btns mx-2">
@@ -15,7 +26,9 @@
     {%for question in questions %}  
         <b>Q{{ loop.index }}:</b> {{ question.body }}
         <br>
-        <audio src={{question.path}} id= "player" controls="controls"></audio>
+        {% if(question.path)!="empty"%}
+            <audio src={{question.path}} id= "player" controls="controls"></audio>
+        {% endif %}
         <br>
     {%endfor%}
     <br>
@@ -32,7 +45,7 @@
     <div id="formats">Format: start recording to see sample rate</div>
     <p><strong>Recordings:</strong></p>
     <ol id="recordingsList"></ol>
-    <form action="" method="post">
+    <form action="" method="post" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         <p>
             {{ form.name(class_="form-control", size=150, style="resize: none;") }}<br>
@@ -40,7 +53,7 @@
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
-        {{ form.submit(class_="btn green-btn") }}
+        <p>{{ form.submit(class_="btn green-btn") }}</p>
     </form>
     <!-- <a href= "{{ url_for('testCreated', test= test)  }}">Finalize Test</a> -->
     

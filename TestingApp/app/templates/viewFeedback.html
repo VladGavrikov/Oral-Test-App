@@ -8,24 +8,39 @@
     <p>Total: {{testMarks.mark1+testMarks.mark2+ testMarks.mark3+testMarks.mark4}}</p>
 {%for i in range(numOfQuestions) %} 
     <h4>{{ questions[i].body }}</h4>
-    <audio src={{questions[i].path}} id= "player" controls="controls"></audio><br>
+    {% if questions[i].path != "empty" %}
+        <audio src={{questions[i].path}} id= "player" controls="controls"></audio><br>
+    {% endif %}
     <h4>Answer:</h4>
     {% if answers[i].body != "empty" %}
-    <audio src={{answers[i].body}} id= "player" controls="controls"></audio>
+        <audio src={{answers[i].body}} id= "player" controls="controls"></audio>
     {% else %}
-    <p>Question unattempted</p>
+        <p>Question unattempted</p>
     {% endif %}
+
     <h4>Feedback:</h4>
     <h5>{{ feedbacks[i].body}}</h5>
-    <audio src={{feedbacks[i].path}} id= "player" controls="controls"></audio>
-    <hr>
+    {% if feedbacks[i].path != "empty" %}
+        <audio src={{feedbacks[i].path}} id= "player" controls="controls"></audio>
+    {% endif %}
+
     {% if answers[i].body == "empty" %}
         <div id="plot" style="width:500px;height:500px; display:none"></div>
     {% endif%}
+
     {% if answers[i].body != "empty" %}
         <div id="plot" style="width:500px;height:500px"></div>
     {% endif%}
-    <div id="plot2" style="width:500px;height:500px;"></div>
+
+    {% if feedbacks[i].path == "empty" %}
+        <div id="plot2" style="width:500px;height:500px; display: none;"></div>
+    {% endif%}
+
+    {% if feedbacks[i].path != "empty" %}
+        <div id="plot2" style="width:500px;height:500px;"></div>
+    {% endif%}
+    <hr>
+
     {% block javascript %}
         <script type="text/javascript">
                 data = JSON.parse({{ data | tojson }})
@@ -39,7 +54,7 @@
                                 );
         </script>
     {% endblock %}
-{%endfor%}
+{% endfor %}
     
     
 {% endblock %}

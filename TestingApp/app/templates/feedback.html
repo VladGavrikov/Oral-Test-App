@@ -8,7 +8,9 @@
         <h4>WARNING TEST WAS SUBMITTED PAST DEADLINE</h4>
     {% endif%}
     <h3>{{question.body}}</h3>
-    <audio src={{question.path}} id= "player" controls="controls"></audio>
+    {% if question.path != "empty" %}
+        <audio src={{question.path}} id= "player" controls="controls"></audio>
+    {% endif%}  
     {% if answerToQuestion.body != "empty" %}
         <h4>Answer:</h4>
         <audio src={{answerToQuestion.body}} id= "player" controls="controls"></audio>

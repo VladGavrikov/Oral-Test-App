@@ -16,7 +16,9 @@
         <img id="loader" src="{{ url_for('static', filename='img/loading.gif') }}" />
     </div>
     <h3>{{question.body}}</h3>
+    {% if(question.path != "empty")%}
     <audio src={{question.path}} id= "player" controls="controls"></audio><br><br>
+    {% endif %}
     <div id="controls">
         <button id="recordButton">Record</button>
         <button id="pauseButton" disabled>Pause</button>

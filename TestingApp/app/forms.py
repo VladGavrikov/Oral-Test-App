@@ -50,6 +50,7 @@ class CreateTestForm(FlaskForm):
     submit = SubmitField('Add Test')
 
 class CreateQuestionForm(FlaskForm):
+    #name = TextAreaField('Question', validators=[DataRequired()])
     name = TextAreaField('Question', validators=[DataRequired()])
     submit = SubmitField('Add Question')
 

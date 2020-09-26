@@ -22,6 +22,7 @@ from app.forms import TestEvaluationForm
 from app.forms import ReleaseFeedbackForm
 from datetime import datetime
 import numpy as np
+import os.path
 
 
 @app.route('/dashboard')
@@ -65,7 +66,8 @@ def viewFeedback(test, studentNumber):
     frequencyAnswer = []
     frequencyFeedback = []
     import parselmouth
-    data="[0.0]"
+    data="[-1.0]"
+    data2="[-1.0]"
     for question in questions:
         tempAnswer = Answer.query.filter_by(user_id=user.id).filter_by(question_id=question.id).first()
         answers.append(tempAnswer)
@@ -75,10 +77,10 @@ def viewFeedback(test, studentNumber):
             sound = parselmouth.Sound("app"+tempAnswer.body)
             pitch_track = sound.to_pitch().selected_array['frequency']
             data = json.dumps(pitch_track.tolist())
-
-        sound2 = parselmouth.Sound("app"+tempFeedback.path)
-        pitch_track2 = sound2.to_pitch().selected_array['frequency']
-        data2 = json.dumps(pitch_track2.tolist())
+        if(tempFeedback.path!="empty"):
+            sound2 = parselmouth.Sound("app"+tempFeedback.path)
+            pitch_track2 = sound2.to_pitch().selected_array['frequency']
+            data2 = json.dumps(pitch_track2.tolist())
         
         
     return render_template('viewFeedback.html', title='Test', user=user, questions = questions,answers=answers, test=testQ, numOfQuestions = numOfQuestions, feedbacks = feedbacks, testMarks = testMarks, frequencyFeedbacks = frequencyFeedback, data = data, data2 = data2, unit = unit)
@@ -164,7 +166,10 @@ def testQuestion(test, studentNumber, questionNumber):
 
         else: 
             print("2")
-            answer = Answer(body=path, question_id=questions[qnumb].id, user_id = user.id)
+            if(successfullySubmitted):
+                answer = Answer(body=path, question_id=questions[qnumb].id, user_id = user.id)
+            else:
+                answer = Answer(body="empty", question_id=questions[qnumb].id, user_id = user.id)
             db.session.add(answer)
             db.session.commit()
             qnumber = int(questionNumber)+1
@@ -194,7 +199,7 @@ def markingTest(test, studentNumber, questionNumber):
         else:
             submissionInTime = False
     else:
-            submissionInTime = False
+            submissionInTime = Fals
     if request.method == "POST" or form.validate_on_submit():
         if 'audio_data' in request.files:
             print("posted")
@@ -203,13 +208,19 @@ def markingTest(test, studentNumber, questionNumber):
                 f.save(audio)
             flash("File was successfully uploaded")
         if ((qnumb+1) == len(questions)):
-            feedback = Feedback(body=form.body.data, path=path, question_id=questions[qnumb].id, answer_id = answerToQuestion.id)
+            if(os.path.isfile(prefix+path)):
+                feedback = Feedback(body=form.body.data, path=path, question_id=questions[qnumb].id, answer_id = answerToQuestion.id)
+            else:
+                feedback = Feedback(body=form.body.data, path="empty", question_id=questions[qnumb].id, answer_id = answerToQuestion.id)
             db.session.add(feedback)
             db.session.commit()
             return redirect(url_for('testEvaluation',test = test, studentNumber = studentNumber))
             #return render_template('testHasBeenMarked.html')
         else: 
-            feedback = Feedback(body=form.body.data, path=path, question_id=questions[qnumb].id, answer_id = answerToQuestion.id)
+            if(os.path.isfile(prefix+path)):
+                feedback = Feedback(body=form.body.data, path=path, question_id=questions[qnumb].id, answer_id = answerToQuestion.id)
+            else:
+                feedback = Feedback(body=form.body.data, path="empty", question_id=questions[qnumb].id, answer_id = answerToQuestion.id)
             db.session.add(feedback)
             db.session.commit()
             qnumber = int(questionNumber)+1
@@ -311,9 +322,14 @@ def test(unitpage, test):
             f = request.files['audio_data']
             with open((prefix+path), 'wb') as audio:
                 f.save(audio)
-            flash("File was successfully uploaded")
+            print("File was successfully uploaded")
         if questionForm.validate_on_submit():
-            question = Question(body =repr(questionForm.name.data.encode())[2:-1],path=path,test_id=test)
+            if(os.path.isfile(prefix+path)):
+                print("succesfully submitted true")
+                question = Question(body =repr(questionForm.name.data.encode())[2:-1],path=path,test_id=test)
+            else: 
+                print("succesfully submitted false")
+                question = Question(body =repr(questionForm.name.data.encode())[2:-1],path="empty",test_id=test)
             db.session.add(question)
             db.session.commit()
             return redirect(url_for('test', unitpage = unit.name, test= test))

@@ -31,7 +31,8 @@
     <body>
         {% if current_user.isTeacher %}
             <div class="sidenav">
-                <h1 class="website-title"> Oral Test App</h1>
+                <!-- <h1 class="website-title"> Oral Test App</h1> -->
+                <img id="logo" src="{{ url_for('static', filename='img/speakfluent-logo.png') }}" alt="Speakfluent logo">
                 <div class="nav-parent">
                     <a href="{{ url_for('unitManager') }}">Units</a>
                 </div>
@@ -61,7 +62,7 @@
                 <a href="{{ url_for('dashboard') }}">Dashboard  </a>|
                 <a href="{{ url_for('enrolment') }}"> Enrolment </a>|
                 
-                <span class="name"> {{ current_user.firstName }} {{ current_user.lastName }}
+                <span class="name"> {{ current_user.firstName }} {{ current_user.LastName }}
                     <a href="{{ (url_for('logout')) }}">
                         <i id="logout-icon" class="fas fa-sign-out-alt"></i>
                     </a>

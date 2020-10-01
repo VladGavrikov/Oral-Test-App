@@ -125,6 +125,13 @@ a:hover {
     font-size: 12px;
 }
 
+#logo {
+    width: 100%; 
+    display: block; 
+    margin-left: auto; 
+    margin-right: auto
+}
+
 /* Topbar */
 .topbar, .student-topbar {
     top: 0;
@@ -174,7 +181,7 @@ a:hover {
     margin: 0 auto;
     margin-top: 45px;
     padding: 30px 30px;
-    overflow-y: auto;
+    /* overflow-y: auto; */
 }
 
 .center {
@@ -194,6 +201,7 @@ a:hover {
 .table-half {
     height: 40%;
     padding-top: 20px;
+    padding-bottom: 30px;
 }
 
 .table-list {
@@ -246,6 +254,13 @@ a:hover {
 .green-btn:hover, .green-btn a:hover {
     background-color: #1A9E8A;
     color: #FFFFFF;
+}
+
+.navy-btn-static {
+    background-color: var(--testapp-navy);
+    color: #FFFFFF;
+    border-radius: 5px;
+    pointer-events: none;
 }
 
 .table-btn, .table-btn-static {
@@ -324,6 +339,10 @@ a:hover {
 
 #add-task-modal-content {
     height: 560px;
+}
+
+#release-feedback-modal-content {
+    height: 300px;
 }
 
 /* Forms */

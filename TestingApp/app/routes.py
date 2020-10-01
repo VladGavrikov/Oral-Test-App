@@ -90,12 +90,19 @@ def viewFeedback(test, studentNumber, questionNumber):
     return render_template('viewFeedback.html', units=units, title='Test', user=user, questions = questions,answers=answers, test=testQ, numOfQuestions = numOfQuestions, feedbacks = feedbacks, testMarks = testMarks, data = data, data2 = data2, unit = unit, questionNumber = questionNumber, testPassed = test)
 
 
-@app.route('/marking/<test>')
+@app.route('/marking/<test>', methods=['GET', 'POST'])
 @login_required
 def markings(test):
     tests = TestMark.query.filter_by(test_id=test).all()
-    units = Unit.query.all()
-    return render_template('allTestsForMarking.html', title='Test', tests = tests,units=units)
+    form = ReleaseFeedbackForm()
+    tests = TestMark.query.filter_by(test_id=test).all()
+    if form.validate_on_submit():
+        for test in tests: 
+            test.feedbackReleased = True
+            db.session.commit()
+            flash('Feedback has been released')
+            return redirect(url_for('unitManager'))
+    return render_template('allTestsForMarking.html', title='Test', tests = tests, form=form)
 
 @app.route('/unenroll/<studentNumber>')
 @login_required
@@ -107,18 +114,18 @@ def unenroll(studentNumber):
     return render_template('studentUnenrolledSuccess.html', units =units)
 
 
-@app.route('/releaseFeedback/<test>', methods=['GET', 'POST'])
-@login_required
-def releaseFeedback(test):
-    form = ReleaseFeedbackForm()
-    tests = TestMark.query.filter_by(test_id=test).all()
-    if form.validate_on_submit():
-        for test in tests: 
-            test.feedbackReleased = True
-            db.session.commit()
-            flash('Feedback has been released')
-            return redirect(url_for('unitManager'))
-    return render_template('releaseFeedback.html', form = form)
+# @app.route('/releaseFeedback/<test>', methods=['GET', 'POST'])
+# @login_required
+# def releaseFeedback(test):
+#     form = ReleaseFeedbackForm()
+#     tests = TestMark.query.filter_by(test_id=test).all()
+#     if form.validate_on_submit():
+#         for test in tests: 
+#             test.feedbackReleased = True
+#             db.session.commit()
+#             flash('Feedback has been released')
+#             return redirect(url_for('unitManager'))
+#     return render_template('releaseFeedback.html', form = form)
 
 @app.route('/evaluation/<test>/<studentNumber>', methods=['GET', 'POST'])
 @login_required

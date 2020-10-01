@@ -1,15 +1,37 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Enroll into unit</h2>
-<p>Please be careful when unenrolling and enrolling in the middle of semester as active tests will become unavaliable
-</p>
-{%for unit in units %}  
-    {{ unit.name }}
-    {{ unit.description }}
-    {% if user.unit_id != unit.name %}
-    <a href= "{{ url_for('unitEnrolled', unit= unit.name)  }}">Enroll</a>
+
+<div class="mx-2">
+    <h2 class="page-title">Enrolment</h2>
+    <p class="pt-2"> Please be careful when unenrolling and enrolling in the middle of semester as active tests will become unavaliable.
+    </p>
+</div>
+
+<div class="content-container">
+    {% if units %}
+    <div class="table-full">
+        <table id="unit-list" class="table table-hover table-striped table-list">
+            <thead>
+                <tr>
+                    <th>Unit Code</th>
+                    <th>Unit Name</th>
+                    <th>Enrol in this unit</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for unit in units %}  
+                <tr>
+                    <td>{{ unit.name }}</td>
+                    <td>{{ unit.description }}</td>
+                    <td style="padding-top:4px; padding-bottom:4px;"><a href= "{{ url_for('unitEnrolled', unit= unit.name)  }}"><button class="btn table-btn">Enrol</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     {% endif %}
     <br>
-{%endfor%}
+</div>
+
 {% endblock %}

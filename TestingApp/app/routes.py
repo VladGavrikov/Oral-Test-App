@@ -93,6 +93,7 @@ def viewFeedback(test, studentNumber, questionNumber):
 @app.route('/marking/<test>', methods=['GET', 'POST'])
 @login_required
 def markings(test):
+    units = Unit.query.all()
     tests = TestMark.query.filter_by(test_id=test).all()
     form = ReleaseFeedbackForm()
     tests = TestMark.query.filter_by(test_id=test).all()
@@ -102,7 +103,7 @@ def markings(test):
             db.session.commit()
             flash('Feedback has been released')
             return redirect(url_for('unitManager'))
-    return render_template('allTestsForMarking.html', title='Test', tests = tests, form=form)
+    return render_template('allTestsForMarking.html', title='Test', tests = tests, form=form,units=units)
 
 @app.route('/unenroll/<studentNumber>')
 @login_required
@@ -328,7 +329,7 @@ def feedbackDownload(unitpage, test):
     print(testmarks)
     for testmark in testmarks:
         print(testmark)
-        csv = csv +(testmark[0].firstName +","+testmark[0].LastName+","+str(testmark[1].mark1+testmark[1].mark2+testmark[1].mark3+testmark[1].mark4)+"\n")
+        csv = csv +(testmark[0].firstName +","+testmark[0].LastName+","+str(testmark[0].id)+","+str(testmark[1].mark1+testmark[1].mark2+testmark[1].mark3+testmark[1].mark4)+"\n")
     response = make_response(csv)
     cd = 'attachment; filename='+unitpage+test.body+'FB.csv'
     response.headers['Content-Disposition'] = cd 

@@ -29,13 +29,13 @@
                     <td>{{ test.body }}</td>
                     <td>{{ test.due_date }} {{ test.due_time }}</a></td>
                     <td style="width: 900px; padding-top:4px; padding-bottom:4px">
-                        <a href= "{{ url_for('test', unitpage = unit.name, test= test.id)  }}"><button class="btn table-btn btn-margin">Edit</button>Edit</a>
+                        <a href= "{{ url_for('test', unitpage = unit.name, test= test.id)  }}"><button class="btn table-btn btn-margin">Edit</button></a>
                         {% if not test.isFinalized %}
-                            <a href= "{{ url_for('testCreated', test= test.id)  }}"><button class="btn table-btn-navy btn-margin">Make available</button>Make available</a>
+                            <a href= "{{ url_for('testCreated', test= test.id)  }}"><button class="btn table-btn-navy btn-margin">Make available</button></a>
                         {% else %}
                             <button class="btn table-btn-static btn-margin">Available</button>
                         {% endif %}
-                        <button class="btn table-btn">Delete</button>
+                            <a href= ""><button class="btn table-btn">Delete(TBD)</button></a>
                     </td>
                 </tr>
                 {% endif %}
@@ -53,7 +53,6 @@
                     <th>Mark tasks</th>
                     <th>Feedback</th>
                     <th>Download</th>
-                    <th>Release marks & feedback</th>
                 </tr>
             </thead>
             <tbody>
@@ -61,18 +60,10 @@
                 {% if test.isFinalized %}
                 <tr>
                     <td>{{ test.body }}</td>
-                    <td style="padding-top:4px; padding-bottom: 4px;"><a href="{{ url_for('markings',test= test.id)  }}"><button class="btn table-btn-navy"></button>Mark</button></a></td>
-                    <td style="padding-top:4px; padding-bottom: 4px;"><a href="{{ url_for('feedback',unitpage = test.unit_id, test=test.id)  }}"><button class="btn table-btn-navy"></button>Feedback</button></a></td>
-                    <td style="padding-top:4px; padding-bottom: 4px;"><a href="{{ url_for('feedbackDownload',unitpage = test.unit_id, test=test.id)  }}"><i class="fas fa-download btn table-btn-navy"></i> Download</i></a></td>
-                    <!-- !!!!!!!! MAKE BUTTON table-btn if already marked ALL tests -->
-                    {% if testmark.feedbackReleased == True %}
-                        <td> 
-                        Already released
-                    {% else %}
-                        <td style="padding-top:4px; padding-bottom: 4px;">  
-                            <button class="btn table-btn-navy"><a href= "{{ url_for('releaseFeedback', test = tests[0].test_id) }}">Release marks</a></button>
-                    </td>
-                    {% endif %}
+                    <td style="padding-top:4px; padding-bottom: 4px;"><a href="{{ url_for('markings',test= test.id)  }}"><button class="btn table-btn-navy">Mark</button></a></td>
+                    <td style="padding-top:4px; padding-bottom: 4px;"><a href="{{ url_for('feedback',unitpage = test.unit_id, test=test.id)  }}"><button class="btn table-btn-navy">Feedback</button></a></td>
+                    <td style="padding-top:4px; padding-bottom: 4px;"><a href="{{ url_for('feedbackDownload',unitpage = test.unit_id, test=test.id)  }}"><i class="fas fa-download btn table-btn-navy"> Download</i></a></td>
+
                 </tr>
                 {% endif %}
                 {% endfor %}

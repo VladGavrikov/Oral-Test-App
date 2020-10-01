@@ -1,20 +1,64 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Hi, {{ current_user.username }}!</h1>
-    <h2>You are enrolled in, {{ current_user.unit_id }}!</h2>
-    <h3>Active Tests</h3>
-    {%for test in tests %}
-        {% if test.testWasStarted == False %}
-        <a href="{{ url_for('attempt',test = test.test_id, studentNumber = user.id)  }}">{{ test.test_id }}</a></h3><br>
-        {% endif %}
-    {%endfor%}
-    <hr>
-    <h3>Feedback</h3>
-    {%for test in tests %}
-        {% if test.feedbackReleased == True %}
-            <a href="{{ url_for('viewFeedback',test = test.test_id, studentNumber = user.id)  }}">{{ test.test_id }}</a></h3><br>
-        {% endif %}
-    {%endfor%}
-    <hr>
+
+<div class="row mx-2">
+    <h2 class="page-title"> {{ current_user.unit_id }}: {{ unit.description }} </h2>
+</div>
+
+<div class="content-container">
+    <h3 class="subheading">Active Tasks</h3>
+    <div class="table-half">
+        <table id="task-list" class="table table-hover table-striped table-list">
+            <thead>
+                <tr>
+                    <th>Task name</th>
+                    <th>Deadline</th>
+                    <th>Take test</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for test in tests%}
+                {% if testFB[loop.index0].testWasStarted == False %}
+                <tr>
+                    <td>{{ test.body }}</td>
+                    <td>{{ test.due_date}} {{ test.due_time}}</a></td>
+                    <td style="padding-top:4px; padding-bottom: 4px;"><a href="{{ url_for('attempt',test = testFB[loop.index0].test_id, studentNumber = user.id)  }}"><button class="btn table-btn">Start task</button></a></td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h3 class="subheading">Completed Tasks</h3>
+    <div class="table-half">
+        <table id="task-list" class="table table-hover table-striped table-list">
+            <thead>
+                <tr>
+                    <th>Task name</th>
+                    <th>View feedback</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for test in tests %}
+                {% if testFB[loop.index0].testWasStarted == True %}
+                <tr>
+                    <td>{{ test.body }}</td>
+                    {% if testFB[loop.index0].feedbackReleased == True %}
+                        <td class="td-btns" style="padding-top:4px; padding-bottom:4px"> 
+                            <a href="{{ url_for('viewFeedback',test = testFB[loop.index0].test_id, studentNumber = user.id)  }}"><button class="btn table-btn">View</button></a>
+                        </td>
+                    {% else %}
+                        <td>No feedback currently available</td>
+                    {% endif %}
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
 {% endblock %}

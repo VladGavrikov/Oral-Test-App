@@ -12,10 +12,11 @@ def load_user(id):
 
 
 class User(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), index=True, unique=True)
+    id = db.Column(db.Integer, primary_key=True,unique=True)
     unit_id = db.Column(db.String(20), db.ForeignKey('unit.name'))
     email = db.Column(db.String(120), index=True, unique=True)
+    firstName = db.Column(db.String(64))
+    LastName = db.Column(db.String(64))
     password_hash = db.Column(db.String(128))
     isTeacher = db.Column(db.Boolean, default=False)
     answer = db.relationship('Answer', backref='user', lazy='dynamic')
@@ -26,7 +27,7 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
-        return '<User {}>'.format(self.username)
+        return '<User {}>'.format(self.id)
 
 
 class Unit(db.Model):
@@ -40,6 +41,8 @@ class Unit(db.Model):
 class Test(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(140))
+    due_date = db.Column(db.Date)
+    due_time = db.Column(db.Time)
     isFinalized = db.Column(db.Boolean, default=False)
     unit_id = db.Column(db.String(20), db.ForeignKey('unit.name'))
     questions = db.relationship('Question', backref='author', lazy='dynamic')
@@ -87,6 +90,8 @@ class TestMark(db.Model):
     testWasStarted = db.Column(db.Boolean, default=False)
     feedbackReleased = db.Column(db.Boolean, default=False)
     hasBeenMarked = db.Column(db.Boolean, default=False)
+    due_date = db.Column(db.Date)
+    due_time = db.Column(db.Time)
     mark1 = db.Column(db.Integer)
     mark2 = db.Column(db.Integer)
     mark3 = db.Column(db.Integer)

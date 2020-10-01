@@ -1,19 +1,72 @@
 {% extends "base.html" %}
+
 {% block content %}
-{%for test in tests %} 
-    {% if test.hasBeenMarked == False %}
-        <a style="color: red;" href= "{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = 1) }}">Student Number: {{ test.user_id }}</a>
-        {% if test.testWasStarted == False %}
-        <p>Test Wasn't attempted yet</p>
-        {% endif %}
-        <br>
-    {% else %}
-        <a style="color: green;" href= "{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = 1) }}">Student Number: {{ test.user_id }}</a>
-        {% if test.testWasStarted == False %}
-        <p>Test Wasn't attempted yet</p>
-        {% endif %}
-        <br>
-    {% endif %}
-{%endfor%}
-<a href= "{{ url_for('releaseFeedback', test = tests[0].test_id) }}">Release The Feedback</a><br>
+
+<div class="row mx-2">
+    <h2 class="page-title">Tests</h2>
+    <div class="btns">
+        {% for test in tests%}
+        {% if test.feedbackReleased == False %}
+        <!-- <button class="btn table-btn btn-margin"><a href="{# url_for('releaseFeedback', test = tests[0].test_id) #}">Release Feedback</a></button> -->
+        <button id="release-feedback-btn" class="btn green-btn" data-toggle="modal" data-target="#release-feedback-modal">Release feedback</button>
+        {% else %}
+        <button class="btn navy-btn-static">Feedback has already released</button>
+        {%endif%}
+        {%endfor%}
+    </div>
+</div>
+
+<div class="content-container">
+    {% if tests %}
+    <div class="table-full">
+        <table id="unit-list" class="table table-hover table-striped table-list">
+            <thead>
+                <tr>
+                    <th>Student Number</th>
+                    <th>Grade</th>
+                    <th>Mark</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for test in tests %}  
+                <tr>
+                    <td> {{ test.user_id }} </td>
+                    {% if test.hasBeenMarked == True %}
+                        <td>Grade</td>
+                        <td style="padding-top:4px; padding-bottom:4px"> <a href="{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = 1) }}"><button class="btn table-btn-navy btn-margin">Marked</button></a> </td>
+                    {% else %}
+                        <td>Grade</td>
+                        <td style="padding-top:4px; padding-bottom:4px"> <a href="{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = 1) }}"><button class="btn table-btn btn-margin">Mark</button></a>  </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}    
+</div>
+
+<!-- Modal for release feedback -->
+<div id="release-feedback-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div id="release-feedback-modal-content" class="modal-content">
+            <h3 class="modal-title">Release feedback</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <div class="modal-body">
+                <p>Are you sure you want to release feedback? All students will be able to see their task results and feedback.</p>
+                <form action="" method="post" novalidate>
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="row justify-content-center">
+                        <button type="button" class="btn green-btn btn-margin" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">Cancel</span>
+                        </button>
+                        {{ form.submit(class="btn green-btn") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

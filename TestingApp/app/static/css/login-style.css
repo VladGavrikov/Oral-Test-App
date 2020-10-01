@@ -117,15 +117,6 @@ body {
     position: absolute;
 }
 
-input:focus + .floating-label,
-input:not(:focus):valid + .floating-label {
-    font-size: 12px;
-    opacity: 1;
-    transform: translate(10px,-46px);
-    color: #1EB69E;
-    font-weight: bold;
-}
-
 .floating-label {
     position: absolute;
     pointer-events: none;
@@ -139,3 +130,11 @@ input:not(:focus):valid + .floating-label {
     font-weight: 400;
 }
 
+input:focus + .floating-label,
+input:not(:focus):valid + .floating-label {
+    font-size: 12px;
+    opacity: 1;
+    transform: translate(10px,-46px);
+    color: #1EB69E;
+    font-weight: bold;
+}

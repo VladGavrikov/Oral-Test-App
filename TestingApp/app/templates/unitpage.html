@@ -2,34 +2,121 @@
 
 
 {% block content %}
-<h1>Welcome to unit page of {{unit.name}}</h1>
-<h3>Here you can manage this unit</h3>
-<h3>You can create a test for the unit, manage people that enrolled and proceed to marking of the test</h3>
-{%for test in tests %} 
-    {% if test.isFinalized %}
-        <p style="color:red;"> {{ test.body }} test have been finalized!</p>
-        <a href="{{ url_for('markings',test= test.id)  }}">Mark Tasks!</a><br>
-    {% else %}
-        <a href= "{{ url_for('test', unitpage = unit.name, test= test.id)  }}">{{ test.body }}</a>
-        <br>
-    {% endif %}
-{%endfor%}
-<h1>Create Test</h1>
-    <form action="" method="post">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.name.label }}<br>
-            {{ form.name(size=150) }}<br>
-            {% for error in form.name.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-            {{  form.deadline.label }}
-            {{  form.deadline }}
-            {% for error in form.deadline.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
-<!--<a href= "{{ url_for('test',unitpage = unit.name,test= 'Test1')  }}">Create a Test</a></h3>-->
+
+<div class="row mx-2">
+    <h2 class="page-title">{{ unit.description }}</h2>
+    <div class="btns">
+        <button id="manage-students-btn" class="btn green-btn btn-margin" data-toggle="modal" data-target="#manage-students-modal">Manage students <i class="fas fa-users"></i></button>
+        <button id="add-task-btn" class="btn green-btn" data-toggle="modal" data-target="#add-task-modal">New task <i class="fas fa-plus"></i></button>
+    </div>
+</div>
+
+<div class="content-container">
+    <h3 class="subheading">Active Tasks</h3>
+    <div class="table-half">
+        <table id="task-list" class="table table-hover table-striped table-list">
+            <thead>
+                <tr>
+                    <th>Task name</th>
+                    <th>Deadline</th>
+                    <th style="width: 900px;">Task options</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for test in tests %}
+                {% if not test.isFinalized %}
+                <tr>
+                    <td>{{ test.body }}</td>
+                    <td>{{ test.due_date }} {{ test.due_time }}</a></td>
+                    <td style="width: 900px; padding-top:4px; padding-bottom:4px">
+                        <a href= "{{ url_for('test', unitpage = unit.name, test= test.id)  }}"><button class="btn table-btn btn-margin">Edit</button>Edit</a>
+                        {% if not test.isFinalized %}
+                            <a href= "{{ url_for('testCreated', test= test.id)  }}"><button class="btn table-btn-navy btn-margin">Make available</button>Make available</a>
+                        {% else %}
+                            <button class="btn table-btn-static btn-margin">Available</button>
+                        {% endif %}
+                        <button class="btn table-btn">Delete</button>
+                    </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h3 class="subheading">Completed Tasks</h3>
+    <div class="table-half">
+        <table id="task-list" class="table table-hover table-striped table-list">
+            <thead>
+                <tr>
+                    <th>Task name</th>
+                    <th>Mark tasks</th>
+                    <!-- <th>Release marks & feedback</th> -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for test in tests %}
+                {% if test.isFinalized %}
+                <tr>
+                    <td>{{ test.body }}</td>
+                    <td style="padding-top:4px; padding-bottom: 4px;"><a href="{{ url_for('markings',test= test.id)  }}"><button class="btn table-btn-navy">Mark</button></a></td>
+                    <!-- !!!!!!!! MAKE BUTTON table-btn if already marked ALL tests -->
+                    {% if testmark.feedbackReleased == True %}
+                        <!-- <td>  -->
+                        <!-- Already released -->
+                    {% else %}
+                        <!-- <td style="padding-top:4px; padding-bottom: 4px;">   -->
+                            <!-- <button class="btn table-btn-navy"><a href= "{# url_for('releaseFeedback', test = tests[0].test_id) #}">Release marks</a></button> -->
+                    <!-- </td> -->
+                    {% endif %}
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal for new unit -->
+<div id="add-task-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div id="add-task-modal-content" class="modal-content">
+            <h3 class="modal-title">Create a Task</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <div class="modal-body">
+                <form action="" method="post">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group mb-5">
+                        {{ form.name.label(class_="form-label") }}
+                        {{ form.name(class_="form-control form-styling", size=150, placeholder="e.g. Week 1 task") }}
+                        {% for error in form.name.errors %}
+                            <span class="error">*{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group mb-5">
+                        {{  form.due_date.label(class_="form-label") }}
+                        {{  form.due_date(class_="form-control form-styling") }}
+                        {% for error in form.due_date.errors %}
+                            <span class="error">*{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group mb-5">
+                        {{  form.due_time.label(class_="form-label") }}
+                        {{  form.due_time(class_="form-control form-styling") }}
+                        {% for error in form.due_time.errors %}
+                            <span class="error">*{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="text-center">
+                        {{ form.submit(class="btn green-btn") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
+

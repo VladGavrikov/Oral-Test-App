@@ -1,24 +1,40 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Create test for {{unit.name}}</h1>
-<h3>Here you can create an oral assessment</h3>
-<h1>Questions</h1>
-{%for question in questions %}  
-    {{ question.body }}
+
+<h2 class="page-title">{{ unit.description }} / {{ t.body }}</h2>
+<div class="row btns mx-2">
+    <button id="rename-task-btn" class="btn green-btn btn-margin" data-toggle="modal" data-target="#rename-task-modal">Rename</button>
+    <button id="save-task-btn" class="btn green-btn btn-margin"><a href="{{ url_for('unitpage', unitpage = unit.name) }}">Save & exit</a></button>
+    <!-- <button id="make-available-btn" class="btn green-btn" data-toggle="modal" data-target="#make-available-modal">Make available</button> -->
+
+</div>
+
+<div class="content-container">
+    <h3 class="subheading">Questions</h3>
+    {%for question in questions %}  
+        <b>Q{{ loop.index }}:</b> {{ question.body }}
+        <br>
+    {%endfor%}
     <br>
-{%endfor%}
-<br>
+
+
     <form action="" method="post">
         {{ form.hidden_tag() }}
         <p>
             {{ form.name.label }}<br>
-            {{ form.name(size=150) }}<br>
+            {{ form.name(class_="form-control", size=150, style="resize: none;") }}<br>
             {% for error in form.name.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
-        <p>{{ form.submit() }}</p>
+        {{ form.submit(class_="btn green-btn") }}
     </form>
-    <a href= "{{ url_for('testCreated', test= test)  }}">Finalize Test</a>
+    <!-- <a href= "{{ url_for('testCreated', test= test)  }}">Finalize Test</a> -->
+    
+</div>
+
+
+
+
 {% endblock %}

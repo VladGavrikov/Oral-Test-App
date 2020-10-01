@@ -66,15 +66,10 @@ def viewFeedback(test, studentNumber):
 
 
 
-@app.route('/marking/<test>')
+@app.route('/marking/<test>', methods=['GET', 'POST'])
 @login_required
 def markings(test):
     tests = TestMark.query.filter_by(test_id=test).all()
-    return render_template('allTestsForMarking.html', title='Test', tests = tests)
-
-@app.route('/releaseFeedback/<test>', methods=['GET', 'POST'])
-@login_required
-def releaseFeedback(test):
     form = ReleaseFeedbackForm()
     tests = TestMark.query.filter_by(test_id=test).all()
     if form.validate_on_submit():
@@ -83,7 +78,20 @@ def releaseFeedback(test):
             db.session.commit()
             flash('Feedback has been released')
             return redirect(url_for('unitManager'))
-    return render_template('releaseFeedback.html', form = form)
+    return render_template('allTestsForMarking.html', title='Test', tests = tests, form=form)
+
+# @app.route('/releaseFeedback/<test>', methods=['GET', 'POST'])
+# @login_required
+# def releaseFeedback(test):
+#     form = ReleaseFeedbackForm()
+#     tests = TestMark.query.filter_by(test_id=test).all()
+#     if form.validate_on_submit():
+#         for test in tests: 
+#             test.feedbackReleased = True
+#             db.session.commit()
+#             flash('Feedback has been released')
+#             return redirect(url_for('unitManager'))
+#     return render_template('releaseFeedback.html', form = form)
 
 @app.route('/evaluation/<test>/<studentNumber>', methods=['GET', 'POST'])
 @login_required

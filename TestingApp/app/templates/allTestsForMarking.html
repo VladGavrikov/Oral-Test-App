@@ -24,13 +24,13 @@
                 {% for test in tests %}  
                 <tr>
                     <td> {{ test.user_id }} </td>
-                    {% if test.hasBeenMarked == False %}
+                    {% if test.hasBeenMarked == True %}
                     <td> Grade </td>
-                    <td> <button class="btn table-btn-navy btn-margin"><a href="{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = 1) }}">Mark</a></button>  </td>
+                    <td style="padding-top:4px; padding-bottom:4px"> <button class="btn table-btn-navy btn-margin"><a href="{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = 1) }}">Marked</a></button>  </td>
                       
                     {% else %}
                     <td> Grade </td>
-                    <td> <button class="btn table-btn btn-margin"><a href="{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = 1) }}">Mark</a></button>  </td>
+                    <td style="padding-top:4px; padding-bottom:4px"> <button class="btn table-btn btn-margin"><a href="{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = 1) }}">Mark</a></button>  </td>
                     {% endif %}
                     
                 </tr>

@@ -181,7 +181,7 @@ a:hover {
     margin: 0 auto;
     margin-top: 45px;
     padding: 30px 30px;
-    overflow-y: auto;
+    /* overflow-y: auto; */
 }
 
 .center {
@@ -201,6 +201,7 @@ a:hover {
 .table-half {
     height: 40%;
     padding-top: 20px;
+    padding-bottom: 30px;
 }
 
 .table-list {

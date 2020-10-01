@@ -55,54 +55,56 @@ def attempt(test, studentNumber):
     return render_template('testInProgress.html', title='Test', user=user, test = testQ ,form=form)
 
 
-@app.route('/feedback/<test>/<studentNumber>', methods=['GET', 'POST'])
+@app.route('/feedback/<test>/<studentNumber>/<questionNumber>', methods=['GET', 'POST'])
 @login_required
-def viewFeedback(test, studentNumber):
+def viewFeedback(test, studentNumber, questionNumber):
+    units = Unit.query.all()
     user = User.query.filter_by(email=current_user.email).first_or_404()  
     unit  = Unit.query.filter_by(name=current_user.unit_id).first_or_404()  
     questions = Question.query.filter_by(test_id=test).all()
+    print(questions)
+    questionNumber = int(questionNumber)
     testQ = Test.query.filter_by(id=test).first()
     testMarks = TestMark.query.filter_by(user_id = studentNumber).filter_by(test_id = test).first()
     feedbacks = []
     numOfQuestions = len(questions)
     answers = []
-    frequencyAnswer = []
-    frequencyFeedback = []
+
     import parselmouth
     data="[-1.0]"
     data2="[-1.0]"
-    for question in questions:
-        tempAnswer = Answer.query.filter_by(user_id=user.id).filter_by(question_id=question.id).first()
-        answers.append(tempAnswer)
-        tempFeedback = Feedback.query.filter_by(answer_id = tempAnswer.id).order_by(Feedback.id.desc()).first()
-        feedbacks.append(tempFeedback) 
-        if(tempAnswer.body!="empty"):
-            sound = parselmouth.Sound("app"+tempAnswer.body)
-            pitch_track = sound.to_pitch().selected_array['frequency']
-            data = json.dumps(pitch_track.tolist())
-        if(tempFeedback.path!="empty"):
-            sound2 = parselmouth.Sound("app"+tempFeedback.path)
-            pitch_track2 = sound2.to_pitch().selected_array['frequency']
-            data2 = json.dumps(pitch_track2.tolist())
-        
-        
-    return render_template('viewFeedback.html', title='Test', user=user, questions = questions,answers=answers, test=testQ, numOfQuestions = numOfQuestions, feedbacks = feedbacks, testMarks = testMarks, frequencyFeedbacks = frequencyFeedback, data = data, data2 = data2, unit = unit)
+    tempAnswer = Answer.query.filter_by(user_id=user.id).filter_by(question_id=questions[questionNumber-1].id).first()
+    answers.append(tempAnswer)
+    tempFeedback = Feedback.query.filter_by(answer_id = tempAnswer.id).order_by(Feedback.id.desc()).first()
+    feedbacks.append(tempFeedback) 
+    if(tempAnswer.body!="empty"):
+        sound = parselmouth.Sound("app"+tempAnswer.body)
+        pitch_track = sound.to_pitch().selected_array['frequency']
+        data = json.dumps(pitch_track.tolist())
 
+    if(tempFeedback.path!="empty"):
+        sound2 = parselmouth.Sound("app"+tempFeedback.path)
+        pitch_track2 = sound2.to_pitch().selected_array['frequency']
+        data2 = json.dumps(pitch_track2.tolist())
+
+    return render_template('viewFeedback.html', units=units, title='Test', user=user, questions = questions,answers=answers, test=testQ, numOfQuestions = numOfQuestions, feedbacks = feedbacks, testMarks = testMarks, data = data, data2 = data2, unit = unit, questionNumber = questionNumber, testPassed = test)
 
 
 @app.route('/marking/<test>')
 @login_required
 def markings(test):
     tests = TestMark.query.filter_by(test_id=test).all()
-    return render_template('allTestsForMarking.html', title='Test', tests = tests)
+    units = Unit.query.all()
+    return render_template('allTestsForMarking.html', title='Test', tests = tests,units=units)
 
 @app.route('/unenroll/<studentNumber>')
 @login_required
 def unenroll(studentNumber):
     user = User.query.filter_by(id = studentNumber).first()
+    units = Unit.query.all()
     user.unit_id = None
     db.session.commit()
-    return render_template('studentUnenrolledSuccess.html')
+    return render_template('studentUnenrolledSuccess.html', units =units)
 
 
 @app.route('/releaseFeedback/<test>', methods=['GET', 'POST'])
@@ -121,6 +123,7 @@ def releaseFeedback(test):
 @app.route('/evaluation/<test>/<studentNumber>', methods=['GET', 'POST'])
 @login_required
 def testEvaluation(test, studentNumber):
+    units = Unit.query.all()
     testMarking = TestMark.query.filter_by(test_id=test).filter_by(user_id = studentNumber).first()
     user = User.query.filter_by(id=studentNumber).first_or_404()
     unit = Unit.query.filter_by(name=user.unit_id).first_or_404()
@@ -132,8 +135,8 @@ def testEvaluation(test, studentNumber):
         testMarking.mark3 = form.mark3.data
         testMarking.mark4 = form.mark4.data
         db.session.commit()
-        return render_template('testHasBeenMarked.html')
-    return render_template('testEvaluation.html', form = form, unit=unit)
+        return render_template('testHasBeenMarked.html',units = units)
+    return render_template('testEvaluation.html', form = form, unit=unit,units=units)
 
 @app.route('/attempt/<test>/<studentNumber>/<questionNumber>', methods=['GET', 'POST'])
 @login_required
@@ -184,6 +187,7 @@ def testQuestion(test, studentNumber, questionNumber):
 @app.route('/marking/<test>/<studentNumber>/<questionNumber>', methods=['GET', 'POST'])
 @login_required
 def markingTest(test, studentNumber, questionNumber):
+    units = Unit.query.all()
     user = User.query.filter_by(email=current_user.email).first_or_404()
     questions = Question.query.filter_by(test_id = test).all()
     print(questions)
@@ -229,7 +233,7 @@ def markingTest(test, studentNumber, questionNumber):
             qnumber = int(questionNumber)+1
             print(questionNumber)
             return redirect(url_for('markingTest',test = test, studentNumber = studentNumber, questionNumber = qnumber))
-    return render_template('feedback.html', user=user, question = questions[qnumb], questionNumber = questionNumber, form = form, answerToQuestion = answerToQuestion, submissionInTime= submissionInTime)
+    return render_template('feedback.html',units=units, user=user, question = questions[qnumb], questionNumber = questionNumber, form = form, answerToQuestion = answerToQuestion, submissionInTime= submissionInTime)
 
 @app.route('/unitManager', methods=['GET', 'POST'])
 @login_required
@@ -258,7 +262,8 @@ def testCreated(test):
         db.session.commit()
     createdTest.isFinalized = True
     db.session.commit()
-    return render_template('testCreationSuccess.html')
+    units = Unit.query.all()
+    return render_template('testCreationSuccess.html', units=units)
 
 @app.route('/enrolment/<unit>', methods=['GET', 'POST'])
 @login_required
@@ -285,6 +290,7 @@ def TestStart(test,user):
 
 @app.route("/unitManager/<unitpage>", methods=['GET', 'POST'])
 def unitpage(unitpage):
+    units = Unit.query.all()
     unit = Unit.query.filter_by(name=unitpage).first()
     tests = Test.query.filter_by(unit_id=unitpage).all()
     testmark = TestMark.query.filter_by(unit_id=unitpage).all()
@@ -294,16 +300,17 @@ def unitpage(unitpage):
         db.session.add(test)
         db.session.commit()
         return redirect(url_for('unitpage',unitpage = unit.name))
-    return render_template('unitpage.html', unit=unit,form=testForm, tests=tests, testmark = testmark)
+    return render_template('unitpage.html', unit=unit,form=testForm, tests=tests, testmark = testmark, units = units)
 
 @app.route("/unitManager/<unitpage>/<test>/feedback", methods=['GET', 'POST'])
 @login_required
 def feedback(unitpage, test):
+    units = Unit.query.all()
     #test = Test.query.join(TestMark).filter_by(unit_id=user.unit_id).filter_by(user_id = user.id).all()
     #join(TestMark).filter_by(unit_id=user.unit_id)
     #testmarks = TestMark.query.filter_by(test_id = test).join(User, User.id==TestMark.user_id).all()
     testmarks = db.session.query(User, TestMark).outerjoin(TestMark, User.id==TestMark.user_id).filter_by(test_id=test).order_by(User.LastName).all()
-    return render_template('feedbackTeacher.html', testmarks = testmarks)
+    return render_template('feedbackTeacher.html', testmarks = testmarks, units=units)
 
 @app.route("/unitManager/<unitpage>/<test>/feedbackDownload", methods=['GET', 'POST'])
 @login_required
@@ -325,11 +332,13 @@ def feedbackDownload(unitpage, test):
 @app.route("/unitManager/<unitpage>/ManageStudents", methods=['GET', 'POST'])
 def manageStudents(unitpage):
     unit = Unit.query.filter_by(name=unitpage).first()
+    units = Unit.query.all()
     students = User.query.filter_by(unit_id = unit.name).all()
-    return render_template('manageStudents.html', unit=unit, students=students)
+    return render_template('manageStudents.html', unit=unit, students=students, units=units)
 
 @app.route("/unitManager/<unitpage>/<test>", methods=['GET', 'POST'])
 def test(unitpage, test):
+    units = Unit.query.all()
     unit = Unit.query.filter_by(name=unitpage).first()
     t = Test.query.filter_by(id=test).first()
     questions = Question.query.filter_by(test_id=test).all()
@@ -353,7 +362,7 @@ def test(unitpage, test):
             db.session.add(question)
             db.session.commit()
             return redirect(url_for('test', unitpage = unit.name, test= test))
-    return render_template('test.html',unit=unit, form=questionForm, questions=questions, test = test, t = t)
+    return render_template('test.html',unit=unit, form=questionForm, questions=questions, test = test, t = t, units = units)
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])

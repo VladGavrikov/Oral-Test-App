@@ -97,18 +97,29 @@ def markings(test):
     tests = TestMark.query.filter_by(test_id=test).all()
     form = ReleaseFeedbackForm()
     tests = TestMark.query.filter_by(test_id=test).all()
+    testsFiltered = []
+    for test in tests: 
+        enrolledStudent = User.query.filter_by(id=test.user_id).first()
+        if(test.unit_id==enrolledStudent.unit_id):
+            testsFiltered.append(test)
+    tests = testsFiltered
+    print("FILTERED TESTS:",tests)
     if form.validate_on_submit():
         for test in tests: 
             test.feedbackReleased = True
             db.session.commit()
-            flash('Feedback has been released')
-            return redirect(url_for('unitManager'))
+        flash('Feedback has been released')
+        return redirect(url_for('unitManager'))
     return render_template('allTestsForMarking.html', title='Test', tests = tests, form=form,units=units)
 
 @app.route('/unenroll/<studentNumber>')
 @login_required
 def unenroll(studentNumber):
     user = User.query.filter_by(id = studentNumber).first()
+    unenrollStudent = TestMark.query.filter_by(unit_id=user.unit_id).filter_by(user_id=user.id).all()
+    print("UNENROLLING FROM: ",unenrollStudent)
+    for test in unenrollStudent: 
+        db.session.delete(test)
     units = Unit.query.all()
     user.unit_id = None
     db.session.commit()
@@ -301,6 +312,14 @@ def testCreated(test):
 def unitEnrolled(unit):
     user = User.query.filter_by(email=current_user.email).first_or_404()
     user.unit_id = unit
+    tests = Test.query.filter_by(unit_id=unit).all()
+    
+    for test in tests:
+        newEnrollment = TestMark.query.filter_by(unit_id=unit).filter_by(user_id = user.id).filter_by(test_id = test.id).all()
+        print(newEnrollment)
+        if(len(newEnrollment)==0):
+            markFB = TestMark(user_id=user.id, test_id=test.id,unit_id = unit)
+            db.session.add(markFB)
     db.session.commit()
     return render_template('unitEnrollmentSuccess.html')
     

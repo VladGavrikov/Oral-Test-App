@@ -5,14 +5,14 @@
 <div class="row mx-2">
     <h2 class="page-title">Tests</h2>
     <div class="btns">
-        {% for test in tests%}
-        {% if test.feedbackReleased == False %}
+
+        {% if tests[0].feedbackReleased == False %}
         <!-- <button class="btn table-btn btn-margin"><a href="{# url_for('releaseFeedback', test = tests[0].test_id) #}">Release Feedback</a></button> -->
         <button id="release-feedback-btn" class="btn green-btn" data-toggle="modal" data-target="#release-feedback-modal">Release feedback</button>
         {% else %}
         <button class="btn navy-btn-static">Feedback has already released</button>
         {%endif%}
-        {%endfor%}
+
     </div>
 </div>
 

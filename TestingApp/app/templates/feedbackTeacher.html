@@ -3,9 +3,9 @@
 <h3>Feedback for the test</h3>
     {% for testMark in testmarks %}  
         {% if testMark[1].mark1==None or testMark[1].mark2 or testMark[1].mark3 or testMark[1].mark4 %}
-            <p>Student Name: {{testMark[0].firstName}} Student LastName: {{testMark[0].LastName}} ||| Total: 0</p>
+            <p>Student Name: {{testMark[0].firstName}} ||| Student LastName: {{testMark[0].LastName}} ||| {{testMark[0].id}} ||| Total: 0</p>
         {% else %}
-            <p>Student Name: {{testMark[0].firstName}} Student LastName: {{testMark[0].LastName}} ||| Total: {{ testMark[1].mark1+testMark[1].mark2+testMark[1].mark3+testMark[1].mark4}}</p>
+            <p>Student Name: {{testMark[0].firstName}} ||| Student LastName: {{testMark[0].LastName}} ||| {{testMark[0].id}} ||| Total: {{ testMark[1].mark1+testMark[1].mark2+testMark[1].mark3+testMark[1].mark4}}</p>
         {% endif %}
             <!--<p>Accuracy: {{testMark[1].mark1}} Fluency: {{testMark[1].mark2}} Grammar: {{testMark[1].mark3}} Vocabulary: {{testMark[1].mark4}}</p>-->
         <p></p>

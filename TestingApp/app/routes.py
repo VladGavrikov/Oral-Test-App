@@ -282,14 +282,18 @@ def unitManager():
 @login_required
 def testCreated(test):
     createdTest = Test.query.filter_by(id=test).first()
+    questions = Question.query.filter_by(test_id = test).all()
     usersDoingUnit = User.query.filter_by(unit_id=createdTest.unit_id).all()
-    for user in usersDoingUnit:
-        markFB = TestMark(user_id=user.id, test_id=int(test),unit_id = createdTest.unit_id) 
-        db.session.add(markFB)
-        db.session.commit()
-    createdTest.isFinalized = True
-    db.session.commit()
     units = Unit.query.all()
+    if(len(questions)==0):
+        return render_template('testCreationFailure.html', units=units)
+    else:
+        for user in usersDoingUnit:
+            markFB = TestMark(user_id=user.id, test_id=int(test),unit_id = createdTest.unit_id) 
+            db.session.add(markFB)
+            db.session.commit()
+        createdTest.isFinalized = True
+        db.session.commit()
     return render_template('testCreationSuccess.html', units=units)
 
 @app.route('/enrolment/<unit>', methods=['GET', 'POST'])

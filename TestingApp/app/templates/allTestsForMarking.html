@@ -35,7 +35,7 @@
                         <td>{{ test.mark1 + test.mark2 + test.mark3 + test.mark4 }}</td>
                         <td style="padding-top:4px; padding-bottom:4px"> <p>Ivy - some block to say that test was marked</p><a href="{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = 1) }}"><button class="btn table-btn-navy btn-margin">Update</button></a> </td>
                     {% else %}
-                        <td>Grade</td>
+                        <td>Needs Marking</td>
                         <td style="padding-top:4px; padding-bottom:4px"> <a href="{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = 1) }}"><button class="btn table-btn btn-margin">Mark</button></a>  </td>
                     {% endif %}
                 </tr>

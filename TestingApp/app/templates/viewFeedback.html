@@ -1,11 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
     <h3>Feedback for the test</h3>
-    <p>{{unit.mark1Criteria}}: {{testMarks.mark1}}</p>
-    <p>{{unit.mark2Criteria}}: {{testMarks.mark2}}</p>
-    <p>{{unit.mark3Criteria}}: {{testMarks.mark3}}</p>
-    <p>{{unit.mark4Criteria}}: {{testMarks.mark4}}</p>
-    <p>Total: {{testMarks.mark1+testMarks.mark2+ testMarks.mark3+testMarks.mark4}}</p> 
+    {% if testMarks.mark1==None or testMarks.mark2==None or testMarks.mark3==None or testMarks.mark4==None %}
+        <p>{{unit.mark1Criteria}}: 0</p>
+        <p>{{unit.mark2Criteria}}: 0</p>
+        <p>{{unit.mark3Criteria}}: 0</p>
+        <p>{{unit.mark4Criteria}}: 0</p>
+        <p>Total: 0</p> 
+    {% else %}
+        <p>{{unit.mark1Criteria}}: {{testMarks.mark1}}</p>
+        <p>{{unit.mark2Criteria}}: {{testMarks.mark2}}</p>
+        <p>{{unit.mark3Criteria}}: {{testMarks.mark3}}</p>
+        <p>{{unit.mark4Criteria}}: {{testMarks.mark4}}</p>
+        <p>Total: {{testMarks.mark1+testMarks.mark2+ testMarks.mark3+testMarks.mark4}}</p> 
+    {% endif %}
     {% if questionNumber != 1 %}
         <a href="{{ url_for('viewFeedback',test = testPassed, studentNumber = user.id, questionNumber=questionNumber-1)  }}">arrowLeft</a>
     {% endif %}
@@ -32,10 +40,13 @@
 
     <h4>Feedback:</h4>
     <h5>{{ feedbacks[0].body}}</h5>
-    {% if feedbacks[0].path != "empty" %}
-        <audio src={{feedbacks[0].path}} id= "player" controls="controls"></audio>
+    {% if feedbacks[0] != None %}
+        {% if feedbacks[0].path != "empty" %}
+            <audio src={{feedbacks[0].path}} id= "player" controls="controls"></audio>
+        {% endif %}
+    {% else %}
+        <p>No feedback avaliable</p>
     {% endif %}
-
     {% if answers[0].body == "empty" %}
         <div id="plot" style="width:500px;height:500px; display:none"></div>
     {% endif%}
@@ -44,11 +55,11 @@
         <div id="plot" style="width:500px;height:500px"></div>
     {% endif%}
 
-    {% if feedbacks[0].path == "empty" %}
+    {% if feedbacks[0].path == "empty" or feedbacks[0] == None %}
         <div id="plot2" style="width:500px;height:500px; display: none;"></div>
     {% endif%}
 
-    {% if feedbacks[0].path != "empty" %}
+    {% if feedbacks[0].path != "empty" or feedbacks[0] != None %}
         <div id="plot2" style="width:500px;height:500px;"></div>
     {% endif%}
     <hr>

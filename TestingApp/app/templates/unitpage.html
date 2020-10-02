@@ -50,6 +50,7 @@
             <thead>
                 <tr>
                     <th>Task name</th>
+                    <th>Deadline</th>
                     <th>Mark tasks</th>
                     <th>Feedback</th>
                     <th>Download</th>
@@ -60,6 +61,7 @@
                 {% if test.isFinalized %}
                 <tr>
                     <td>{{ test.body }}</td>
+                    <td>{{ test.due_date }}&nbsp&nbsp{{ test.due_time }}</td>
                     <td style="padding-top:4px; padding-bottom: 4px;"><a href="{{ url_for('markings',test= test.id)  }}"><button class="btn table-btn-navy">Mark</button></a></td>
                     <td style="padding-top:4px; padding-bottom: 4px;"><a href="{{ url_for('feedback',unitpage = test.unit_id, test=test.id)  }}"><button class="btn table-btn-navy">Feedback</button></a></td>
                     <td style="padding-top:4px; padding-bottom: 4px;"><a href="{{ url_for('feedbackDownload',unitpage = test.unit_id, test=test.id)  }}"><i class="fas fa-download btn table-btn-navy"> Download</i></a></td>

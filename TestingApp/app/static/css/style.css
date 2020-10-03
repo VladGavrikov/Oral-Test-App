@@ -263,7 +263,7 @@ a:hover {
     pointer-events: none;
 }
 
-.table-btn, .table-btn-static {
+.table-btn, .table-btn-static, a.table-btn {
     background-color: var(--testapp-green);
     color: #FFFFFF;
     border-radius: 5px;
@@ -343,6 +343,14 @@ a:hover {
 
 #release-feedback-modal-content {
     height: 300px;
+}
+
+#rename-task-modal-content {
+    height: 320px; 
+}
+
+#delete-task-modal-content {
+    height: 150px;
 }
 
 /* Forms */

@@ -75,3 +75,14 @@ class TestEvaluationForm(FlaskForm):
     mark3 = IntegerField('Grammar', validators=[InputRequired(),NumberRange(min=0,max=25)])
     mark4 = IntegerField('Vocabulary', validators=[InputRequired(),NumberRange(min=0,max=25)])
     submit = SubmitField('Finish Marking')
+
+class ResetPasswordRequestForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Request Password Reset')
+
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Password', validators=[DataRequired()])
+    password2 = PasswordField(
+        'Repeat Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Request Password Reset')

@@ -31,6 +31,13 @@
         <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
     </p>
+    {% if submissionInTime == False %}
+        <h4 style="color: red;">WARNING TEST WAS SUBMITTED PAST DEADLINE</h4>
+        <p>Due Date:&nbsp&nbsp  {{ due_date }} {{ due_time.strftime('%H-%m')}}</p>
+        <p>Submitted: {{ submittionDate }} {{ submittionTime.strftime('%H-%m')}}</p>
+    {% elif submissionInTime == None %}
+        <h4 style="color: red;">WARNING TEST WASN'T SUBMITTED</h4>
+    {% endif%}
     <p>{{ form.submit() }}</p>
 </form>
 {% endblock %}}

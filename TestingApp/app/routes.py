@@ -80,17 +80,17 @@ def viewFeedback(test, studentNumber, questionNumber):
     tempAnswer = Answer.query.filter_by(user_id=user.id).filter_by(question_id=questions[questionNumber-1].id).first()
     answers.append(tempAnswer)
     tempFeedback = Feedback.query.filter_by(answer_id = tempAnswer.id).order_by(Feedback.id.desc()).first()
-    feedbacks.append(tempFeedback) 
-    if(tempAnswer.body!="empty"):
-        sound = parselmouth.Sound("app"+tempAnswer.body)
-        pitch_track = sound.to_pitch().selected_array['frequency']
-        data = json.dumps(pitch_track.tolist())
-
-    if(tempFeedback.path!="empty"):
-        sound2 = parselmouth.Sound("app"+tempFeedback.path)
-        pitch_track2 = sound2.to_pitch().selected_array['frequency']
-        data2 = json.dumps(pitch_track2.tolist())
-
+    feedbacks.append(tempFeedback)
+    if(tempAnswer!=None):
+        if(tempAnswer.body!="empty"):
+            sound = parselmouth.Sound("app"+tempAnswer.body)
+            pitch_track = sound.to_pitch().selected_array['frequency']
+            data = json.dumps(pitch_track.tolist())
+    if(tempFeedback!=None):
+        if(tempFeedback.path!="empty"):
+            sound2 = parselmouth.Sound("app"+tempFeedback.path)
+            pitch_track2 = sound2.to_pitch().selected_array['frequency']
+            data2 = json.dumps(pitch_track2.tolist())
     return render_template('viewFeedback.html', units=units, title='Test', user=user, questions = questions,answers=answers, test=testQ, numOfQuestions = numOfQuestions, feedbacks = feedbacks, testMarks = testMarks, data = data, data2 = data2, unit = unit, questionNumber = questionNumber, testPassed = test)
 
 
@@ -101,18 +101,29 @@ def markings(test):
     tests = TestMark.query.filter_by(test_id=test).all()
     form = ReleaseFeedbackForm()
     tests = TestMark.query.filter_by(test_id=test).all()
+    testsFiltered = []
+    for test in tests: 
+        enrolledStudent = User.query.filter_by(id=test.user_id).first()
+        if(test.unit_id==enrolledStudent.unit_id):
+            testsFiltered.append(test)
+    tests = testsFiltered
+    print("FILTERED TESTS:",tests)
     if form.validate_on_submit():
         for test in tests: 
             test.feedbackReleased = True
             db.session.commit()
-            flash('Feedback has been released')
-            return redirect(url_for('unitManager'))
+        flash('Feedback has been released')
+        return redirect(url_for('unitManager'))
     return render_template('allTestsForMarking.html', title='Test', tests = tests, form=form,units=units)
 
 @app.route('/unenroll/<studentNumber>')
 @login_required
 def unenroll(studentNumber):
     user = User.query.filter_by(id = studentNumber).first()
+    unenrollStudent = TestMark.query.filter_by(unit_id=user.unit_id).filter_by(user_id=user.id).all()
+    print("UNENROLLING FROM: ",unenrollStudent)
+    for test in unenrollStudent: 
+        db.session.delete(test)
     units = Unit.query.all()
     user.unit_id = None
     db.session.commit()
@@ -139,7 +150,23 @@ def testEvaluation(test, studentNumber):
     testMarking = TestMark.query.filter_by(test_id=test).filter_by(user_id = studentNumber).first()
     user = User.query.filter_by(id=studentNumber).first_or_404()
     unit = Unit.query.filter_by(name=user.unit_id).first_or_404()
+    testQ = Test.query.filter_by(id=test).first()
     form = TestEvaluationForm()
+    submittionDate = testMarking.due_date
+    submittionTime = testMarking.due_time
+    due_date = testQ.due_date
+    due_time = testQ.due_time
+    submissionInTime = None
+    if(submittionDate ==None or submittionTime == None):
+        testWasntSubmitted = True
+    else:
+        if(submittionDate <= due_date):
+            if(submittionTime <= due_time):
+                submissionInTime = True
+            else:
+                submissionInTime = False
+        else:
+                submissionInTime = False
     if form.validate_on_submit():
         testMarking.hasBeenMarked = True
         testMarking.mark1 = form.mark1.data
@@ -148,7 +175,8 @@ def testEvaluation(test, studentNumber):
         testMarking.mark4 = form.mark4.data
         db.session.commit()
         return render_template('testHasBeenMarked.html',units = units)
-    return render_template('testEvaluation.html', form = form, unit=unit,units=units)
+    return render_template('testEvaluation.html', form = form, unit=unit,units=units, submissionInTime=submissionInTime, submittionDate = submittionDate, submittionTime =submittionTime,
+                                                        due_date=due_date, due_time=due_time)
 
 @app.route('/attempt/<test>/<studentNumber>/<questionNumber>', methods=['GET', 'POST'])
 @login_required
@@ -212,13 +240,15 @@ def markingTest(test, studentNumber, questionNumber):
     form = CreateFeedbackForm()
     testTime = Test.query.filter_by(id = test).first()
     submissionTime = TestMark.query.filter_by(user_id = studentNumber).filter_by(test_id=test).first()
+    if(submissionTime.due_date==None or submissionTime.due_time==None):
+        return redirect(url_for('testEvaluation',test = test, studentNumber = studentNumber))
     if(submissionTime.due_date <= testTime.due_date):
         if(submissionTime.due_time <= testTime.due_time):
             submissionInTime = True
         else:
             submissionInTime = False
     else:
-            submissionInTime = Fals
+            submissionInTime = False
     if request.method == "POST" or form.validate_on_submit():
         if 'audio_data' in request.files:
             print("posted")
@@ -267,14 +297,18 @@ def unitManager():
 @login_required
 def testCreated(test):
     createdTest = Test.query.filter_by(id=test).first()
+    questions = Question.query.filter_by(test_id = test).all()
     usersDoingUnit = User.query.filter_by(unit_id=createdTest.unit_id).all()
-    for user in usersDoingUnit:
-        markFB = TestMark(user_id=user.id, test_id=int(test),unit_id = createdTest.unit_id) 
-        db.session.add(markFB)
-        db.session.commit()
-    createdTest.isFinalized = True
-    db.session.commit()
     units = Unit.query.all()
+    if(len(questions)==0):
+        return render_template('testCreationFailure.html', units=units)
+    else:
+        for user in usersDoingUnit:
+            markFB = TestMark(user_id=user.id, test_id=int(test),unit_id = createdTest.unit_id) 
+            db.session.add(markFB)
+            db.session.commit()
+        createdTest.isFinalized = True
+        db.session.commit()
     return render_template('testCreationSuccess.html', units=units)
 
 @app.route('/enrolment/<unit>', methods=['GET', 'POST'])
@@ -282,6 +316,14 @@ def testCreated(test):
 def unitEnrolled(unit):
     user = User.query.filter_by(email=current_user.email).first_or_404()
     user.unit_id = unit
+    tests = Test.query.filter_by(unit_id=unit).all()
+    
+    for test in tests:
+        newEnrollment = TestMark.query.filter_by(unit_id=unit).filter_by(user_id = user.id).filter_by(test_id = test.id).all()
+        print(newEnrollment)
+        if(len(newEnrollment)==0):
+            markFB = TestMark(user_id=user.id, test_id=test.id,unit_id = unit)
+            db.session.add(markFB)
     db.session.commit()
     return render_template('unitEnrollmentSuccess.html')
     
@@ -333,7 +375,10 @@ def feedbackDownload(unitpage, test):
     print(testmarks)
     for testmark in testmarks:
         print(testmark)
-        csv = csv +(testmark[0].firstName +","+testmark[0].LastName+","+str(testmark[0].id)+","+str(testmark[1].mark1+testmark[1].mark2+testmark[1].mark3+testmark[1].mark4)+"\n")
+        if(testmark[1].mark1==None or testmark[1].mark2==None or testmark[1].mark3==None or testmark[1].mark4==None):
+            csv = csv +(testmark[0].firstName +","+testmark[0].LastName+","+str(testmark[0].id)+",0\n")
+        else:
+            csv = csv +(testmark[0].firstName +","+testmark[0].LastName+","+str(testmark[0].id)+","+str(testmark[1].mark1+testmark[1].mark2+testmark[1].mark3+testmark[1].mark4)+"\n")
     response = make_response(csv)
     cd = 'attachment; filename='+unitpage+test.body+'FB.csv'
     response.headers['Content-Disposition'] = cd 
@@ -399,7 +444,10 @@ def deleteTest(unitpage, test):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('dashboard'))
+        if (current_user.isTeacher == True):
+            return redirect(url_for('unitManager'))
+        else:
+            return redirect(url_for('dashboard'))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -411,8 +459,10 @@ def login():
         if not next_page or url_parse(next_page).netloc != '':
             if (user.isTeacher == False):
                 next_page = url_for('dashboard')
+                print("I WAS HERE")
             else:
                 next_page = url_for('unitManager')
+                print("I WAS HERE!!!!!!")
         return redirect(next_page)
     return render_template('login.html', title='Sign In', form=form)
 

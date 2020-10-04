@@ -11,15 +11,17 @@ from flask_login import logout_user
 from flask_login import login_required
 from app.models import User, Unit, Test, Question, Answer, TestMark, Feedback
 from app import db
-from app.forms import RegistrationForm
-from app.forms import CreateUnitForm
-from app.forms import CreateQuestionForm
-from app.forms import CreateTestForm
-from app.forms import CreateAnswerForm
-from app.forms import StartTest
-from app.forms import CreateFeedbackForm
-from app.forms import TestEvaluationForm
-from app.forms import ReleaseFeedbackForm
+from app.forms import RegistrationForm, CreateUnitForm, CreateQuestionForm, CreateTestForm, CreateAnswerForm, StartTest, CreateFeedbackForm, TestEvaluationForm, TestEvaluationForm, ReleaseFeedbackForm, RenameTestForm
+
+# from app.forms import RegistrationForm
+# from app.forms import CreateUnitForm
+# from app.forms import CreateQuestionForm
+# from app.forms import CreateTestForm
+# from app.forms import CreateAnswerForm
+# from app.forms import StartTest
+# from app.forms import CreateFeedbackForm
+# from app.forms import TestEvaluationForm
+# from app.forms import ReleaseFeedbackForm
 from datetime import datetime
 import numpy as np
 import os.path
@@ -33,6 +35,8 @@ from flask import make_response
 @login_required
 def dashboard():
     user = User.query.filter_by(email=current_user.email).first_or_404()
+    if(user.isTeacher==True):
+        return redirect(url_for('unitManager'))
     unit = Unit.query.filter_by(name=user.unit_id).first()
     testFB = TestMark.query.filter_by(unit_id=user.unit_id).filter_by(user_id = user.id).all()
     test = Test.query.join(TestMark).filter_by(unit_id=user.unit_id).filter_by(user_id = user.id).all()
@@ -406,6 +410,14 @@ def test(unitpage, test):
     units = Unit.query.all()
     unit = Unit.query.filter_by(name=unitpage).first()
     t = Test.query.filter_by(id=test).first()
+    
+    renameForm = RenameTestForm()
+    if renameForm.validate_on_submit():
+            t.body = renameForm.newTestName.data
+            db.session.commit()
+
+            redirect(url_for('test', unitpage=unit, test=t))
+
     questions = Question.query.filter_by(test_id=test).all()
     questionForm = CreateQuestionForm()
     prefix = "app/"
@@ -429,7 +441,18 @@ def test(unitpage, test):
             db.session.add(question)
             db.session.commit()
             return redirect(url_for('test', unitpage = unit.name, test= test))
-    return render_template('test.html',unit=unit, form=questionForm, questions=questions, test = test, t = t, units = units, path=pathtoPage)
+    return render_template('test.html',unit=unit, form=questionForm, renameForm=renameForm, questions=questions, test = test, t = t, units = units,path=pathtoPage)
+
+@app.route("/unitManager/<unitpage>/<test>/delete", methods=['GET', 'POST'])
+def deleteTest(unitpage, test):
+    unit = Unit.query.filter_by(name=unitpage).first()
+    test = Test.query.filter_by(id=test).first()
+
+    db.session.delete(test)
+    db.session.commit()
+
+    return redirect(url_for('unitpage', unitpage = unit.name))
+
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])

@@ -75,3 +75,7 @@ class TestEvaluationForm(FlaskForm):
     mark3 = IntegerField('Grammar', validators=[InputRequired(),NumberRange(min=0,max=25)])
     mark4 = IntegerField('Vocabulary', validators=[InputRequired(),NumberRange(min=0,max=25)])
     submit = SubmitField('Finish Marking')
+
+class RenameTestForm(FlaskForm):
+    newTestName = StringField('New Task Name', validators=[DataRequired()])
+    submit = SubmitField('Save')

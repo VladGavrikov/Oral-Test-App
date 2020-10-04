@@ -15,7 +15,7 @@
 
 <h2 class="page-title">{{ unit.description }} / {{ t.body }}</h2>
 <div class="row btns mx-2">
-    <button id="rename-task-btn" class="btn green-btn btn-margin" data-toggle="modal" data-target="#rename-task-modal">Rename</button>
+    <button id="rename-task-btn" class="btn green-btn btn-margin" data-toggle="modal" data-target="#rename-task-modal">Rename task</button>
     <button id="save-task-btn" class="btn green-btn btn-margin"><a href="{{ url_for('unitpage', unitpage = unit.name) }}">Save & exit</a></button>
     <!-- <button id="make-available-btn" class="btn green-btn" data-toggle="modal" data-target="#make-available-modal">Make available</button> -->
 
@@ -60,7 +60,32 @@
     
 </div>
 
-
+<!-- Modal for rename task -->
+<div id="rename-task-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div id="rename-task-modal-content" class="modal-content">
+            <h3 class="modal-title">Rename task</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <div class="modal-body">
+                <form action="" method="post" novalidate>
+                    {{ renameForm.hidden_tag() }}
+                    <div class="form-group mb-5">
+                        {{  renameForm.newTestName.label(class_="form-label", placeholder="New task name") }}
+                        {{  renameForm.newTestName(class_="form-control form-styling") }}
+                    </div>
+                    <div class="row justify-content-center">
+                        <button type="button" class="btn green-btn btn-margin" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">Cancel</span>
+                        </button>
+                        {{ renameForm.submit(class="btn green-btn") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 {% endblock %}

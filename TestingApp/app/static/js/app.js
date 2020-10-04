@@ -169,7 +169,7 @@ function createDownloadLink(blob) {
 		  xhr.send(fd);
 	li.appendChild(document.createTextNode (" "))//add a space in between
 	li.appendChild(upload)//add the upload link to li
-
+	location.reload();
 	//add the li element to the ol
 	recordingsList.appendChild(li);
 }

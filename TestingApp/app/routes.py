@@ -23,6 +23,7 @@ from app.forms import ReleaseFeedbackForm
 from datetime import datetime
 import numpy as np
 import os.path
+from random import randint
 
 import io
 import csv
@@ -79,7 +80,12 @@ def viewFeedback(test, studentNumber, questionNumber):
     feedbacks.append(tempFeedback)
     if(tempAnswer!=None):
         if(tempAnswer.body!="empty"):
-            sound = parselmouth.Sound("app"+tempAnswer.body)
+            print(tempAnswer.body)
+            string = tempAnswer.body
+            sep = '?noCache='
+            separated = string.split(sep, 1)[0]
+            sound = parselmouth.Sound("app"+separated)
+            print(separated)
             pitch_track = sound.to_pitch().selected_array['frequency']
             data = json.dumps(pitch_track.tolist())
     if(tempFeedback!=None):
@@ -182,6 +188,8 @@ def testQuestion(test, studentNumber, questionNumber):
     qnumb = int(questionNumber)-1
     prefix = "app/"
     path = "/static/music/ID"+studentNumber+"Test"+test+"QNum"+questionNumber+".wav"
+    randomNumber = randint(0, 10000000000)
+    pathtoPage = "/static/music/ID"+studentNumber+"Test"+test+"QNum"+questionNumber+".wav"+"?noCache="+str(randomNumber)
     form = CreateAnswerForm()
     submission = TestMark.query.filter_by(user_id = user.id).filter_by(test_id=test).first()
     successfullySubmitted = False
@@ -191,12 +199,13 @@ def testQuestion(test, studentNumber, questionNumber):
             f = request.files['audio_data']
             with open((prefix+path), 'wb') as audio:
                 f.save(audio)
-            successfullySubmitted = True 
-            flash("File was successfully uploaded")
+            successfullySubmitted = True
+            print(successfullySubmitted)
+            print("Redirect start")
         if ((qnumb+1) == len(questions)):
             print("1")
             if(successfullySubmitted):
-                answer = Answer(body=path, question_id=questions[qnumb].id, user_id = user.id)
+                answer = Answer(body=pathtoPage, question_id=questions[qnumb].id, user_id = user.id)
             else:
                 answer = Answer(body="empty", question_id=questions[qnumb].id, user_id = user.id)
             submission.due_date = datetime.now().date()
@@ -209,7 +218,7 @@ def testQuestion(test, studentNumber, questionNumber):
         else: 
             print("2")
             if(successfullySubmitted):
-                answer = Answer(body=path, question_id=questions[qnumb].id, user_id = user.id)
+                answer = Answer(body=pathtoPage, question_id=questions[qnumb].id, user_id = user.id)
             else:
                 answer = Answer(body="empty", question_id=questions[qnumb].id, user_id = user.id)
             db.session.add(answer)
@@ -217,7 +226,8 @@ def testQuestion(test, studentNumber, questionNumber):
             qnumber = int(questionNumber)+1
             print(questionNumber)
             return redirect(url_for('testQuestion',test = test, studentNumber = user.id, questionNumber = qnumber))
-    return render_template('answer.html',test = test, user=user, question = questions[qnumb], questionNumber = questionNumber, form = form, numbOfQuestions = len(questions))
+    print("Printing sS var ", successfullySubmitted)
+    return render_template('answer.html',test = test, user=user, question = questions[qnumb], questionNumber = questionNumber, form = form, numbOfQuestions = len(questions),path=pathtoPage,successfullySubmitted = successfullySubmitted)
 
 #FUTURE WORKS MARKING
 @app.route('/marking/<test>/<studentNumber>/<questionNumber>', methods=['GET', 'POST'])
@@ -230,6 +240,8 @@ def markingTest(test, studentNumber, questionNumber):
     qnumb = int(questionNumber)-1
     prefix = "app/"
     path = "/static/music/ID"+studentNumber+"Test"+test+"QNum"+questionNumber+"FB"+".wav"
+    randomNumber = randint(0, 10000000000)
+    pathtoPage = "/static/music/ID"+studentNumber+"Test"+test+"QNum"+questionNumber+"FB"+".wav"+"?noCache="+str(randomNumber)
     answerToQuestion = Answer.query.filter_by(user_id = studentNumber).filter_by(question_id=questions[qnumb].id).first()
     print("QUESTION ID",questions[qnumb].id)
     print(answerToQuestion)
@@ -271,7 +283,7 @@ def markingTest(test, studentNumber, questionNumber):
             qnumber = int(questionNumber)+1
             print(questionNumber)
             return redirect(url_for('markingTest',test = test, studentNumber = studentNumber, questionNumber = qnumber))
-    return render_template('feedback.html',units=units, user=user, question = questions[qnumb], questionNumber = questionNumber, form = form, answerToQuestion = answerToQuestion, submissionInTime= submissionInTime)
+    return render_template('feedback.html',units=units, user=user, question = questions[qnumb], questionNumber = questionNumber, form = form, answerToQuestion = answerToQuestion, submissionInTime= submissionInTime, path=pathtoPage)
 
 @app.route('/unitManager', methods=['GET', 'POST'])
 @login_required
@@ -398,6 +410,8 @@ def test(unitpage, test):
     questionForm = CreateQuestionForm()
     prefix = "app/"
     path = "/static/music/Test"+test+"QNum"+str(len(questions)+1)+".wav"
+    randomNumber = randint(0, 10000000000)
+    pathtoPage = "/static/music/Test"+test+"QNum"+str(len(questions)+1)+".wav"+"?noCache="+str(randomNumber)
     if request.method == "POST" or questionForm.validate_on_submit():
         if 'audio_data' in request.files:
             print("posted")
@@ -408,14 +422,14 @@ def test(unitpage, test):
         if questionForm.validate_on_submit():
             if(os.path.isfile(prefix+path)):
                 print("succesfully submitted true")
-                question = Question(body =repr(questionForm.name.data.encode())[2:-1],path=path,test_id=test)
+                question = Question(body =repr(questionForm.name.data.encode())[2:-1],path=pathtoPage,test_id=test)
             else: 
                 print("succesfully submitted false")
                 question = Question(body =repr(questionForm.name.data.encode())[2:-1],path="empty",test_id=test)
             db.session.add(question)
             db.session.commit()
             return redirect(url_for('test', unitpage = unit.name, test= test))
-    return render_template('test.html',unit=unit, form=questionForm, questions=questions, test = test, t = t, units = units)
+    return render_template('test.html',unit=unit, form=questionForm, questions=questions, test = test, t = t, units = units, path=pathtoPage)
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])

@@ -78,4 +78,4 @@ class TestEvaluationForm(FlaskForm):
 
 class RenameTestForm(FlaskForm):
     newTestName = StringField('New Task Name', validators=[DataRequired()])
-    submit = SubmitField('Save')
+    submitRename = SubmitField('Save')

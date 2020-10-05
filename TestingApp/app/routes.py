@@ -80,7 +80,10 @@ def viewFeedback(test, studentNumber, questionNumber):
     data2="[-1.0]"
     tempAnswer = Answer.query.filter_by(user_id=user.id).filter_by(question_id=questions[questionNumber-1].id).first()
     answers.append(tempAnswer)
-    tempFeedback = Feedback.query.filter_by(answer_id = tempAnswer.id).order_by(Feedback.id.desc()).first()
+    if(tempAnswer==None):
+        tempFeedback=None
+    else:
+        tempFeedback = Feedback.query.filter_by(answer_id = tempAnswer.id).order_by(Feedback.id.desc()).first()
     feedbacks.append(tempFeedback)
     if(tempAnswer!=None):
         if(tempAnswer.body!="empty"):
@@ -97,6 +100,7 @@ def viewFeedback(test, studentNumber, questionNumber):
             sound2 = parselmouth.Sound("app"+tempFeedback.path)
             pitch_track2 = sound2.to_pitch().selected_array['frequency']
             data2 = json.dumps(pitch_track2.tolist())
+    print("TEMPANSWER", tempAnswer)
     return render_template('viewFeedback.html', units=units, title='Test', user=user, questions = questions,answers=answers, test=testQ, numOfQuestions = numOfQuestions, feedbacks = feedbacks, testMarks = testMarks, data = data, data2 = data2, unit = unit, questionNumber = questionNumber, testPassed = test)
 
 
@@ -179,6 +183,7 @@ def testEvaluation(test, studentNumber):
         testMarking.mark2 = form.mark2.data
         testMarking.mark3 = form.mark3.data
         testMarking.mark4 = form.mark4.data
+        testMarking.testWasStarted = True
         db.session.commit()
         return render_template('testHasBeenMarked.html',units = units)
     return render_template('testEvaluation.html', form = form, unit=unit,units=units, submissionInTime=submissionInTime, submittionDate = submittionDate, submittionTime =submittionTime,
@@ -287,7 +292,7 @@ def markingTest(test, studentNumber, questionNumber):
             qnumber = int(questionNumber)+1
             print(questionNumber)
             return redirect(url_for('markingTest',test = test, studentNumber = studentNumber, questionNumber = qnumber))
-    return render_template('feedback.html',units=units, user=user, question = questions[qnumb], questionNumber = questionNumber, form = form, answerToQuestion = answerToQuestion, submissionInTime= submissionInTime, path=pathtoPage)
+    return render_template('feedback.html',units=units, user=user,questions=questions, question = questions[qnumb], questionNumber = qnumb, form = form, answerToQuestion = answerToQuestion, submissionInTime= submissionInTime, path=pathtoPage,test=submissionTime)
 
 @app.route('/unitManager', methods=['GET', 'POST'])
 @login_required
@@ -412,11 +417,10 @@ def test(unitpage, test):
     t = Test.query.filter_by(id=test).first()
     
     renameForm = RenameTestForm()
-    if renameForm.validate_on_submit():
+    if renameForm.submitRename.data and renameForm.validate_on_submit():
             t.body = renameForm.newTestName.data
             db.session.commit()
-
-            redirect(url_for('test', unitpage=unit, test=t))
+            return redirect(url_for('test', unitpage=unit.name, test=test))
 
     questions = Question.query.filter_by(test_id=test).all()
     questionForm = CreateQuestionForm()

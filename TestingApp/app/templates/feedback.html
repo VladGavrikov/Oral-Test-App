@@ -15,20 +15,21 @@
         <h4>Answer:</h4>
         <audio src={{answerToQuestion.body}} id= "player" controls="controls"></audio>
     {% endif%}  
-    <h4>Feedback</h4>
-    <br><audio src={{path}} id= "player" controls="controls" ></audio><br><br>
-    
     {% if answerToQuestion.body == "empty" %}
         <h4>Question Unattemptedd</h4>
-    {% endif%}
-    <div id="controls">
-        <button id="recordButton">Record</button>
-        <button id="pauseButton" disabled>Pause</button>
-        <button id="stopButton" disabled>Stop</button>
-       </div>
-       <div id="formats">Format: start recording to see sample rate</div>
-       <p><strong>Recordings:</strong></p>
-       <ol id="recordingsList"></ol>
+    {% endif%} 
+    <div style="background-color:#1A9E8A; width:fit-content">
+        <h4>Your Feedback:</h4>
+        <br><audio src={{path}} id= "player" controls="controls" ></audio><br><br>
+        <div id="controls">
+            <button id="recordButton">Record</button>
+            <button id="pauseButton" disabled>Pause</button>
+            <button id="stopButton" disabled>Stop</button>
+        </div>
+        <div id="formats">Format: start recording to see sample rate</div>
+    </div>
+       <!--<p><strong>Recordings:</strong></p>
+       <ol id="recordingsList"></ol>-->
        <!-- inserting these scripts at the end to be able to use all the elements in the DOM -->
     <form action="" method="post" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
@@ -41,6 +42,20 @@
         </p>
         <p>{{ form.submit() }}</p>
     </form>
-    <h5>Questions: {{questionNumber}}</h5>
+
+
+    {% if questionNumber != 1 %}
+        <a href="{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = questionNumber-1) }}">arrowLeft</a>
+    {% endif %}
+    {% for question in range(questions|length)%}
+        {% if questionNumber == question %}
+            <a href="{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = question+1) }}" style="color:blue;">{{(question+1)}}</a>
+        {% else %}
+            <a href="{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = question+1) }}">{{(question+1)}}</a>
+        {% endif %}
+    {% endfor %}
+    {% if questionNumber < questions|length %}   
+        <a href="{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = questionNumber+1) }}">arrowRight</a>
+    {% endif %}
     <!--<a href="{{ url_for('testQuestion',test = test, studentNumber = user.id, questionNumber = 1)  }}">Next Question</a></h3>-->
 {% endblock %}

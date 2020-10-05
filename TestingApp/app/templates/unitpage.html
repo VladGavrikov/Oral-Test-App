@@ -64,6 +64,7 @@
                 {% if test.isFinalized %}
                 <tr>
                     <td>{{ test.body }}</td>
+                    <td>{{ test.due_date.strftime('%d-%m-%Y') }} {{ test.due_time.strftime('%H:%M') }}</a></td>
                     <td style="padding-top:4px; padding-bottom: 4px;"><a href="{{ url_for('markings',test= test.id)  }}" class="btn table-btn-navy" role="button">Mark</a></td>
                     <td style="padding-top:4px; padding-bottom: 4px;"><a href="{{ url_for('feedback',unitpage = test.unit_id, test=test.id)  }}" class="btn table-btn-navy" role="button">Feedback</a></td>
                     <td style="padding-top:4px; padding-bottom: 4px;"><a href="{{ url_for('feedbackDownload',unitpage = test.unit_id, test=test.id)  }}" class="btn table-btn-navy" role="button">Download<i class="fas fa-download"></i></a></td>

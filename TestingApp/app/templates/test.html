@@ -36,16 +36,20 @@
     <div id="modal">
         <img id="loader" src="{{ url_for('static', filename='img/loading.gif') }}" />
     </div>
-    <h3 class="subheading">Ask Question</h3><br>
-    <div id="controls">
-        <button id="recordButton">Record</button>
-        <button id="pauseButton" disabled>Pause</button>
-        <button id="stopButton" disabled>Stop</button>
+    <div style="background-color:#1A9E8A; width:fit-content">
+        <h3 class="subheading">Your Question</h3><br>
+        <audio src={{path}} id= "player" controls="controls"></audio>
+        <div id="controls">
+            <button id="recordButton">Record</button>
+            <button id="pauseButton" disabled>Pause</button>
+            <button id="stopButton" disabled>Stop</button>
+        </div>
+    
+        <div id="formats">Format: start recording to see sample rate</div>
     </div>
-    <div id="formats">Format: start recording to see sample rate</div>
-    <p><strong>Recordings:</strong></p>
-    <ol id="recordingsList2"></ol>
-    <audio src={{path}} id= "player" controls="controls"></audio>
+    <!--<p><strong>Recordings:</strong></p>
+    <ol id="recordingsList2"></ol>-->
+    
     <form action="" method="post" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         <p>
@@ -75,11 +79,14 @@
                         {{  renameForm.newTestName.label(class_="form-label", placeholder="New task name") }}
                         {{  renameForm.newTestName(class_="form-control form-styling") }}
                     </div>
+                    {% for error in form.name.errors %}
+                        <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
                     <div class="row justify-content-center">
                         <button type="button" class="btn green-btn btn-margin" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">Cancel</span>
                         </button>
-                        {{ renameForm.submit(class="btn green-btn") }}
+                        {{ renameForm.submitRename(class="btn green-btn") }}
                     </div>
                 </form>
             </div>

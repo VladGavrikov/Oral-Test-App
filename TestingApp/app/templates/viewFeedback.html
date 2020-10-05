@@ -27,13 +27,20 @@
     {% if questionNumber < questions|length %}   
         <a href="{{ url_for('viewFeedback',test = testPassed, studentNumber = user.id, questionNumber=questionNumber+1)  }}">arrowRight</a>
     {% endif %}
-    <h4>{{ questions[questionNumber-1].body }}</h4>
+    <hr>
+    <h3>{{ questions[questionNumber-1].body }}</h3>
     {% if questions[questionNumber-1].path != "empty" %}
         <audio src={{questions[questionNumber-1].path}} id= "player" controls="controls"></audio><br>
     {% endif %}
+
     <h4>Answer:</h4>
-    {% if answers[0].body != "empty" %}
-        <audio src={{answers[0].body}} id= "player" controls="controls"></audio>
+    {% if answers[0] != None%}
+        {% if answers[0].body != "empty" %}
+            <audio src={{answers[0].body}} id= "player" controls="controls"></audio>
+        {% endif %}
+        {% if answers[0].body == "empty" %}
+            <p>Question unattempted</p>
+        {% endif %}
     {% else %}
         <p>Question unattempted</p>
     {% endif %}
@@ -47,32 +54,30 @@
     {% else %}
         <p>No feedback avaliable</p>
     {% endif %}
-    {% if answers[0].body == "empty" %}
+    <div>
+    {% if answers[0].body == "empty" or answers[0]==None%}
         <div id="plot" style="width:500px;height:500px; display:none"></div>
+    {%else%}
+        <div id="plot" style="width:500px;height:500px; display:inline-block"></div>
     {% endif%}
 
-    {% if answers[0].body != "empty" %}
-        <div id="plot" style="width:500px;height:500px"></div>
-    {% endif%}
 
     {% if feedbacks[0].path == "empty" or feedbacks[0] == None %}
         <div id="plot2" style="width:500px;height:500px; display: none;"></div>
-    {% endif%}
-
-    {% if feedbacks[0].path != "empty" or feedbacks[0] != None %}
-        <div id="plot2" style="width:500px;height:500px;"></div>
+    {% else %}
+        <div id="plot2" style="width:500px;height:500px; display:inline-block"></div>
     {% endif%}
     <hr>
-
+    </div>
     {% block javascript %}
         <script type="text/javascript">
                 data = JSON.parse({{ data | tojson }})
                 data2 = JSON.parse({{ data2 | tojson }})
                 Plotly.newPlot("plot", [{ x: [...Array(data.length).keys()],
-                    y: data.map(function(data) { return data == 0.0 ? undefined : data; }),
-                    type: "scatter" }]);
+                    y: data.map(function(data) { return data == 0.0 ? undefined : data; }),mode: 'markers', marker: { size: 3, color: 'blue'},
+                    type: "scatter" }],{title: 'Answer Pitch'});
                 Plotly.newPlot("plot2", 
-                                        [{ x: [...Array(data2.length).keys()],y: data2.map(function(data2) { return data2 == 0.0 ? undefined : data2; }),
+                                        [{ x: [...Array(data2.length).keys()],y: data2.map(function(data2) { return data2 == 0.0 ? undefined : data2; }),mode: 'markers', marker: { size: 3, color: 'blue'},
                                             type: "scatter"}],{title: 'Feedback Pitch'}
                                 );
         </script>
@@ -87,4 +92,7 @@
             <a href="{{ url_for('viewFeedback',test = testPassed, studentNumber = user.id, questionNumber=question+1)  }}">{{(question+1)}}</a>
         {% endif %}
     {% endfor %}
+    {% if questionNumber < questions|length %}   
+        <a href="{{ url_for('viewFeedback',test = testPassed, studentNumber = user.id, questionNumber=questionNumber+1)  }}">arrowRight</a>
+    {% endif %}
 {% endblock %}

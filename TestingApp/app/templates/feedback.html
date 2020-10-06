@@ -18,6 +18,17 @@
     {% if answerToQuestion.body == "empty" %}
         <h4>Question Unattemptedd</h4>
     {% endif%} 
+    <!--{% if test.hasBeenMarked == True %}
+        <h4>HAS BEEN MARKED</h4>
+        {% if storedAudio != "empty" %}
+        <h4>Current Feedback:</h4>
+        <audio src={{storedAudio}} id= "player" controls="controls"></audio>
+        {% endif%}  
+        {% if answerToQuestion.body == "empty" %}
+            <h4>No feedback Left</h4>
+        {% endif%} 
+        <p>{{storedText}}</p>
+    {% endif%} -->
     <div style="background-color:#1A9E8A; width:fit-content">
         <h4>Your Feedback:</h4>
         <br><audio src={{path}} id= "player" controls="controls" ></audio><br><br>
@@ -44,8 +55,9 @@
     </form>
 
 
-    {% if questionNumber != 1 %}
-        <a href="{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = questionNumber-1) }}">arrowLeft</a>
+    {% if questionNumber != 0 %}
+        <p>{{questionNumber}}</p>
+        <a href="{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = questionNumber) }}">arrowLeft</a>
     {% endif %}
     {% for question in range(questions|length)%}
         {% if questionNumber == question %}
@@ -54,8 +66,8 @@
             <a href="{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = question+1) }}">{{(question+1)}}</a>
         {% endif %}
     {% endfor %}
-    {% if questionNumber < questions|length %}   
-        <a href="{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = questionNumber+1) }}">arrowRight</a>
+    {% if questionNumber+1 < questions|length %}   
+        <a href="{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = questionNumber+2) }}">arrowRight</a>
     {% endif %}
     <!--<a href="{{ url_for('testQuestion',test = test, studentNumber = user.id, questionNumber = 1)  }}">Next Question</a></h3>-->
 {% endblock %}

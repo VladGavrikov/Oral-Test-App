@@ -74,7 +74,6 @@ def viewFeedback(test, studentNumber, questionNumber):
     feedbacks = []
     numOfQuestions = len(questions)
     answers = []
-
     import parselmouth
     data="[-1.0]"
     data2="[-1.0]"
@@ -254,7 +253,6 @@ def markingTest(test, studentNumber, questionNumber):
     answerToQuestion = Answer.query.filter_by(user_id = studentNumber).filter_by(question_id=questions[qnumb].id).first()
     print("QUESTION ID",questions[qnumb].id)
     print(answerToQuestion)
-    form = CreateFeedbackForm()
     testTime = Test.query.filter_by(id = test).first()
     submissionTime = TestMark.query.filter_by(user_id = studentNumber).filter_by(test_id=test).first()
     if(submissionTime.due_date==None or submissionTime.due_time==None):
@@ -266,6 +264,16 @@ def markingTest(test, studentNumber, questionNumber):
             submissionInTime = False
     else:
             submissionInTime = False
+    if(submissionTime.hasBeenMarked==True):
+        print("TEST HAS BEEN MARKED")
+        storedAudio=Feedback.query.filter_by(answer_id = answerToQuestion.id).filter_by(question_id =questions[qnumb].id).order_by(Feedback.id.desc()).first().path
+        print(storedAudio)
+        storedText=Feedback.query.filter_by(answer_id = answerToQuestion.id).filter_by(question_id =questions[qnumb].id).order_by(Feedback.id.desc()).first().body
+    else:
+        storedAudio = "empty"
+        storedText = None
+    person = {'body': storedText }
+    form = CreateFeedbackForm(data=person)
     if request.method == "POST" or form.validate_on_submit():
         if 'audio_data' in request.files:
             print("posted")
@@ -275,7 +283,7 @@ def markingTest(test, studentNumber, questionNumber):
             flash("File was successfully uploaded")
         if ((qnumb+1) == len(questions)):
             if(os.path.isfile(prefix+path)):
-                feedback = Feedback(body=form.body.data, path=path, question_id=questions[qnumb].id, answer_id = answerToQuestion.id)
+                feedback = Feedback(body=form.body.data, path=pathtoPage, question_id=questions[qnumb].id, answer_id = answerToQuestion.id)
             else:
                 feedback = Feedback(body=form.body.data, path="empty", question_id=questions[qnumb].id, answer_id = answerToQuestion.id)
             db.session.add(feedback)
@@ -284,7 +292,7 @@ def markingTest(test, studentNumber, questionNumber):
             #return render_template('testHasBeenMarked.html')
         else: 
             if(os.path.isfile(prefix+path)):
-                feedback = Feedback(body=form.body.data, path=path, question_id=questions[qnumb].id, answer_id = answerToQuestion.id)
+                feedback = Feedback(body=form.body.data, path=pathtoPage, question_id=questions[qnumb].id, answer_id = answerToQuestion.id)
             else:
                 feedback = Feedback(body=form.body.data, path="empty", question_id=questions[qnumb].id, answer_id = answerToQuestion.id)
             db.session.add(feedback)
@@ -292,7 +300,7 @@ def markingTest(test, studentNumber, questionNumber):
             qnumber = int(questionNumber)+1
             print(questionNumber)
             return redirect(url_for('markingTest',test = test, studentNumber = studentNumber, questionNumber = qnumber))
-    return render_template('feedback.html',units=units, user=user,questions=questions, question = questions[qnumb], questionNumber = qnumb, form = form, answerToQuestion = answerToQuestion, submissionInTime= submissionInTime, path=pathtoPage,test=submissionTime)
+    return render_template('feedback.html',units=units, user=user,questions=questions, question = questions[qnumb], questionNumber = qnumb, form = form, answerToQuestion = answerToQuestion, submissionInTime= submissionInTime, path=pathtoPage,test=submissionTime, storedAudio =storedAudio, storedText=storedText)
 
 @app.route('/unitManager', methods=['GET', 'POST'])
 @login_required
@@ -380,7 +388,7 @@ def feedback(unitpage, test):
     #test = Test.query.join(TestMark).filter_by(unit_id=user.unit_id).filter_by(user_id = user.id).all()
     #join(TestMark).filter_by(unit_id=user.unit_id)
     #testmarks = TestMark.query.filter_by(test_id = test).join(User, User.id==TestMark.user_id).all()
-    testmarks = db.session.query(User, TestMark).outerjoin(TestMark, User.id==TestMark.user_id).filter_by(test_id=test).order_by(User.LastName).all()
+    testmarks = db.session.query(User, TestMark).outerjoin(TestMark, User.id==TestMark.user_id).filter_by(test_id=test).filter_by(unit_id=User.unit_id).order_by(User.LastName).all()
     return render_template('feedbackTeacher.html', testmarks = testmarks, units=units)
 
 @app.route("/unitManager/<unitpage>/<test>/feedbackDownload", methods=['GET', 'POST'])

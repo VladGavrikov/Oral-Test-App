@@ -96,11 +96,14 @@ def viewFeedback(test, studentNumber, questionNumber):
             data = json.dumps(pitch_track.tolist())
     if(tempFeedback!=None):
         if(tempFeedback.path!="empty"):
-            sound2 = parselmouth.Sound("app"+tempFeedback.path)
+            string2= tempFeedback.path
+            sep2 = '?noCache='
+            separated2 = string2.split(sep2, 1)[0]
+            sound2 = parselmouth.Sound("app"+separated2)
             pitch_track2 = sound2.to_pitch().selected_array['frequency']
             data2 = json.dumps(pitch_track2.tolist())
     print("TEMPANSWER", tempAnswer)
-    return render_template('viewFeedback.html', units=units, title='Test', user=user, questions = questions,answers=answers, test=testQ, numOfQuestions = numOfQuestions, feedbacks = feedbacks, testMarks = testMarks, data = data, data2 = data2, unit = unit, questionNumber = questionNumber, testPassed = test)
+    return render_template('viewFeedback.html', units=units, title='Feedback', user=user, questions = questions,answers=answers, test=testQ, numOfQuestions = numOfQuestions, feedbacks = feedbacks, testMarks = testMarks, data = data, data2 = data2, unit = unit, questionNumber = questionNumber, testPassed = test)
 
 
 @app.route('/marking/<test>', methods=['GET', 'POST'])
@@ -123,7 +126,7 @@ def markings(test):
             db.session.commit()
         flash('Feedback has been released')
         return redirect(url_for('unitManager'))
-    return render_template('allTestsForMarking.html', title='Test', tests = tests, form=form,units=units)
+    return render_template('allTestsForMarking.html', title='Marking', tests = tests, form=form,units=units)
 
 @app.route('/unenroll/<studentNumber>')
 @login_required
@@ -136,7 +139,7 @@ def unenroll(studentNumber):
     units = Unit.query.all()
     user.unit_id = None
     db.session.commit()
-    return render_template('studentUnenrolledSuccess.html', units =units)
+    return render_template('studentUnenrolledSuccess.html', title='Unenroll', units =units)
 
 
 # @app.route('/releaseFeedback/<test>', methods=['GET', 'POST'])
@@ -185,7 +188,7 @@ def testEvaluation(test, studentNumber):
         testMarking.testWasStarted = True
         db.session.commit()
         return render_template('testHasBeenMarked.html',units = units)
-    return render_template('testEvaluation.html', form = form, unit=unit,units=units, submissionInTime=submissionInTime, submittionDate = submittionDate, submittionTime =submittionTime,
+    return render_template('testEvaluation.html', title='Evaluation', form = form, unit=unit,units=units, submissionInTime=submissionInTime, submittionDate = submittionDate, submittionTime =submittionTime,
                                                         due_date=due_date, due_time=due_time)
 
 @app.route('/attempt/<test>/<studentNumber>/<questionNumber>', methods=['GET', 'POST'])
@@ -201,6 +204,7 @@ def testQuestion(test, studentNumber, questionNumber):
     form = CreateAnswerForm()
     submission = TestMark.query.filter_by(user_id = user.id).filter_by(test_id=test).first()
     successfullySubmitted = False
+    lastQuestion = False
     if request.method == "POST" or form.validate_on_submit():
         if 'audio_data' in request.files:
             print("posted")
@@ -211,6 +215,7 @@ def testQuestion(test, studentNumber, questionNumber):
             print(successfullySubmitted)
             print("Redirect start")
         if ((qnumb+1) == len(questions)):
+            lastQuestion=False
             print("1")
             if(successfullySubmitted):
                 answer = Answer(body=pathtoPage, question_id=questions[qnumb].id, user_id = user.id)
@@ -225,6 +230,7 @@ def testQuestion(test, studentNumber, questionNumber):
 
         else: 
             print("2")
+            LastQuestion=True
             if(successfullySubmitted):
                 answer = Answer(body=pathtoPage, question_id=questions[qnumb].id, user_id = user.id)
             else:
@@ -235,7 +241,7 @@ def testQuestion(test, studentNumber, questionNumber):
             print(questionNumber)
             return redirect(url_for('testQuestion',test = test, studentNumber = user.id, questionNumber = qnumber))
     print("Printing sS var ", successfullySubmitted)
-    return render_template('answer.html',test = test, user=user, question = questions[qnumb], questionNumber = questionNumber, form = form, numbOfQuestions = len(questions),path=pathtoPage,successfullySubmitted = successfullySubmitted)
+    return render_template('answer.html', title='Test In Progress',test = test, user=user, question = questions[qnumb], questionNumber = questionNumber, form = form, numbOfQuestions = len(questions),path=pathtoPage,successfullySubmitted = successfullySubmitted)
 
 #FUTURE WORKS MARKING
 @app.route('/marking/<test>/<studentNumber>/<questionNumber>', methods=['GET', 'POST'])
@@ -300,7 +306,7 @@ def markingTest(test, studentNumber, questionNumber):
             qnumber = int(questionNumber)+1
             print(questionNumber)
             return redirect(url_for('markingTest',test = test, studentNumber = studentNumber, questionNumber = qnumber))
-    return render_template('feedback.html',units=units, user=user,questions=questions, question = questions[qnumb], questionNumber = qnumb, form = form, answerToQuestion = answerToQuestion, submissionInTime= submissionInTime, path=pathtoPage,test=submissionTime, storedAudio =storedAudio, storedText=storedText)
+    return render_template('feedback.html', title='Marking In Progress',units=units, user=user,questions=questions, question = questions[qnumb], questionNumber = qnumb, form = form, answerToQuestion = answerToQuestion, submissionInTime= submissionInTime, path=pathtoPage,test=submissionTime, storedAudio =storedAudio, storedText=storedText)
 
 @app.route('/unitManager', methods=['GET', 'POST'])
 @login_required
@@ -316,7 +322,7 @@ def unitManager():
             db.session.commit()
             return redirect(url_for('unitManager'))
         units = Unit.query.all()
-        return render_template('unitManager.html', units=units,form=form)
+        return render_template('unitManager.html', title='Unit Manager', units=units,form=form)
 
 @app.route('/testCreated/<test>', methods=['GET', 'POST'])
 @login_required
@@ -326,7 +332,7 @@ def testCreated(test):
     usersDoingUnit = User.query.filter_by(unit_id=createdTest.unit_id).all()
     units = Unit.query.all()
     if(len(questions)==0):
-        return render_template('testCreationFailure.html', units=units)
+        return render_template('testCreationFailure.html',test =test, unitpage=createdTest.unit_id, units=units)
     else:
         for user in usersDoingUnit:
             markFB = TestMark(user_id=user.id, test_id=int(test),unit_id = createdTest.unit_id) 
@@ -334,7 +340,7 @@ def testCreated(test):
             db.session.commit()
         createdTest.isFinalized = True
         db.session.commit()
-    return render_template('testCreationSuccess.html', units=units)
+    return render_template('testCreationSuccess.html', title='Test Created', units=units)
 
 @app.route('/enrolment/<unit>', methods=['GET', 'POST'])
 @login_required
@@ -350,7 +356,7 @@ def unitEnrolled(unit):
             markFB = TestMark(user_id=user.id, test_id=test.id,unit_id = unit)
             db.session.add(markFB)
     db.session.commit()
-    return render_template('unitEnrollmentSuccess.html')
+    return render_template('unitEnrollmentSuccess.html', title='Enrollment Success')
     
 
 @app.route('/enrolment')
@@ -358,7 +364,7 @@ def unitEnrolled(unit):
 def enrolment():
     units = Unit.query.all()
     user = User.query.filter_by(email=current_user.email).first_or_404()
-    return render_template('enrolment.html', units=units, user=user)
+    return render_template('enrolment.html', title='Enrollment', units=units, user=user)
 
 @app.route('/<test>/<studentID>')
 @login_required
@@ -379,7 +385,7 @@ def unitpage(unitpage):
         db.session.add(test)
         db.session.commit()
         return redirect(url_for('unitpage',unitpage = unit.name))
-    return render_template('unitpage.html', unit=unit,form=testForm, tests=tests, testmark = testmark, units = units)
+    return render_template('unitpage.html', title='Unit Page', unit=unit,form=testForm, tests=tests, testmark = testmark, units = units)
 
 @app.route("/unitManager/<unitpage>/<test>/feedback", methods=['GET', 'POST'])
 @login_required
@@ -389,7 +395,7 @@ def feedback(unitpage, test):
     #join(TestMark).filter_by(unit_id=user.unit_id)
     #testmarks = TestMark.query.filter_by(test_id = test).join(User, User.id==TestMark.user_id).all()
     testmarks = db.session.query(User, TestMark).outerjoin(TestMark, User.id==TestMark.user_id).filter_by(test_id=test).filter_by(unit_id=User.unit_id).order_by(User.LastName).all()
-    return render_template('feedbackTeacher.html', testmarks = testmarks, units=units)
+    return render_template('feedbackTeacher.html', title='Feedback', testmarks = testmarks, units=units)
 
 @app.route("/unitManager/<unitpage>/<test>/feedbackDownload", methods=['GET', 'POST'])
 @login_required
@@ -398,12 +404,13 @@ def feedbackDownload(unitpage, test):
     test = Test.query.filter_by(id=test).first()
     csv = ''
     print(testmarks)
+    csv = csv +("Last Name,First Name,StudentNumber,Mark\n")
     for testmark in testmarks:
         print(testmark)
         if(testmark[1].mark1==None or testmark[1].mark2==None or testmark[1].mark3==None or testmark[1].mark4==None):
-            csv = csv +(testmark[0].firstName +","+testmark[0].LastName+","+str(testmark[0].id)+",0\n")
+            csv = csv +(testmark[0].LastName +","+testmark[0].firstName+","+str(testmark[0].id)+",0\n")
         else:
-            csv = csv +(testmark[0].firstName +","+testmark[0].LastName+","+str(testmark[0].id)+","+str(testmark[1].mark1+testmark[1].mark2+testmark[1].mark3+testmark[1].mark4)+"\n")
+            csv = csv +(testmark[0].LastName +","+testmark[0].firstName+","+str(testmark[0].id)+","+str(testmark[1].mark1+testmark[1].mark2+testmark[1].mark3+testmark[1].mark4)+"\n")
     response = make_response(csv)
     cd = 'attachment; filename='+unitpage+test.body+'FB.csv'
     response.headers['Content-Disposition'] = cd 

@@ -56,7 +56,6 @@
 
 
     {% if questionNumber != 0 %}
-        <p>{{questionNumber}}</p>
         <a href="{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = questionNumber) }}">arrowLeft</a>
     {% endif %}
     {% for question in range(questions|length)%}

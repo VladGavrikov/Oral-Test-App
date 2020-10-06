@@ -1,5 +1,5 @@
 {% extends "base.html" %}
 {% block content %}
 <h2>The Test is empty please create some questions</h2>
-<a href="{{ url_for('unitManager') }}">Return To Unit Manager</a>
+<a href="{{ url_for('test', test=test, unitpage=unitpage) }}">Return to Test</a>
 {% endblock %}}

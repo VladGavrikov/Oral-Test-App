@@ -35,12 +35,34 @@
                         {% else %}
                             <button class="btn table-btn-static btn-margin">Available</button>
                         {% endif %}
-                        <button id="detele-task-btn" class="btn table-btn" data-toggle="modal" data-target="#delete-task-modal">Delete (TBD)</button>
+                        <button id="detele-task-btn{{test.id}}" class="btn table-btn" data-toggle="modal" data-target="#delete-task-modal{{test.id}}">Delete (TBD)</button>
                         <!-- <form id="delete-test-form" action="{{ url_for('deleteTest', unitpage = unit.name, test=test.id) }}"
                         onsubmit="return confirm('Are you sure you want to delete this test?')" method="POST"><button type="submit" class="btn table-btn">Delete</button>
                         </form> -->
                     </td>
                 </tr>
+                <div id="delete-task-modal{{test.id}}" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div id="delete-task-modal-content" class="modal-content text-center">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                                <p>Are you sure you want to delete the task?</p>
+                                
+                                    <div class="row justify-content-center">
+                                        <button type="button" class="btn green-btn btn-margin" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">Cancel</span>
+                                        </button>
+                                        <a href="{{ url_for('deleteTest', unitpage = unit.name, test=test.id) }}" class="submit btn table-btn btn-margin" role="button">Delete task {{test.body}}</a>
+                                        <!-- this will be form 'delete' button -->
+                                        {# form.submit(class="btn green-btn") #}
+                           
+                                    
+                                <!-- </form> -->
+                                    </div>
+                        </div>
+                    </div>
+                </div>
                 {% endif %}
                 {% endfor %}
             </tbody>
@@ -119,29 +141,7 @@
 </div>
 
 <!-- Modal for delete task -->
-<div id="delete-task-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div id="delete-task-modal-content" class="modal-content text-center">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-                <p>Are you sure you want to delete the task?</p>
-                
-                    <div class="row justify-content-center">
-                        <button type="button" class="btn green-btn btn-margin" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">Cancel</span>
-                        </button>
-                        {% for test in tests %}
-                        <a href="{{ url_for('deleteTest', unitpage = unit.name, test=test.id) }}" class="submit btn table-btn btn-margin" role="button">Delete task</a>
-                        {% endfor %}
-                        <!-- this will be form 'delete' button -->
-                        {# form.submit(class="btn green-btn") #}
-           
-                    
-                <!-- </form> -->
-        </div>
-    </div>
-</div>
+
 
 {% endblock %}
 

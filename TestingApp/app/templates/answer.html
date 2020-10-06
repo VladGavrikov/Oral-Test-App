@@ -34,11 +34,41 @@
        <!-- inserting these scripts at the end to be able to use all the elements in the DOM -->
     <form action="" method="post" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
-        <p>{{ form.submit() }}</p>
+        <p>QUESTION NUMBER {{questionNumber}}</p>
+        <p>NUMBER OF QUESTIONS{{numbOfQuestions}}</p>
+        {%if(questionNumber | int !=numbOfQuestions | int)%}
+            <p>{{ form.submit() }}</p>
+        {%endif%}
+        <div id="delete-task-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div id="delete-task-modal-content" class="modal-content text-center">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                        <p>Are you sure you want to submit this test?</p>
+                        
+                            <div class="row justify-content-center">
+                                <button type="button" class="btn green-btn btn-margin" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">Cancel</span>
+                                </button>
+                                <button type="submit" class="submit btn table-btn btn-margin" role="button">Submit</button>
+                                <!-- this will be form 'delete' button -->
+                    
+                            
+                        <!-- </form> -->
+                            </div>
+                </div>
+            </div>
+        </div>
     </form>
     {% for question in range(numbOfQuestions)%}
     <a href="{{url_for('testQuestion',test = test, studentNumber = user.id, questionNumber = (question+1))}}">{{(question+1)}}</a>
     {% endfor %}
+
     <h5>Questions: {{questionNumber}}</h5>
+    {%if(questionNumber | int ==numbOfQuestions | int)%}
+        <button id="detele-task-btn" class="btn table-btn" data-toggle="modal" data-target="#delete-task-modal">Submit Test</button>
+    {%endif%}
     <!--<a href="{{ url_for('testQuestion',test = test, studentNumber = user.id, questionNumber = 1)  }}">Next Question</a></h3>-->
+    
 {% endblock %}

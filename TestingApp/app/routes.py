@@ -11,7 +11,7 @@ from flask_login import logout_user
 from flask_login import login_required
 from app.models import User, Unit, Test, Question, Answer, TestMark, Feedback
 from app import db
-from app.forms import RegistrationForm, CreateUnitForm, CreateQuestionForm, CreateTestForm, CreateAnswerForm, StartTest, CreateFeedbackForm, TestEvaluationForm, TestEvaluationForm, ReleaseFeedbackForm, RenameTestForm
+from app.forms import RegistrationForm, CreateUnitForm, CreateQuestionForm, CreateTestForm, CreateAnswerForm, StartTest, CreateFeedbackForm, TestEvaluationForm, TestEvaluationForm, ReleaseFeedbackForm, RenameTestForm, ResetDatabaseForm
 
 # from app.forms import RegistrationForm
 # from app.forms import CreateUnitForm
@@ -172,13 +172,15 @@ def testEvaluation(test, studentNumber):
     if(submittionDate ==None or submittionTime == None):
         testWasntSubmitted = True
     else:
-        if(submittionDate <= due_date):
+        if(submittionDate < due_date):
+            submissionInTime = True
+        elif(submittionDate == due_date):
             if(submittionTime <= due_time):
                 submissionInTime = True
             else:
                 submissionInTime = False
         else:
-                submissionInTime = False
+            submissionInTime = False
     if form.validate_on_submit():
         testMarking.hasBeenMarked = True
         testMarking.mark1 = form.mark1.data
@@ -311,18 +313,59 @@ def markingTest(test, studentNumber, questionNumber):
 @app.route('/unitManager', methods=['GET', 'POST'])
 @login_required
 def unitManager():
+    
+    message = ""
     user = User.query.filter_by(email=current_user.email).first_or_404()
     if(user.isTeacher==False):
         return redirect(url_for('dashboard'))
     else:
         form = CreateUnitForm()
+        formReset= ResetDatabaseForm()
         if form.validate_on_submit():
             unit = Unit(name=form.name.data, description=form.description.data, mark1Criteria=form.mark1Criteria.data,mark2Criteria=form.mark2Criteria.data,mark3Criteria=form.mark3Criteria.data,mark4Criteria=form.mark4Criteria.data)
             db.session.add(unit)
             db.session.commit()
             return redirect(url_for('unitManager'))
+        if formReset.validate_on_submit():
+            folder = 'app/static/music/'
+            for filename in os.listdir(folder):
+                dirToFile = folder+filename
+                os.remove(dirToFile)
+            if(formReset.passwordResetter.data=="SUPERHARDPASSWORD"): 
+                users = User.query.filter_by(isTeacher=False).all()
+                for user in users:
+                    db.session.delete(user)
+                units = Unit.query.all()
+                for unit in units:
+                    db.session.delete(unit)
+                tests = Test.query.all()
+                for test in tests:
+                    db.session.delete(test)
+                
+                questions = Question.query.all()
+                for question in questions:
+                    db.session.delete(question)
+
+                answers = Answer.query.all()
+                for answer in answers:
+                    db.session.delete(answer)
+
+                feedbacks = Feedback.query.all()
+                for feedback in feedbacks:
+                    db.session.delete(feedback)
+
+                testmarks = TestMark.query.all()
+                for testmark in testmarks:
+                    db.session.delete(testmark)
+                
+                db.session.commit()
+                flash("Database Successfully cleaned")
+                return redirect(url_for('unitManager'))
+            else:
+                flash("Password is incorrect")
+                return redirect(url_for('unitManager'))
         units = Unit.query.all()
-        return render_template('unitManager.html', title='Unit Manager', units=units,form=form)
+        return render_template('unitManager.html', title='Unit Manager', units=units,form=form, formReset=formReset)
 
 @app.route('/testCreated/<test>', methods=['GET', 'POST'])
 @login_required
@@ -400,7 +443,7 @@ def feedback(unitpage, test):
 @app.route("/unitManager/<unitpage>/<test>/feedbackDownload", methods=['GET', 'POST'])
 @login_required
 def feedbackDownload(unitpage, test):
-    testmarks = db.session.query(User, TestMark).outerjoin(TestMark, User.id==TestMark.user_id).filter_by(test_id=test).order_by(User.LastName).all()
+    testmarks = db.session.query(User, TestMark).outerjoin(TestMark, User.id==TestMark.user_id).filter_by(test_id=test).filter_by(unit_id=User.unit_id).order_by(User.LastName).all()
     test = Test.query.filter_by(id=test).first()
     csv = ''
     print(testmarks)

@@ -1,11 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <span class="error"> {{ messages[0] }} </span>
+    {% endif %}
+{% endwith %}
 <div class="row mx-2">
     <h2 class="page-title">Units</h2>
     <div class="btns">
         <button id="add-unit-btn" class="btn green-btn" data-toggle="modal" data-target="#add-unit-modal">New unit <i class="fas fa-plus"></i></button>
+        
     </div>
 </div>
 
@@ -36,7 +41,9 @@
         <h3 class="information">There are currently no units created</h3>
     </div>
     {% endif %}
-    
+    <div class="btns">
+        <button id="add-unit-btn" class="btn green-btn" data-toggle="modal" data-target="#add-unit-modal-resetter">Reset Everything</i></button>
+    </div>
 </div>
 
 <!-- Modal for new unit -->
@@ -104,6 +111,30 @@
 
 <!-- <a href="">Database Cleanup</a></h3>
 <p>This button cleans up database for new semester. It will delete all student accounts, delete unit pages and clean up stored recordings</p> -->
-
+<div id="add-unit-modal-resetter" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div id="add-unit-modal-content" class="modal-content">
+            <h3 class="modal-title">Create a Unit</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <div class="modal-body">
+                <form action="" method="post">
+                    {{ formReset.hidden_tag() }}
+                    <div class="form-group mb-5">
+                        {{ formReset.passwordResetter.label(class_="form-label") }}
+                        {{ formReset.passwordResetter(class_="form-control form-styling", size=32) }}
+                        {% for error in formReset.passwordResetter.errors %}
+                            <span class="error">*{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="text-center">
+                        {{ formReset.submit(class="btn green-btn") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

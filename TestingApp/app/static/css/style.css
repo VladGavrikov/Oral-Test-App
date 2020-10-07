@@ -426,8 +426,6 @@ input:not(:focus):valid + .floating-label {
     left: 45%;
     width: 64px;
     height: 64px;
-    padding:30px 15px 0px;
-    border: 3px solid #ababab;
     box-shadow:1px 1px 10px #ababab;
     border-radius:20px;
     background-color: white;

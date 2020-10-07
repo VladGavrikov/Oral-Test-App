@@ -124,7 +124,7 @@ def markings(test):
         for test in tests: 
             test.feedbackReleased = True
             db.session.commit()
-        flash('Feedback has been released')
+        # flash('Feedback has been released')
         return redirect(url_for('unitManager'))
     return render_template('allTestsForMarking.html', title='Marking', tests = tests, form=form,units=units)
 
@@ -286,7 +286,7 @@ def markingTest(test, studentNumber, questionNumber):
             f = request.files['audio_data']
             with open((prefix+path), 'wb') as audio:
                 f.save(audio)
-            flash("File was successfully uploaded")
+            # flash("File was successfully uploaded")
         if ((qnumb+1) == len(questions)):
             if(os.path.isfile(prefix+path)):
                 feedback = Feedback(body=form.body.data, path=pathtoPage, question_id=questions[qnumb].id, answer_id = answerToQuestion.id)

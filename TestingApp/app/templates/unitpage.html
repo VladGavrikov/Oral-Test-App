@@ -27,7 +27,7 @@
                 {% if not test.isFinalized %}
                 <tr>
                     <td>{{ test.body }}</td>
-                    <td>{{ test.due_date }} {{ test.due_time }}</a></td>
+                    <td>{{ test.due_date.strftime('%d-%m-%Y') }} {{ test.due_time.strftime('%H:%M') }}</a></td>
                     <td style="width: 900px; padding-top:4px; padding-bottom:4px">
                         <a href="{{ url_for('test', unitpage = unit.name, test= test.id)  }}" class="btn table-btn btn-margin" role="button">Edit</a>
                         {% if not test.isFinalized %}

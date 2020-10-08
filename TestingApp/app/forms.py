@@ -56,7 +56,7 @@ class CreateQuestionForm(FlaskForm):
 
 class CreateAnswerForm(FlaskForm):
     audio = FileField(validators=[FileRequired()])
-    submit = SubmitField('Submit answer')
+    submit = SubmitField('Save answer')
 
 class CreateFeedbackForm(FlaskForm):
     body = StringField('Feedback')

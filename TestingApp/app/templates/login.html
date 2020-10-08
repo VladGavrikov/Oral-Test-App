@@ -4,7 +4,14 @@
 <div class="text-center">
     <h1>SIGN IN</h1>
 </div>
-<div class="row justify-content-center login-items">     
+<div class="row justify-content-center login-items">   
+    <!-- Invalid username or password message-->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <span class="login-error"> {{ messages[0] }} </span>
+    {% endif %}
+    {% endwith %}  
+
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <div class="form-group mt-5 mb-5">
@@ -13,26 +20,17 @@
             {% for error in form.email.errors %}
             <span class="error">*{{ error }}</span>
             {% endfor %}
-            <!-- Invalid username or password message-->
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <span class="error"> *{{ messages[0] }} </span>
-            {% endif %}
-            {% endwith %}
+            
         </div>
 
         <div class="form-group mb-5">
             {{ form.password(class_="form-control", size=32) }}
             {{ form.password.label(class_="floating-label") }}
-            {% for error in form.password.errors %}
+            <p id="forgot-password"><a href="{{ url_for('reset_password_request') }}">Forgot your password?</a></p>
+        {% for error in form.password.errors %}
             <span class="error">*{{ error }}</span>
             {% endfor %}
-            <!-- Invalid username or password message-->
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <span class="error"> *{{ messages[0] }} </span>
-            {% endif %}
-            {% endwith %}
+            
         </div>
         
         <div class="text-center">
@@ -48,10 +46,6 @@
         Don't have an account? <a href="{{ url_for('register') }}">Click here to register!</a>
     </p>
 </div>
-    <p>
-        Forgot Your Password?
-        <a href="{{ url_for('reset_password_request') }}">Click to Reset It</a>
-    </p>
 </div>
 
 </div>

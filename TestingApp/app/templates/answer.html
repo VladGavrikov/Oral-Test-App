@@ -11,64 +11,105 @@
         });
         </script>
     {% endblock %}
+
     <div id="fade"></div>
     <div id="modal">
         <img id="loader" src="{{ url_for('static', filename='img/loading.gif') }}" />
     </div>
-    <h3>{{question.body}}</h3>
-    {% if(question.path != "empty")%}
-        <audio src={{question.path}} id= "player" controls="controls"></audio><br><br>
-    {% endif %}
-    <div style="background-color:#1A9E8A; width:fit-content">
-        <h3>Your Answer:</h3>
-        <audio src={{path}} id= "player" controls="controls" ></audio><br><br>
-        <div id="controls">
-            <button id="recordButton">Record</button>
-            <button id="pauseButton" disabled>Pause</button>
-            <button id="stopButton" disabled>Stop</button>
+    
+<div class="btns">
+    <button id="submit-task-btn" class="btn green-btn" data-toggle="modal" data-target="#submit-task-modal">Submit task</button>
+</div>
+
+<div class="content-container">
+  
+    <div class="row h-100">
+        <div class="question-nav">
+            <ul class="nav nav-pills">
+                {% for question in range(numbOfQuestions)%}
+                    {% if (question+1)|int() == questionNumber|int() %}
+                    <li class="nav-item active">
+                        <a href="{{url_for('testQuestion',test = test, studentNumber = user.id, questionNumber = (question+1))}}">{{(question+1)}}</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a href="{{url_for('testQuestion',test = test, studentNumber = user.id, questionNumber = (question+1))}}">{{(question+1)}}</a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+              </ul>
         </div>
-        <div id="formats">Format: start recording to see sample rate</div>
-    </div>
-    <!--<p><strong>Recordings:</strong></p>
-    <ol id="recordingsList"></ol>-->
-       <!-- inserting these scripts at the end to be able to use all the elements in the DOM -->
-    <form action="" method="post" enctype="multipart/form-data">
-        {{ form.hidden_tag() }}
-        <p>QUESTION NUMBER {{questionNumber}}</p>
-        <p>NUMBER OF QUESTIONS{{numbOfQuestions}}</p>
-        {%if(questionNumber | int !=numbOfQuestions | int)%}
-            <p>{{ form.submit() }}</p>
-        {%endif%}
-        <div id="delete-task-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div id="delete-task-modal-content" class="modal-content text-center">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                        <p>Are you sure you want to submit this test?</p>
-                        
-                            <div class="row justify-content-center">
-                                <button type="button" class="btn green-btn btn-margin" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">Cancel</span>
-                                </button>
-                                <button type="submit" class="submit btn table-btn btn-margin" role="button">Submit</button>
-                                <!-- this will be form 'delete' button -->
+
+        <div style="width: 42%; position:relative">
+            <h3 class="question-heading"><span class="line">|</span>Question {{ questionNumber }}</h3>
+            <div class="question">
+                <p>{{ question.body }}</p>
+                {% if(question.path != "empty") %}
+                    <audio src={{question.path}} id= "player" controls="controls"></audio>
+                {% endif %}
+            </div>
+            <div class="btns-bottom">
+                <form action="" method="post" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
                     
-                            
-                        <!-- </form> -->
-                            </div>
+                    {% if(questionNumber | int !=numbOfQuestions | int) %}
+                        {{ form.submit(class="btn green-btn") }}
+                    {% endif %}
+                    
+                </form>
+                {% if(questionNumber | int ==numbOfQuestions | int) %}
+                    <button id="submit-task-btn" class="btn green-btn" data-toggle="modal" data-target="#submit-task-modal">Submit task</button>
+                {% endif %}
+            </div>      
+        </div>
+
+        <div class="justify-content-center text-center" style="width: 50%;">
+            <h3 class="question-heading">Your Answer:</h3>
+            <div class="audio-recorder">
+                <!-- <ul class="nav controls">
+                    <li class="audio-btn"><a href=# id="recordButton" role="button"><i class="fas fa-microphone"></i></a></li>
+                    <button id="pauseButton" disabled>Pause</button>
+                    <button id="stopButton" disabled>Stop</button>
+                </ul> -->
+                <div id="controls">
+                    <button id="recordButton">Record</button>
+                    <button id="pauseButton" disabled>Pause</button>
+                    <button id="stopButton" disabled>Stop</button>
                 </div>
+                <audio src={{path}} id= "player" controls="controls" ></audio>
+                
+                <div id="formats">Format: start recording to see sample rate</div>
+            </div>
+        <!--<p><strong>Recordings:</strong></p>
+        <ol id="recordingsList"></ol>-->
+        <!-- inserting these scripts at the end to be able to use all the elements in the DOM -->
+        
+
+        
+
+        
+        <!--<a href="{{ url_for('testQuestion',test = test, studentNumber = user.id, questionNumber = 1)  }}">Next Question</a></h3>-->
+        </div>
+    </div>
+    </div>
+</div>
+
+<!-- Submit task modal -->
+<div id="submit-task-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div id="submit-task-modal-content" class="modal-content text-center">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <p>Are you sure you want to finish and submit this task?</p>
+            <div class="row justify-content-center">
+                <button type="button" class="btn green-btn btn-margin" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">Cancel</span>
+                </button>
+                <button type="submit" class="submit btn table-btn btn-margin" role="button">Submit</button>
+                <!-- this will be form 'delete' button -->
             </div>
         </div>
-    </form>
-    {% for question in range(numbOfQuestions)%}
-    <a href="{{url_for('testQuestion',test = test, studentNumber = user.id, questionNumber = (question+1))}}">{{(question+1)}}</a>
-    {% endfor %}
-
-    <h5>Questions: {{questionNumber}}</h5>
-    {%if(questionNumber | int ==numbOfQuestions | int)%}
-        <button id="detele-task-btn" class="btn table-btn" data-toggle="modal" data-target="#delete-task-modal">Submit Test</button>
-    {%endif%}
-    <!--<a href="{{ url_for('testQuestion',test = test, studentNumber = user.id, questionNumber = 1)  }}">Next Question</a></h3>-->
-    
+    </div>
+</div>
 {% endblock %}

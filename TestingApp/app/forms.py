@@ -37,10 +37,10 @@ class RegistrationForm(FlaskForm):
 class CreateUnitForm(FlaskForm):
     name = StringField('Unit Name', validators=[DataRequired()])
     description = StringField('Unit Description', validators=[DataRequired()])
-    mark1Criteria = StringField('Criteria 1', validators=[DataRequired()])
-    mark2Criteria = StringField('Criteria 2', validators=[DataRequired()])
-    mark3Criteria = StringField('Criteria 3', validators=[DataRequired()])
-    mark4Criteria = StringField('Criteria 4', validators=[DataRequired()])
+    mark1Criteria = StringField('Marking criteria 1', validators=[DataRequired()])
+    mark2Criteria = StringField('Marking criteria 2', validators=[DataRequired()])
+    mark3Criteria = StringField('Marking criteria 3', validators=[DataRequired()])
+    mark4Criteria = StringField('Marking criteria 4', validators=[DataRequired()])
     submit = SubmitField('Create Unit')
 
 class CreateTestForm(FlaskForm):
@@ -56,7 +56,7 @@ class CreateQuestionForm(FlaskForm):
 
 class CreateAnswerForm(FlaskForm):
     audio = FileField(validators=[FileRequired()])
-    submit = SubmitField('Submit answer')
+    submit = SubmitField('Save answer')
 
 class CreateFeedbackForm(FlaskForm):
     body = StringField('Feedback')

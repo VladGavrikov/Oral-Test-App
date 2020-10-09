@@ -12,16 +12,6 @@ from flask_login import login_required
 from app.models import User, Unit, Test, Question, Answer, TestMark, Feedback
 from app import db
 from app.forms import RegistrationForm, CreateUnitForm, CreateQuestionForm, CreateTestForm, CreateAnswerForm, StartTest, CreateFeedbackForm, TestEvaluationForm, TestEvaluationForm, ReleaseFeedbackForm, RenameTestForm, ResetDatabaseForm
-
-# from app.forms import RegistrationForm
-# from app.forms import CreateUnitForm
-# from app.forms import CreateQuestionForm
-# from app.forms import CreateTestForm
-# from app.forms import CreateAnswerForm
-# from app.forms import StartTest
-# from app.forms import CreateFeedbackForm
-# from app.forms import TestEvaluationForm
-# from app.forms import ReleaseFeedbackForm
 from datetime import datetime
 import numpy as np
 import os.path
@@ -37,6 +27,8 @@ def dashboard():
     user = User.query.filter_by(email=current_user.email).first_or_404()
     if(user.isTeacher==True):
         return redirect(url_for('unitManager'))
+    if(user.unit_id==None):
+        return redirect(url_for('enrolment'))
     unit = Unit.query.filter_by(name=user.unit_id).first()
     testFB = TestMark.query.filter_by(unit_id=user.unit_id).filter_by(user_id = user.id).all()
     test = Test.query.join(TestMark).filter_by(unit_id=user.unit_id).filter_by(user_id = user.id).all()
@@ -407,7 +399,7 @@ def unitEnrolled(unit):
 def enrolment():
     units = Unit.query.all()
     user = User.query.filter_by(email=current_user.email).first_or_404()
-    return render_template('enrolment.html', title='Enrollment', units=units, user=user)
+    return render_template('enrolment.html', title='Enrolment', units=units, user=user)
 
 @app.route('/<test>/<studentID>')
 @login_required
@@ -549,7 +541,7 @@ def logout():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for('dashbord'))
+        return redirect(url_for('dashboard'))
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(id=form.studentNumber.data, email=form.email.data, firstName= form.firstName.data, LastName = form.lastName.data)

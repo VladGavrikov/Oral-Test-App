@@ -473,13 +473,12 @@ def test(unitpage, test):
     units = Unit.query.all()
     unit = Unit.query.filter_by(name=unitpage).first()
     t = Test.query.filter_by(id=test).first()
-    
+
     renameForm = RenameTestForm()
     if renameForm.submitRename.data and renameForm.validate_on_submit():
             t.body = renameForm.newTestName.data
             db.session.commit()
             return redirect(url_for('test', unitpage=unit.name, test=test))
-
     questions = Question.query.filter_by(test_id=test).all()
     questionForm = CreateQuestionForm()
     prefix = "app/"

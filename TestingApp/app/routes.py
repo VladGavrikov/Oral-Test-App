@@ -102,18 +102,20 @@ def viewFeedback(test, studentNumber, questionNumber):
 @login_required
 def markings(test):
     units = Unit.query.all()
-    tests = TestMark.query.filter_by(test_id=test).all()
+    #tests = TestMark.query.filter_by(test_id=test).all()
 
-    # tests = db.session.query(User, TestMark).outerjoin(TestMark, User.id==TestMark.user_id).filter_by(test_id=test).filter_by(unit_id=User.unit_id).order_by(User.LastName).all()
+    tests = db.session.query(User, TestMark).outerjoin(TestMark, User.id==TestMark.user_id).filter_by(test_id=test).filter_by(unit_id=User.unit_id).order_by(User.LastName).all()
     # TRIED TO ADD THIS
 
     form = ReleaseFeedbackForm()
     testsFiltered = []
+
     for test in tests: 
-        enrolledStudent = User.query.filter_by(id=test.user_id).first()
-        if(test.unit_id==enrolledStudent.unit_id):
+        enrolledStudent = User.query.filter_by(id=test[1].user_id).first()
+        if(test[1].unit_id==enrolledStudent.unit_id):
             testsFiltered.append(test)
     tests = testsFiltered
+    print("\n\n\n\n\n"  ,tests)
     print("FILTERED TESTS:",tests)
     if form.validate_on_submit():
         for test in tests: 

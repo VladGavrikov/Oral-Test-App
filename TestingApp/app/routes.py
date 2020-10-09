@@ -388,8 +388,9 @@ def unitEnrolled(unit):
         newEnrollment = TestMark.query.filter_by(unit_id=unit).filter_by(user_id = user.id).filter_by(test_id = test.id).all()
         print(newEnrollment)
         if(len(newEnrollment)==0):
-            markFB = TestMark(user_id=user.id, test_id=test.id,unit_id = unit)
-            db.session.add(markFB)
+            if(test.isFinalized):
+                markFB = TestMark(user_id=user.id, test_id=test.id,unit_id = unit)
+                db.session.add(markFB)
     db.session.commit()
     return render_template('unitEnrollmentSuccess.html', title='Enrollment Success')
     

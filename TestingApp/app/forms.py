@@ -2,6 +2,13 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from app.models import User
+<<<<<<< Updated upstream
+=======
+from wtforms.fields.html5 import EmailField
+from wtforms import Form
+from wtforms.fields.html5 import DateField, TimeField, DateTimeField
+import re
+>>>>>>> Stashed changes
 
 class LoginForm(FlaskForm):
     username = StringField('Student Number', validators=[DataRequired()])
@@ -24,5 +31,9 @@ class RegistrationForm(FlaskForm):
 
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
+        email_check = email
+        if not re.search("uwa.edu.au", email_check):
+            raise ValidationError('Please use UWA email')
+
         if user is not None:
             raise ValidationError('Please use a different email address.')

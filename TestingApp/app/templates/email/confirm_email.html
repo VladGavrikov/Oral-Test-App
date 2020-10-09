@@ -1,0 +1,12 @@
+<p>Dear Student,</p>
+<p>
+    To confirm your email
+    <a href="{{ url_for('confirm_email', token=token, _external=True) }}">
+        click here
+    </a>.
+</p>
+<p>Alternatively, you can paste the following link in your browser's address bar:</p>
+<p>{{ url_for('confirm_email', token=token, _external=True) }}</p>
+<p>Please ensure you confirm your email, else access to website will not be allowed..</p>
+<p>Sincerely,</p>
+<p>The SpeakFluent Team</p>

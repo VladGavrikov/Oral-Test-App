@@ -1,0 +1,11 @@
+Dear Student,
+
+To confirm your email click on the following link:
+
+{{ url_for('confirm_email', token=token, _external=True) }}
+
+Please ensure you confirm your email, else access to website will not be allowed.
+
+Sincerely,
+
+The SpeakFluent Team

@@ -4,7 +4,7 @@
 {% block content %}
 
 <div class="row mx-2">
-    <h2 class="page-title">{{ unit.description }}</h2>
+    <h2 class="page-title">{{ unit.name }}: {{ unit.description }}</h2>
     <div class="btns">
         <a href= "{{ url_for('manageStudents', unitpage = unit.name)  }}"><button class="btn green-btn btn-margin">Manage Students<i class="fas fa-users"></i></button></a>
         <button id="add-task-btn" class="btn green-btn" data-toggle="modal" data-target="#add-task-modal">New task <i class="fas fa-plus"></i></button>

@@ -196,7 +196,7 @@ def testEvaluation(test, studentNumber):
         testMarking.mark4 = form.mark4.data
         testMarking.testWasStarted = True
         db.session.commit()
-        return render_template('testHasBeenMarked.html',units = units)
+        return render_template('testMarkedSuccess.html',units = units, test = test)
     return render_template('testEvaluation.html', title='Evaluation', form = form, unit=unit,units=units, submissionInTime=submissionInTime, submittionDate = submittionDate, submittionTime =submittionTime,
                                                         due_date=due_date, due_time=due_time)
 
@@ -304,7 +304,6 @@ def markingTest(test, studentNumber, questionNumber):
             db.session.add(feedback)
             db.session.commit()
             return redirect(url_for('testEvaluation',test = test, studentNumber = studentNumber))
-            #return render_template('testHasBeenMarked.html')
         else: 
             if(os.path.isfile(prefix+path)):
                 feedback = Feedback(body=form.body.data, path=pathtoPage, question_id=questions[qnumb].id, answer_id = answerToQuestion.id)

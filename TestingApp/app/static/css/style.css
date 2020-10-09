@@ -108,6 +108,10 @@ a:hover {
     text-orientation: upright;
 }
 
+.invisible {
+    visibility: hidden;
+}
+
 /* Sidenav */
 .sidenav {
 	height: 100%;
@@ -493,7 +497,7 @@ input:not(:focus):valid + .floating-label {
 }
 
 .nav-item:nth-last-child(2) {
-    margin-bottom: 23px;
+    margin-bottom: 25px;
 }
 
 .active {

@@ -51,13 +51,31 @@
             <div class="btns-bottom">
                 <form action="" method="post" enctype="multipart/form-data">
                     {{ form.hidden_tag() }}
-                    
-                    {% if(questionNumber | int !=numbOfQuestions | int) %}
-                        {{ form.submit(class="btn green-btn") }}
-                    {% endif %}
-                    
+
+                    <!-- Submit task modal -->
+                    <div id="submit-task-modal" class="modal fade" style="position:fixed" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div id="submit-task-modal-content" class="modal-content text-center">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <p>Are you sure you want to finish and submit this task?</p>
+                                <div class="row justify-content-center">
+                                    <button type="button" class="btn green-btn btn-margin" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">Cancel</span>
+                                    </button>
+                                    <button type="submit" class="submit btn green-btn btn-margin" role="button">Submit</button>
+                                    <!-- this will be form 'delete' button -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </form>
-                {% if(questionNumber | int ==numbOfQuestions | int) %}
+                {% if(questionNumber | int != numbOfQuestions | int) %}
+                        {{ form.submit(class="btn green-btn") }}
+                {% endif %}
+
+                {% if(questionNumber | int == numbOfQuestions | int) %}
                     <button id="submit-task-btn" class="btn green-btn" data-toggle="modal" data-target="#submit-task-modal">Submit task</button>
                 {% endif %}
             </div>      
@@ -94,22 +112,5 @@
     </div>
 </div>
 
-<!-- Submit task modal -->
-<div id="submit-task-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div id="submit-task-modal-content" class="modal-content text-center">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <p>Are you sure you want to finish and submit this task?</p>
-            <div class="row justify-content-center">
-                <button type="button" class="btn green-btn btn-margin" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">Cancel</span>
-                </button>
-                <button type="submit" class="submit btn table-btn btn-margin" role="button">Submit</button>
-                <!-- this will be form 'delete' button -->
-            </div>
-        </div>
-    </div>
-</div>
+
 {% endblock %}

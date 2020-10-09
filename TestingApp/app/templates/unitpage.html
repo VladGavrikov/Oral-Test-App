@@ -27,7 +27,8 @@
                 {% if not test.isFinalized %}
                 <tr>
                     <td>{{ test.body }}</td>
-                    <td>{{ test.due_date.strftime('%d-%m-%Y') }} {{ test.due_time.strftime('%H:%M') }}</a></td>
+                    <td>{{ test.due_date.strftime('%d/%m/%Y') }} {{ test.due_time.strftime('%I:%M %p') }}</a></td>
+                    <!-- ^note: can change strftime back to %H:%M instead of %I:%M %p -->
                     <td style="width: 900px; padding-top:4px; padding-bottom:4px">
                         <a href="{{ url_for('test', unitpage = unit.name, test= test.id)  }}" class="btn table-btn btn-margin" role="button">Edit</a>
                         {% if not test.isFinalized %}
@@ -86,7 +87,7 @@
                 {% if test.isFinalized %}
                 <tr>
                     <td>{{ test.body }}</td>
-                    <td>{{ test.due_date.strftime('%d-%m-%Y') }} {{ test.due_time.strftime('%H:%M') }}</a></td>
+                    <td>{{ test.due_date.strftime('%d/%m/%Y') }} {{ test.due_time.strftime('%I:%M %p') }}</a></td>
                     <td style="padding-top:4px; padding-bottom: 4px;"><a href="{{ url_for('markings',test= test.id)  }}" class="btn table-btn-navy" role="button">Mark</a></td>
                     <td style="padding-top:4px; padding-bottom: 4px;"><a href="{{ url_for('feedback',unitpage = test.unit_id, test=test.id)  }}" class="btn table-btn-navy" role="button">Feedback</a></td>
                     <td style="padding-top:4px; padding-bottom: 4px;"><a href="{{ url_for('feedbackDownload',unitpage = test.unit_id, test=test.id)  }}" class="btn table-btn-navy" role="button">Download<i class="fas fa-download"></i></a></td>

@@ -5,13 +5,13 @@
 <div class="row mx-2">
     <h2 class="page-title">Tests</h2>
     <div class="btns">
-        {% if tests|length !=0%}
+        {% if tests|length !=0 %}
             {% if tests[0].feedbackReleased == False %}
             <!-- <button class="btn table-btn btn-margin"><a href="{# url_for('releaseFeedback', test = tests[0].test_id) #}">Release Feedback</a></button> -->
             <button id="release-feedback-btn" class="btn green-btn" data-toggle="modal" data-target="#release-feedback-modal">Release feedback</button>
             {% else %}
             <button class="btn navy-btn-static">Feedback has already released</button>
-            {%endif%}
+            {% endif %}
         {% endif %}
 
     </div>
@@ -26,16 +26,22 @@
             <thead>
                 <tr>
                     <th>Student Number</th>
+                    <th>First name</th>
+                    <th>Last name</th>
                     <th>Grade</th>
                     <th>Mark</th>
                 </tr>
             </thead>
             <tbody>
-                {% for test in tests %}  
+                {% for test in tests %}
                 <tr>
-                    <td> {{ test.user_id }} </td>
+                    <td>{{ test.user_id }}</td>
+                    <!-- <td>{# test[0].id #}</td>  -->
+                    <td>{# test[0].firstName #}</td> <!-- Added -->
+                    <td>{# test[0].LastName #}</td> <!-- Added -->
                     {% if test.hasBeenMarked == True %}
                         <td>{{ test.mark1 + test.mark2 + test.mark3 + test.mark4 }}</td>
+                        <!-- <td>{# test[1].mark1 + test[1].mark2 + test[1].mark3 + test[1].mark4 #}</td>  -->
                         <td style="padding-top:4px; padding-bottom:4px">
                             <a href="{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = 1) }}"><button class="btn table-btn-navy btn-margin">Marked/Update</button></a> 
                         </td>

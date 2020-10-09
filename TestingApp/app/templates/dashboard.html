@@ -19,13 +19,13 @@
             </thead>
             <tbody>
                 {% for test in tests%}
-                {% if testFB[loop.index0].testWasStarted == False %}
-                <tr>
-                    <td>{{ test.body }}</td>
-                    <td>{{ test.due_date}} {{ test.due_time}}</a></td>
-                    <td style="padding-top:4px; padding-bottom: 4px;"><a href="{{ url_for('attempt',test = testFB[loop.index0].test_id, studentNumber = user.id)  }}"><button class="btn table-btn">Start task</button></a></td>
-                </tr>
-                {% endif %}
+                    {% if testFB[loop.index0].testWasStarted == False %}
+                    <tr>
+                        <td>{{ test.body }}</td>
+                        <td>{{ test.due_date.strftime('%d/%m/%Y') }} {{ test.due_time.strftime('%I:%M %p') }}</td>
+                        <td style="padding-top:4px; padding-bottom: 4px;"><a href="{{ url_for('attempt',test = testFB[loop.index0].test_id, studentNumber = user.id)  }}"><button class="btn table-btn">Start task</button></a></td>
+                    </tr>
+                    {% endif %}
                 {% endfor %}
             </tbody>
         </table>
@@ -43,28 +43,28 @@
             </thead>
             <tbody>
                 {% for test in tests %}
-                {% if testFB[loop.index0].testWasStarted == True %}
-                <tr>
-                    <td>{{ test.body }}</td>
-                    {% if testFB[loop.index0].feedbackReleased == True %}
-                        <td class="td-btns" style="padding-top:4px; padding-bottom:4px"> 
-                            {% if testFB[loop.index0].mark1 == None %}
-                            <p>0</p>
-                            {% else %}
-                            <p>{{testFB[loop.index0].mark1+testFB[loop.index0].mark2+testFB[loop.index0].mark3+testFB[loop.index0].mark4}}</p>
-                            {% endif %}
-                        </td>
-                        <td class="td-btns" style="padding-top:4px; padding-bottom:4px"> 
-                            <a href="{{ url_for('viewFeedback',test = testFB[loop.index0].test_id, studentNumber = user.id, questionNumber=1)  }}"><button class="btn table-btn">View</button></a>
-                        </td>
-                    {% else %}
-                        <td class="td-btns" style="padding-top:4px; padding-bottom:4px"> 
-                            <p></p>
-                        </td>
-                        <td>No feedback currently available</td>
+                    {% if testFB[loop.index0].testWasStarted == True %}
+                    <tr>
+                        <td>{{ test.body }}</td>
+                        {% if testFB[loop.index0].feedbackReleased == True %}
+                            <td class="td-btns" style="padding-top:4px; padding-bottom:4px"> 
+                                {% if testFB[loop.index0].mark1 == None %}
+                                <p>0</p>
+                                {% else %}
+                                <p>{{testFB[loop.index0].mark1+testFB[loop.index0].mark2+testFB[loop.index0].mark3+testFB[loop.index0].mark4}}</p>
+                                {% endif %}
+                            </td>
+                            <td class="td-btns" style="padding-top:4px; padding-bottom:4px"> 
+                                <a href="{{ url_for('viewFeedback',test = testFB[loop.index0].test_id, studentNumber = user.id, questionNumber=1)  }}"><button class="btn table-btn">View</button></a>
+                            </td>
+                        {% else %}
+                            <td class="td-btns" style="padding-top:4px; padding-bottom:4px"> 
+                                <p></p>
+                            </td>
+                            <td>No feedback currently available</td>
+                        {% endif %}
+                    </tr>
                     {% endif %}
-                </tr>
-                {% endif %}
                 {% endfor %}
             </tbody>
         </table>

@@ -100,6 +100,14 @@ a:hover {
     margin-left: 25px;
 }
 
+.vertical-text {
+    color: var(--testapp-grey);
+    font-size: 14px;
+    text-transform: uppercase;
+    writing-mode: vertical-lr; 
+    text-orientation: upright;
+}
+
 /* Sidenav */
 .sidenav {
 	height: 100%;
@@ -484,6 +492,10 @@ input:not(:focus):valid + .floating-label {
     color: #FFFFFF;
 }
 
+.nav-item:nth-last-child(2) {
+    margin-bottom: 23px;
+}
+
 .active {
     background-color: var(--testapp-green);
     opacity: 100%;
@@ -513,6 +525,11 @@ input:not(:focus):valid + .floating-label {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.row-fit {
+    height: fit-content;
+    width: 50%;
 }
 
 /* Not too sure was Vlad's stuff */

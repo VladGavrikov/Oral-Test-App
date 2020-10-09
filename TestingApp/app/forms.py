@@ -61,7 +61,7 @@ class CreateAnswerForm(FlaskForm):
 class CreateFeedbackForm(FlaskForm):
     body = StringField('Feedback')
     #body = StringField('Feedback', validators=[DataRequired()])
-    submit = SubmitField('Submit feedback')
+    submit = SubmitField('Save feedback')
 
 class StartTest(FlaskForm):
     submit = SubmitField('Start Test')

@@ -103,8 +103,11 @@ def viewFeedback(test, studentNumber, questionNumber):
 def markings(test):
     units = Unit.query.all()
     tests = TestMark.query.filter_by(test_id=test).all()
+
+    # tests = db.session.query(User, TestMark).outerjoin(TestMark, User.id==TestMark.user_id).filter_by(test_id=test).filter_by(unit_id=User.unit_id).order_by(User.LastName).all()
+    # TRIED TO ADD THIS
+
     form = ReleaseFeedbackForm()
-    tests = TestMark.query.filter_by(test_id=test).all()
     testsFiltered = []
     for test in tests: 
         enrolledStudent = User.query.filter_by(id=test.user_id).first()
@@ -118,7 +121,17 @@ def markings(test):
             db.session.commit()
         flash('Feedback has been released')
         return redirect(url_for('unitManager'))
-    return render_template('allTestsForMarking.html', title='Marking', tests = tests, form=form,units=units)
+    return render_template('allTestsForMarking.html', title='Marking', tests = tests, form=form, units=units)
+
+@app.route("/unitManager/<unitpage>/<test>/feedback", methods=['GET', 'POST'])
+@login_required
+def feedback(unitpage, test):
+    units = Unit.query.all()
+    #test = Test.query.join(TestMark).filter_by(unit_id=user.unit_id).filter_by(user_id = user.id).all()
+    #join(TestMark).filter_by(unit_id=user.unit_id)
+    #testmarks = TestMark.query.filter_by(test_id = test).join(User, User.id==TestMark.user_id).all()
+    testmarks = db.session.query(User, TestMark).outerjoin(TestMark, User.id==TestMark.user_id).filter_by(test_id=test).filter_by(unit_id=User.unit_id).order_by(User.LastName).all()
+    return render_template('feedbackTeacher.html', title='Feedback', testmarks = testmarks, units=units)
 
 @app.route('/unenroll/<studentNumber>')
 @login_required
@@ -235,7 +248,7 @@ def testQuestion(test, studentNumber, questionNumber):
             print(questionNumber)
             return redirect(url_for('testQuestion',test = test, studentNumber = user.id, questionNumber = qnumber))
     print("Printing sS var ", successfullySubmitted)
-    return render_template('answer.html', title='Test In Progress',test = test, user=user, question = questions[qnumb], questionNumber = questionNumber, form = form, numbOfQuestions = len(questions),path=pathtoPage,successfullySubmitted = successfullySubmitted)
+    return render_template('answer.html', title='Test In Progress',test = test, user = user, question = questions[qnumb], questionNumber = questionNumber, form = form, numbOfQuestions = len(questions), path=pathtoPage, successfullySubmitted = successfullySubmitted)
 
 #FUTURE WORKS MARKING
 @app.route('/marking/<test>/<studentNumber>/<questionNumber>', methods=['GET', 'POST'])
@@ -422,16 +435,6 @@ def unitpage(unitpage):
         db.session.commit()
         return redirect(url_for('unitpage',unitpage = unit.name))
     return render_template('unitpage.html', title='Unit Page', unit=unit,form=testForm, tests=tests, testmark = testmark, units = units)
-
-@app.route("/unitManager/<unitpage>/<test>/feedback", methods=['GET', 'POST'])
-@login_required
-def feedback(unitpage, test):
-    units = Unit.query.all()
-    #test = Test.query.join(TestMark).filter_by(unit_id=user.unit_id).filter_by(user_id = user.id).all()
-    #join(TestMark).filter_by(unit_id=user.unit_id)
-    #testmarks = TestMark.query.filter_by(test_id = test).join(User, User.id==TestMark.user_id).all()
-    testmarks = db.session.query(User, TestMark).outerjoin(TestMark, User.id==TestMark.user_id).filter_by(test_id=test).filter_by(unit_id=User.unit_id).order_by(User.LastName).all()
-    return render_template('feedbackTeacher.html', title='Feedback', testmarks = testmarks, units=units)
 
 @app.route("/unitManager/<unitpage>/<test>/feedbackDownload", methods=['GET', 'POST'])
 @login_required

@@ -141,8 +141,6 @@ def unenroll(studentNumber):
     user = User.query.filter_by(id = studentNumber).first()
     unenrollStudent = TestMark.query.filter_by(unit_id=user.unit_id).filter_by(user_id=user.id).all()
     print("UNENROLLING FROM: ",unenrollStudent)
-    for test in unenrollStudent: 
-        db.session.delete(test)
     units = Unit.query.all()
     user.unit_id = None
     db.session.commit()
@@ -290,6 +288,10 @@ def markingTest(test, studentNumber, questionNumber):
     else:
         storedAudio = "empty"
         storedText = None
+    print("STORED TEXT: ", storedAudio)
+    storedText=Feedback.query.filter_by(answer_id = answerToQuestion.id).filter_by(question_id =questions[qnumb].id).order_by(Feedback.id.desc()).first()
+    if(storedText!=None):
+        storedText=storedText.body
     person = {'body': storedText }
     form = CreateFeedbackForm(data=person)
     if request.method == "POST" or form.validate_on_submit():

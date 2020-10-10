@@ -7,7 +7,6 @@
     {{ student.id }}
     {{ student.email }}
     <a href= "{{ url_for('unenroll',studentNumber = student.id)  }}">Unenroll</a>
-    <a href= "">Delete</a>
     <br>
 {%endfor%}
 {% endblock %}

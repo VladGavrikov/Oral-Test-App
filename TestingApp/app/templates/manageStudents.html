@@ -1,13 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Manage Students which are enrolled in this unit</h2>
-<p>Here you can unenroll students which are enrolled into specific unit and delete students</p>
-{%for student in students %}  
-    {{ student.id }}
-    {{ student.email }}
-    <a href= "{{ url_for('unenroll',studentNumber = student.id)  }}">Unenroll</a>
-    <a href= "">Delete</a>
-    <br>
-{%endfor%}
+<div class="content-container">
+    <h2>Manage Students which are enrolled in this unit</h2>
+    <p>Here you can unenroll students which are enrolled into specific unit and delete students</p>
+    {%for student in students %}  
+        {{ student.id }}
+        {{ student.email }}
+        <a href= "{{ url_for('unenroll',studentNumber = student.id)  }}">Unenroll</a>
+        <a href= "">Delete</a>
+        <br>
+    {%endfor%}
+</div>
 {% endblock %}

@@ -495,18 +495,36 @@ def test(unitpage, test,questionNumber):
     else:
         storedText=None
     deleteForm = DeleteQuestionForm()
-    if deleteForm.validate_on_submit():
-        print("fn Delete form")
-        print("EACH QUESTION:",eachQuestion)
-        return redirect(url_for('test', unitpage=unit.name, test=test, questionNumber=questionNumber))
     print("STORED TEXT: ",storedText)
     person = {'name': storedText }
     questionForm = CreateQuestionForm(data=person)
+    if deleteForm.submitDelete.data and  deleteForm.validate_on_submit():
+        print("fn Delete form")
+        print("EACH QUESTION:",eachQuestion)
+        if(os.path.isfile("app/static/music/Test"+test+"QNum"+questionNumber+".wav")):
+            os.remove("app/static/music/Test"+test+"QNum"+questionNumber+".wav")
+        for question in questions[int(questionNumber):-1]:
+            print(question.path.split("?")[0])
+            if(question.path!="empty"):
+                os.rename("app"+question.path.split("?")[0],"app/static/music/Test"+test+"QNum"+str(int(questionNumber))+".wav")
+                if(os.path.isfile("/static/music/Test"+test+"QNum"+str(int(questionNumber)-1)+".wav")):
+                    randomNumber = randint(0, 10000000000)
+                    pathtoPage = "/static/music/Test"+test+"QNum"+str(int(questionNumber)-1)+".wav"+"?noCache="+str(randomNumber)
+                    print("PRINT3")
+                    question = Question(id=eachQuestion.id, body =repr(questionForm.name.data.encode())[2:-1],path=pathtoPage,test_id=test)
+                    db.session.merge(question)
+                else: 
+                    print("PRINT4")
+                    question = Question(id=eachQuestion.id, body =repr(questionForm.name.data.encode())[2:-1],path="empty",test_id=test)
+                    db.session.merge(question)
+        db.session.delete(eachQuestion)
+        db.session.commit()
+        return redirect(url_for('test', unitpage=unit.name, test=test, questionNumber=questionNumber))
+
     prefix = "app/"
     path = "/static/music/Test"+test+"QNum"+questionNumber+".wav"
     randomNumber = randint(0, 10000000000)
     pathtoPage = "/static/music/Test"+test+"QNum"+questionNumber+".wav"+"?noCache="+str(randomNumber)
-
     if request.method == "POST" or questionForm.validate_on_submit():
         if 'audio_data' in request.files:
             print("posted")

@@ -17,6 +17,7 @@
     <h2 class="page-title">Edit task: {{ unit.name }} - {{ t.body }}</h2>
     <div class="btns mt-4">
         <button id="rename-task-btn" class="btn green-btn btn-margin" data-toggle="modal" data-target="#rename-task-modal">Rename task</button>
+        <button id="rename-task-btn" class="btn green-btn btn-margin" data-toggle="modal" data-target="#delete-question-modal">Delete Question</button>
         <button id="save-task-btn" class="btn green-btn btn-margin"><a href="{{ url_for('unitpage', unitpage = unit.name) }}">Save & exit</a></button>
         <!-- <button id="make-available-btn" class="btn green-btn" data-toggle="modal" data-target="#make-available-modal">Make available</button> -->
     </div>
@@ -92,7 +93,7 @@
                 <div id="formats">Not Recording</div>
         </div>
         <br>
-        <button id="rename-task-btn" class="btn green-btn btn-margin" data-toggle="modal" data-target="#delete-question-modal">Delete Question</button>
+
         <!--<p><strong>Recordings:</strong></p>
         <ol id="recordingsList2"></ol>-->
         

@@ -91,6 +91,8 @@
                 <audio src={{path}} id= "player" controls="controls"></audio>
                 <div id="formats">Not Recording</div>
         </div>
+        <br>
+        <button id="rename-task-btn" class="btn green-btn btn-margin" data-toggle="modal" data-target="#delete-question-modal">Delete Question</button>
         <!--<p><strong>Recordings:</strong></p>
         <ol id="recordingsList2"></ol>-->
         
@@ -99,6 +101,7 @@
     
     </div>
 </div>
+
 
 <!-- Modal for rename task -->
 <div id="rename-task-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -123,6 +126,29 @@
                             <span aria-hidden="true">Cancel</span>
                         </button>
                         {{ renameForm.submitRename(class="btn green-btn") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for rename task -->
+<div id="delete-question-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div id="rename-task-modal-content" class="modal-content">
+            <h3 class="modal-title">Delete Question</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <div class="modal-body">
+                <form action="" method="post" novalidate>
+                    {{ deleteForm.hidden_tag() }}
+                    <div class="row justify-content-center">
+                        <button type="button" class="btn green-btn btn-margin" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">Cancel</span>
+                        </button>
+                        {{ deleteForm.submitDelete(class="btn green-btn") }}
                     </div>
                 </form>
             </div>

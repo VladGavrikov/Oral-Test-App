@@ -482,7 +482,8 @@ def test(unitpage, test,questionNumber):
     if renameForm.submitRename.data and renameForm.validate_on_submit():
             t.body = renameForm.newTestName.data
             db.session.commit()
-            return redirect(url_for('test', unitpage=unit.name, test=test))
+            return redirect(url_for('test', unitpage=unit.name, test=test, questionNumber=questionNumber))
+
     questions = Question.query.filter_by(test_id=test).all()
     eachQuestion = None
     if(questions!=[]):
@@ -493,6 +494,11 @@ def test(unitpage, test,questionNumber):
         storedText=eachQuestion.body
     else:
         storedText=None
+    deleteForm = DeleteQuestionForm()
+    if deleteForm.validate_on_submit():
+        print("fn Delete form")
+        print("EACH QUESTION:",eachQuestion)
+        return redirect(url_for('test', unitpage=unit.name, test=test, questionNumber=questionNumber))
     print("STORED TEXT: ",storedText)
     person = {'name': storedText }
     questionForm = CreateQuestionForm(data=person)
@@ -500,6 +506,7 @@ def test(unitpage, test,questionNumber):
     path = "/static/music/Test"+test+"QNum"+questionNumber+".wav"
     randomNumber = randint(0, 10000000000)
     pathtoPage = "/static/music/Test"+test+"QNum"+questionNumber+".wav"+"?noCache="+str(randomNumber)
+
     if request.method == "POST" or questionForm.validate_on_submit():
         if 'audio_data' in request.files:
             print("posted")
@@ -508,7 +515,6 @@ def test(unitpage, test,questionNumber):
                 f.save(audio)
             print("File was successfully uploaded")
         if questionForm.validate_on_submit():
-            print("EACH QUESTION:",eachQuestion)
             if(eachQuestion=="" or eachQuestion==None):
                 if(os.path.isfile(prefix+path)):
                     print("PRINT1")
@@ -527,7 +533,7 @@ def test(unitpage, test,questionNumber):
             db.session.commit()
             return redirect(url_for('test', unitpage = unit.name, test= test,questionNumber=int(questionNumber)+1))
     print(questions)
-    return render_template('test.html', title="Edit task", unit=unit, form=questionForm, renameForm=renameForm, question=eachQuestion, questionNumber= questionNumber, numOfQuestions= len(questions)-1, test = test, t = t, units = units,path=pathtoPage)
+    return render_template('test.html', title="Edit task", unit=unit,deleteForm=deleteForm, form=questionForm, renameForm=renameForm, question=eachQuestion, questionNumber= questionNumber, numOfQuestions= len(questions)-1, test = test, t = t, units = units,path=pathtoPage)
 
 @app.route("/unitManager/<unitpage>/<test>/delete", methods=['GET', 'POST'])
 def deleteTest(unitpage, test):

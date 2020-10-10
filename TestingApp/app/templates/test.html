@@ -37,9 +37,17 @@
                     <li class="vertical-text invisible"><i class="fas fa-long-arrow-alt-up"></i>&nbsp;Prev</a></li>
                 {% endif %}
                 {% for question in range(numOfQuestions+1)%}
-                    {% if questionNumber|int-1 == question %}
+                    {% if questionNumber|int-1 == question and question==numOfQuestions%}
+                    <li class="nav-item active">
+                        <a href="{{ url_for('test', unitpage = unit.name, test= test,questionNumber=question+1) }}">+</a>
+                    </li>
+                    {% elif questionNumber|int-1 == question %}
                     <li class="nav-item active">
                         <a href="{{ url_for('test', unitpage = unit.name, test= test,questionNumber=question+1) }}">{{(question+1)}}</a>
+                    </li>
+                    {% elif question==numOfQuestions%}
+                    <li class="nav-item">
+                        <a href="{{ url_for('test', unitpage = unit.name, test= test,questionNumber=question+1) }}">+</a>
                     </li>
                     {% else %}
                     <li class="nav-item">

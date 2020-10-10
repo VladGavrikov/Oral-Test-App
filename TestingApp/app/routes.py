@@ -518,7 +518,7 @@ def test(unitpage, test,questionNumber):
             db.session.commit()
             return redirect(url_for('test', unitpage = unit.name, test= test,questionNumber=int(questionNumber)+1))
     print(questions)
-    return render_template('test.html',unit=unit, form=questionForm, renameForm=renameForm, question=eachQuestion, questionNumber= questionNumber, numOfQuestions= len(questions)-1, test = test, t = t, units = units,path=pathtoPage)
+    return render_template('test.html', title="Edit task", unit=unit, form=questionForm, renameForm=renameForm, question=eachQuestion, questionNumber= questionNumber, numOfQuestions= len(questions)-1, test = test, t = t, units = units,path=pathtoPage)
 
 @app.route("/unitManager/<unitpage>/<test>/delete", methods=['GET', 'POST'])
 def deleteTest(unitpage, test):

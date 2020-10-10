@@ -475,7 +475,7 @@ input:not(:focus):valid + .floating-label {
     font-weight: bold;
 }
 
-/* Test taking */
+/* Test creation/taking/marking/feedback */
 .question-nav {
     width: 50px;
     height: 100%;
@@ -556,6 +556,10 @@ input:not(:focus):valid + .floating-label {
 .row-fit {
     height: fit-content;
     width: 50%;
+}
+
+#inputName {
+    height: 160px;
 }
 
 /* Test feedback */

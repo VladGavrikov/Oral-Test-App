@@ -170,6 +170,7 @@ def testEvaluation(test, studentNumber):
     user = User.query.filter_by(id=studentNumber).first_or_404()
     unit = Unit.query.filter_by(name=user.unit_id).first_or_404()
     testQ = Test.query.filter_by(id=test).first()
+    student = User.query.filter_by(id = studentNumber).first()
     form = TestEvaluationForm()
     submittionDate = testMarking.due_date
     submittionTime = testMarking.due_time
@@ -197,8 +198,8 @@ def testEvaluation(test, studentNumber):
         testMarking.testWasStarted = True
         db.session.commit()
         return render_template('testMarkedSuccess.html',units = units, test = test)
-    return render_template('testEvaluation.html', title='Evaluation', form = form, unit=unit,units=units, submissionInTime=submissionInTime, submittionDate = submittionDate, submittionTime =submittionTime,
-                                                        due_date=due_date, due_time=due_time)
+    return render_template('testEvaluation.html', title='Evaluation', form = form, unit=unit,units=units, student = student, t = testQ, 
+    submissionInTime=submissionInTime, submittionDate = submittionDate, submittionTime =submittionTime, due_date=due_date, due_time=due_time)
 
 @app.route('/attempt/<test>/<studentNumber>/<questionNumber>', methods=['GET', 'POST'])
 @login_required

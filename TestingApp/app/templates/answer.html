@@ -26,17 +26,27 @@
     <div class="row h-100">
         <div class="question-nav">
             <ul class="nav nav-pills">
+                {% if questionNumber|int() != 1 %}
+                    <li><a href="{{ url_for('testQuestion',test = test, studentNumber = user.id, questionNumber = questionNumber) }}" class="vertical-text"><i class="fas fa-long-arrow-alt-up"></i>&nbsp;Prev</a></li>
+                {% else %}
+                    <li class="vertical-text invisible"><i class="fas fa-long-arrow-alt-up"></i>&nbsp;Prev</a></li>
+                {% endif %}
                 {% for question in range(numbOfQuestions)%}
                     {% if (question+1)|int() == questionNumber|int() %}
                     <li class="nav-item active">
-                        <a href="{{url_for('testQuestion',test = test, studentNumber = user.id, questionNumber = (question+1))}}">{{(question+1)}}</a>
+                        <a href="{{ url_for('testQuestion',test = test, studentNumber = user.id, questionNumber = (question+1)) }}">{{(question+1)}}</a>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a href="{{url_for('testQuestion',test = test, studentNumber = user.id, questionNumber = (question+1))}}">{{(question+1)}}</a>
+                        <a href="{{ url_for('testQuestion',test = test, studentNumber = user.id, questionNumber = (question+1)) }}">{{(question+1)}}</a>
                     </li>
                     {% endif %}
                 {% endfor %}
+                {% if questionNumber|int() < numbOfQuestions %}  
+                    <li><a href="{{ url_for('testQuestion',test = test, studentNumber = user.id, questionNumber = questionNumber) }}" class="vertical-text">Next&nbsp;<i class="fas fa-long-arrow-alt-down"></i></a></li>
+                {% else %}
+                    <li class="vertical-text invisible">Next&nbsp;<i class="fas fa-long-arrow-alt-down"></i></a></li>
+                {% endif %}
               </ul>
         </div>
 

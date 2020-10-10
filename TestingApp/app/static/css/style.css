@@ -112,6 +112,14 @@ a:hover {
     visibility: hidden;
 }
 
+.warning {
+    background-color: red;
+    color: white;
+    text-align: center;
+    text-transform: uppercase;
+    padding: 3px 3px;
+}
+
 /* Sidenav */
 .sidenav {
 	height: 100%;
@@ -270,6 +278,7 @@ a:hover {
 .table-list th, .table-list td,  .table-list tr {
     width: 100%;
     display: flex;
+    /* position: relative; */
 }
 
 #unit-list tbody {
@@ -280,6 +289,14 @@ a:hover {
     height: 100%;
     /* overflow-y: auto; */
 }
+
+#task-grades tbody th {
+    text-align: center;
+}
+
+/* #task-grades thead th {
+    text-align: center;
+} */
 
 /* Buttons */
 .btns {

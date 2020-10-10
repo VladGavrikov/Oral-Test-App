@@ -469,8 +469,8 @@ def manageStudents(unitpage):
     students = User.query.filter_by(unit_id = unit.name).all()
     return render_template('manageStudents.html', unit=unit, students=students, units=units)
 
-@app.route("/unitManager/<unitpage>/<test>", methods=['GET', 'POST'])
-def test(unitpage, test):
+@app.route("/unitManager/<unitpage>/<test>/<questionNumber>", methods=['GET', 'POST'])
+def test(unitpage, test,questionNumber):
     units = Unit.query.all()
     unit = Unit.query.filter_by(name=unitpage).first()
     t = Test.query.filter_by(id=test).first()
@@ -481,11 +481,22 @@ def test(unitpage, test):
             db.session.commit()
             return redirect(url_for('test', unitpage=unit.name, test=test))
     questions = Question.query.filter_by(test_id=test).all()
-    questionForm = CreateQuestionForm()
+    eachQuestion = None
+    if(questions!=[]):
+        questions.append("")
+        print("QUESTION", questions)
+        eachQuestion = questions[int(questionNumber)-1]
+    if(eachQuestion!="" and eachQuestion!=None):
+        storedText=eachQuestion.body
+    else:
+        storedText=None
+    print("STORED TEXT: ",storedText)
+    person = {'name': storedText }
+    questionForm = CreateQuestionForm(data=person)
     prefix = "app/"
-    path = "/static/music/Test"+test+"QNum"+str(len(questions)+1)+".wav"
+    path = "/static/music/Test"+test+"QNum"+questionNumber+".wav"
     randomNumber = randint(0, 10000000000)
-    pathtoPage = "/static/music/Test"+test+"QNum"+str(len(questions)+1)+".wav"+"?noCache="+str(randomNumber)
+    pathtoPage = "/static/music/Test"+test+"QNum"+questionNumber+".wav"+"?noCache="+str(randomNumber)
     if request.method == "POST" or questionForm.validate_on_submit():
         if 'audio_data' in request.files:
             print("posted")
@@ -496,14 +507,15 @@ def test(unitpage, test):
         if questionForm.validate_on_submit():
             if(os.path.isfile(prefix+path)):
                 print("succesfully submitted true")
-                question = Question(body =repr(questionForm.name.data.encode())[2:-1],path=pathtoPage,test_id=test)
+                question = Question(id=(int(test+questionNumber)), body =repr(questionForm.name.data.encode())[2:-1],path=pathtoPage,test_id=test)
             else: 
                 print("succesfully submitted false")
-                question = Question(body =repr(questionForm.name.data.encode())[2:-1],path="empty",test_id=test)
-            db.session.add(question)
+                question = Question(id=(int(test+questionNumber)), body =repr(questionForm.name.data.encode())[2:-1],path="empty",test_id=test)
+            db.session.merge(question)
             db.session.commit()
-            return redirect(url_for('test', unitpage = unit.name, test= test))
-    return render_template('test.html',unit=unit, form=questionForm, renameForm=renameForm, questions=questions, test = test, t = t, units = units,path=pathtoPage)
+            return redirect(url_for('test', unitpage = unit.name, test= test,questionNumber=int(questionNumber)+1))
+    print(questions)
+    return render_template('test.html',unit=unit, form=questionForm, renameForm=renameForm, question=eachQuestion, questionNumber= questionNumber, numOfQuestions= len(questions)-1, test = test, t = t, units = units,path=pathtoPage)
 
 @app.route("/unitManager/<unitpage>/<test>/delete", methods=['GET', 'POST'])
 def deleteTest(unitpage, test):

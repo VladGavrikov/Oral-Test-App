@@ -12,25 +12,6 @@
     });
     </script>
 
-<script>
-    // Run on page load
-    window.onload = function() {
-
-        // If sessionStorage is storing default values (ex. name), exit the function and do not restore data
-        if (sessionStorage.getItem('name') == "name") {
-            return;
-        }
-
-        // If values are not blank, restore them to the fields
-        var name = sessionStorage.getItem('name');
-        if (name !== null) $('#inputName').val(name);
-    }
-
-    // Before refreshing the page, save the form data to sessionStorage
-    window.onbeforeunload = function() {
-        sessionStorage.setItem("name", $('#inputName').val());
-    }
-</script>
 {% endblock %}
 <h2 class="page-title">{{ unit.description }} / {{ t.body }}</h2>
 <div class="row btns mx-2">
@@ -40,17 +21,37 @@
 
 </div>
 
-<div class="content-container" style="overflow-y: scroll">
-    <h3 class="subheading">Questions</h3>
-    {%for question in questions %}  
-        <b>Q{{ loop.index }}:</b> {{ question.body }}
-        <br>
-        {% if(question.path)!="empty"%}
-            <audio src={{question.path}} id= "player" controls="controls"></audio>
+<div class="question-nav">
+    <ul class="nav nav-pills">
+        {% if questionNumber|int != 1 %}
+            <li><a href="{{  url_for('test', unitpage = unit.name, test= test,questionNumber=questionNumber|int-1) }}" class="vertical-text"><i class="fas fa-long-arrow-alt-up"></i>&nbsp;Prev</a></li>
+        {% else %}
+            <li class="vertical-text invisible"><i class="fas fa-long-arrow-alt-up"></i>&nbsp;Prev</a></li>
         {% endif %}
-        <br>
-    {%endfor%}
-    <br>
+        {% for question in range(numOfQuestions+1)%}
+            {% if questionNumber|int-1 == question %}
+            <li class="nav-item active">
+                <a href="{{ url_for('test', unitpage = unit.name, test= test,questionNumber=question+1) }}">{{(question+1)}}</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <a href="{{ url_for('test', unitpage = unit.name, test= test,questionNumber=question+1) }}">{{(question+1)}}</a>
+            </li>
+            {% endif %}
+        {% endfor %}
+        {% if questionNumber|int <= numOfQuestions %}   
+            <li><a href="{{ url_for('test', unitpage = unit.name, test= test,questionNumber=questionNumber|int+1) }}" class="vertical-text">Next&nbsp;<i class="fas fa-long-arrow-alt-down"></i></a></li>
+        {% else %}
+            <li class="vertical-text invisible">Next&nbsp;<i class="fas fa-long-arrow-alt-down"></i></a></li>
+        {% endif %}
+    </ul>
+</div>
+
+<div class="content-container" style="overflow-y: scroll">  
+
+
+
+
     <div id="fade"></div>
     <div id="modal">
         <img id="loader" style="padding: 0px 0px 0px !important; border: 0px solid #ababab !important;" src="{{ url_for('static', filename='img/loading.gif') }}" />
@@ -80,7 +81,8 @@
         <p>{{ form.submit(class_="btn green-btn") }}</p>
     </form>
     <!-- <a href= "{{ url_for('testCreated', test= test)  }}">Finalize Test</a> -->
-    
+    {{numOfQuestions}}
+    {{questionNumber}}
 </div>
 
 <!-- Modal for rename task -->

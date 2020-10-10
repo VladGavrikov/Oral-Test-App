@@ -51,6 +51,9 @@
             <div class="btns-bottom">
                 <form action="" method="post" enctype="multipart/form-data">
                     {{ form.hidden_tag() }}
+                    {% if(questionNumber | int != numbOfQuestions | int) %}
+                        {{ form.submit(class="btn green-btn") }}
+                    {% endif %}
 
                     <!-- Submit task modal -->
                     <div id="submit-task-modal" class="modal fade" style="position:fixed" tabindex="-1" role="dialog" aria-hidden="true">
@@ -71,9 +74,7 @@
                         </div>
                     </div>
                 </form>
-                {% if(questionNumber | int != numbOfQuestions | int) %}
-                        {{ form.submit(class="btn green-btn") }}
-                {% endif %}
+            
 
                 {% if(questionNumber | int == numbOfQuestions | int) %}
                     <button id="submit-task-btn" class="btn green-btn" data-toggle="modal" data-target="#submit-task-modal">Submit task</button>

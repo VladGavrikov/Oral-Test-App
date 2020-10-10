@@ -45,8 +45,8 @@ class CreateUnitForm(FlaskForm):
 
 class CreateTestForm(FlaskForm):
     name = StringField('Test Name', validators=[DataRequired()])
-    due_date = DateField('Date due')
-    due_time = TimeField('Time due')
+    due_date = DateField('Date due', validators=[InputRequired()])
+    due_time = TimeField('Time due', validators=[InputRequired()])
     submit = SubmitField('Add Test')
 
 class CreateQuestionForm(FlaskForm):

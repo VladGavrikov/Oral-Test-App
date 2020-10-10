@@ -108,6 +108,10 @@ a:hover {
     text-orientation: upright;
 }
 
+.invisible {
+    visibility: hidden;
+}
+
 /* Sidenav */
 .sidenav {
 	height: 100%;
@@ -215,12 +219,12 @@ a:hover {
     border-radius: 15px;
     background-color: #FFFFFF;
     width: 95%;
-    height: 88%;
+    height: 90%;
     /* margin-left: 25px; */
     margin: 0 auto;
-    margin-top: 45px;
+    margin-top: 40px;
     padding: 30px 30px;
-    /* overflow-y: auto; */
+    overflow-y: auto;
 }
 
 .center {
@@ -280,7 +284,7 @@ a:hover {
 /* Buttons */
 .btns {
     position: absolute;
-    right: 60px;
+    right: 70px;
     font-size: 14px;
 }
 
@@ -468,6 +472,11 @@ input:not(:focus):valid + .floating-label {
     align-items: center;
     border-right: 1px solid rgba(126, 221, 195, 0.5);
     margin-right: 30px;
+
+    /* these don't work */
+    /* position: sticky;
+    position: -webkit-sticky;
+    top: 100px; */
 }
 
 .nav-pills {
@@ -493,7 +502,7 @@ input:not(:focus):valid + .floating-label {
 }
 
 .nav-item:nth-last-child(2) {
-    margin-bottom: 23px;
+    margin-bottom: 25px;
 }
 
 .active {
@@ -530,6 +539,16 @@ input:not(:focus):valid + .floating-label {
 .row-fit {
     height: fit-content;
     width: 50%;
+}
+
+/* Test feedback */
+.audio-graphs {
+    width: 500px;
+    height: 500px;
+    display: inline-block;
+    position: absolute;
+    top: 250px;
+    left: 0px;
 }
 
 /* Not too sure was Vlad's stuff */

@@ -3,19 +3,18 @@
 {% block content %}
 
 <div class="row mx-2">
-    <h2 class="page-title">Tests</h2>
+    <h2 class="page-title">Marking: {{ t.body }}</h2>
     <div class="btns">
         {% if tests|length !=0 %}
             {% if tests[0][1].feedbackReleased == False %}
-            <!-- <button class="btn table-btn btn-margin"><a href="{# url_for('releaseFeedback', test = tests[0].test_id) #}">Release Feedback</a></button> -->
-            <button id="release-feedback-btn" class="btn green-btn" data-toggle="modal" data-target="#release-feedback-modal">Release feedback</button>
+                <button id="release-feedback-btn" class="btn green-btn" data-toggle="modal" data-target="#release-feedback-modal">Release feedback</button>
             {% else %}
-            <button class="btn navy-btn-static">Feedback has already released</button>
+                <button class="btn navy-btn-static">Feedback has already released</button>
             {% endif %}
         {% endif %}
-
     </div>
 </div>
+
 <div class="content-container">
     {% if tests|length ==0%}
     <h4>No tests for marking</h4>

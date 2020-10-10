@@ -73,7 +73,7 @@
                     {% endfor %}
                     <div class="btns-bottom">
                         {% if questionNumber|int <= numOfQuestions %}   
-                            <a href="{{ url_for('test', unitpage = unit.name, test= test,questionNumber=questionNumber|int+1) }}" class="btn green-btn" role="button">Save question</a>
+                            <button class="btn green-btn" role="button">Save question</button>
                         {% else %}
                             {{ form.submit(class_="btn green-btn") }}
                         {% endif %}

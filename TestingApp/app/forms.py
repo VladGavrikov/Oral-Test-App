@@ -79,6 +79,9 @@ class TestEvaluationForm(FlaskForm):
 class RenameTestForm(FlaskForm):
     newTestName = StringField('New Task Name', validators=[DataRequired()])
     submitRename = SubmitField('Save')
+
+class DeleteQuestionForm(FlaskForm):
+    submitDelete = SubmitField('Delete')
     
 class ResetPasswordRequestForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])

@@ -11,7 +11,7 @@ from flask_login import logout_user
 from flask_login import login_required
 from app.models import User, Unit, Test, Question, Answer, TestMark, Feedback
 from app import db
-from app.forms import RegistrationForm, CreateUnitForm, CreateQuestionForm, CreateTestForm, CreateAnswerForm, StartTest, CreateFeedbackForm, TestEvaluationForm, TestEvaluationForm, ReleaseFeedbackForm, RenameTestForm, ResetDatabaseForm
+from app.forms import RegistrationForm, CreateUnitForm, CreateQuestionForm, CreateTestForm, CreateAnswerForm, StartTest, CreateFeedbackForm, TestEvaluationForm, TestEvaluationForm, ReleaseFeedbackForm, RenameTestForm, ResetDatabaseForm,DeleteQuestionForm
 from datetime import datetime
 import numpy as np
 import os.path
@@ -508,12 +508,21 @@ def test(unitpage, test,questionNumber):
                 f.save(audio)
             print("File was successfully uploaded")
         if questionForm.validate_on_submit():
-            if(os.path.isfile(prefix+path)):
-                print("succesfully submitted true")
-                question = Question(id=(int(test+questionNumber)), body =repr(questionForm.name.data.encode())[2:-1],path=pathtoPage,test_id=test)
-            else: 
-                print("succesfully submitted false")
-                question = Question(id=(int(test+questionNumber)), body =repr(questionForm.name.data.encode())[2:-1],path="empty",test_id=test)
+            print("EACH QUESTION:",eachQuestion)
+            if(eachQuestion=="" or eachQuestion==None):
+                if(os.path.isfile(prefix+path)):
+                    print("PRINT1")
+                    question = Question( body =repr(questionForm.name.data.encode())[2:-1],path=pathtoPage,test_id=test)
+                else: 
+                    print("PRINT2")
+                    question = Question( body =repr(questionForm.name.data.encode())[2:-1],path="empty",test_id=test)
+            else:
+                if(os.path.isfile(prefix+path)):
+                    print("PRINT3")
+                    question = Question(id=eachQuestion.id, body =repr(questionForm.name.data.encode())[2:-1],path=pathtoPage,test_id=test)
+                else: 
+                    print("PRINT4")
+                    question = Question(id=eachQuestion.id, body =repr(questionForm.name.data.encode())[2:-1],path="empty",test_id=test)
             db.session.merge(question)
             db.session.commit()
             return redirect(url_for('test', unitpage = unit.name, test= test,questionNumber=int(questionNumber)+1))

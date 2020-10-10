@@ -2,17 +2,36 @@
 
 {% block content %}
 {% block javascript %}
-        <script>
-        navigator.mediaDevices.getUserMedia({ audio: true })
-        .then(function(stream) {
-            console.log('You let me use your mic!')
-        })
-        .catch(function(err) {
-            console.log('No mic for you!')
-        });
-        </script>
-    {% endblock %}
+    <script>
+    navigator.mediaDevices.getUserMedia({ audio: true })
+    .then(function(stream) {
+        console.log('You let me use your mic!')
+    })
+    .catch(function(err) {
+        console.log('No mic for you!')
+    });
+    </script>
 
+<script>
+    // Run on page load
+    window.onload = function() {
+
+        // If sessionStorage is storing default values (ex. name), exit the function and do not restore data
+        if (sessionStorage.getItem('name') == "name") {
+            return;
+        }
+
+        // If values are not blank, restore them to the fields
+        var name = sessionStorage.getItem('name');
+        if (name !== null) $('#inputName').val(name);
+    }
+
+    // Before refreshing the page, save the form data to sessionStorage
+    window.onbeforeunload = function() {
+        sessionStorage.setItem("name", $('#inputName').val());
+    }
+</script>
+{% endblock %}
 <h2 class="page-title">{{ unit.description }} / {{ t.body }}</h2>
 <div class="row btns mx-2">
     <button id="rename-task-btn" class="btn green-btn btn-margin" data-toggle="modal" data-target="#rename-task-modal">Rename task</button>
@@ -21,7 +40,7 @@
 
 </div>
 
-<div class="content-container">
+<div class="content-container" style="overflow-y: scroll">
     <h3 class="subheading">Questions</h3>
     {%for question in questions %}  
         <b>Q{{ loop.index }}:</b> {{ question.body }}
@@ -34,7 +53,7 @@
     <br>
     <div id="fade"></div>
     <div id="modal">
-        <img id="loader" src="{{ url_for('static', filename='img/loading.gif') }}" />
+        <img id="loader" style="padding: 0px 0px 0px !important; border: 0px solid #ababab !important;" src="{{ url_for('static', filename='img/loading.gif') }}" />
     </div>
     <div style="background-color:#1A9E8A; width:fit-content">
         <h3 class="subheading">Your Question</h3><br>
@@ -45,7 +64,7 @@
             <button id="stopButton" disabled>Stop</button>
         </div>
     
-        <div id="formats">Format: start recording to see sample rate</div>
+        <div id="formats">Not Recording</div>
     </div>
     <!--<p><strong>Recordings:</strong></p>
     <ol id="recordingsList2"></ol>-->
@@ -53,7 +72,7 @@
     <form action="" method="post" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         <p>
-            {{ form.name(class_="form-control", size=150, style="resize: none;") }}<br>
+            {{ form.name(class_="form-control",id="inputName", size=150, style="resize: none;") }}<br>
             {% for error in form.name.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}

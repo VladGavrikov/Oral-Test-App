@@ -37,16 +37,16 @@ class RegistrationForm(FlaskForm):
 class CreateUnitForm(FlaskForm):
     name = StringField('Unit Name', validators=[DataRequired()])
     description = StringField('Unit Description', validators=[DataRequired()])
-    mark1Criteria = StringField('Criteria 1', validators=[DataRequired()])
-    mark2Criteria = StringField('Criteria 2', validators=[DataRequired()])
-    mark3Criteria = StringField('Criteria 3', validators=[DataRequired()])
-    mark4Criteria = StringField('Criteria 4', validators=[DataRequired()])
+    mark1Criteria = StringField('Marking criteria 1', validators=[DataRequired()])
+    mark2Criteria = StringField('Marking criteria 2', validators=[DataRequired()])
+    mark3Criteria = StringField('Marking criteria 3', validators=[DataRequired()])
+    mark4Criteria = StringField('Marking criteria 4', validators=[DataRequired()])
     submit = SubmitField('Create Unit')
 
 class CreateTestForm(FlaskForm):
     name = StringField('Test Name', validators=[DataRequired()])
-    due_date = DateField('Date due')
-    due_time = TimeField('Time due')
+    due_date = DateField('Date due', validators=[InputRequired()])
+    due_time = TimeField('Time due', validators=[InputRequired()])
     submit = SubmitField('Add Test')
 
 class CreateQuestionForm(FlaskForm):
@@ -56,12 +56,12 @@ class CreateQuestionForm(FlaskForm):
 
 class CreateAnswerForm(FlaskForm):
     audio = FileField(validators=[FileRequired()])
-    submit = SubmitField('Submit answer')
+    submit = SubmitField('Save answer')
 
 class CreateFeedbackForm(FlaskForm):
     body = StringField('Feedback')
     #body = StringField('Feedback', validators=[DataRequired()])
-    submit = SubmitField('Submit feedback')
+    submit = SubmitField('Save feedback')
 
 class StartTest(FlaskForm):
     submit = SubmitField('Start Test')
@@ -90,3 +90,7 @@ class ResetPasswordForm(FlaskForm):
     password2 = PasswordField(
         'Repeat Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Request Password Reset')
+
+class ResetDatabaseForm(FlaskForm):
+    passwordResetter = StringField('Reset database password', validators=[DataRequired()])
+    submit = SubmitField('Reset database')

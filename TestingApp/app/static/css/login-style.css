@@ -88,6 +88,13 @@ body {
     line-height: 14px;
 }
 
+#forgot-password {
+    position: absolute;
+    font-size: 13px;
+    color: #5B595F;
+    text-align: right;
+}
+
 #sign-up {
     position: absolute;
     font-size: 13px;
@@ -102,19 +109,27 @@ body {
     margin-top: 480px;
 }
 
+#forgot-password a {
+    color: #5B595F;
+}
+
 #sign-up a, #sign-in a {
     color: #496C7F;
 }
 
-#sign-up a:hover, #sign-in a:hover {
+#forgot-password a:hover, #sign-up a:hover, #sign-in a:hover {
     color: #1EB69E;
     text-decoration: none;
 }
 
-.error {
+.login-error, .error {
     color: #FF0000;
     font-size: 12px;
     position: absolute;
+}
+
+.login-error {
+    font-size: 14px;
 }
 
 .floating-label {

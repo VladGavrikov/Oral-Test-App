@@ -1,10 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+{# with messages = get_flashed_messages() #}
+    {# if messages #}
+        <!-- <span class="error"> {# messages[0] #} </span> -->
+    {# endif #}
+{# endwith #}
 <div class="row mx-2">
     <h2 class="page-title">Units</h2>
     <div class="btns">
+        <buttin id="reset-database-btn" class="btn green-btn btn-margin" data-toggle="modal" data-target="#reset-database-modal">Reset database</buttin>
         <button id="add-unit-btn" class="btn green-btn" data-toggle="modal" data-target="#add-unit-modal">New unit <i class="fas fa-plus"></i></button>
     </div>
 </div>
@@ -36,12 +41,11 @@
         <h3 class="information">There are currently no units created</h3>
     </div>
     {% endif %}
-    
 </div>
 
 <!-- Modal for new unit -->
 <div id="add-unit-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div id="add-unit-modal-content" class="modal-content">
             <h3 class="modal-title">Create a Unit</h3>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -50,49 +54,55 @@
             <div class="modal-body">
                 <form action="" method="post">
                     {{ form.hidden_tag() }}
-                    <div class="form-group mb-5">
-                        {{ form.name.label(class_="form-label") }}
-                        {{ form.name(class_="form-control form-styling", size=32, placeholder="e.g. KORE1401") }}
-                        {% for error in form.name.errors %}
-                            <span class="error">*{{ error }}</span>
-                        {% endfor %}
+                    <div class="row">
+                        <div class="w-50-l">
+                            <div class="form-group mb-5">
+                                {{ form.name.label(class_="form-label") }}
+                                {{ form.name(class_="form-control form-styling", size=32, placeholder="e.g. KORE1401") }}
+                                {% for error in form.name.errors %}
+                                    <span class="error">*{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group mb-5">
+                                {{ form.description.label(class_="form-label") }}
+                                {{ form.description(class_="form-control form-styling", size=64, placeholder="e.g. Korean 1") }}
+                                {% for error in form.description.errors %}
+                                    <span class="error">*{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="w-50-r">
+                            <div class="form-group mb-5">
+                                {{ form.mark1Criteria.label(class_="form-label") }}
+                                {{ form.mark1Criteria(class_="form-control form-styling", size=64, placeholder="e.g. Accuracy") }}
+                                {% for error in form.mark1Criteria.errors %}
+                                    <span class="error">*{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group mb-5">
+                                {{ form.mark2Criteria.label(class_="form-label") }}
+                                {{ form.mark2Criteria(class_="form-control form-styling", size=64, placeholder="e.g. Fluency") }}
+                                {% for error in form.mark2Criteria.errors %}
+                                    <span class="error">*{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group mb-5">
+                                {{ form.mark3Criteria.label(class_="form-label") }}
+                                {{ form.mark3Criteria(class_="form-control form-styling", size=64, placeholder="e.g. Grammar") }}
+                                {% for error in form.mark3Criteria.errors %}
+                                    <span class="error">*{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group">
+                                {{ form.mark4Criteria.label(class_="form-label") }}
+                                {{ form.mark4Criteria(class_="form-control form-styling", size=64, placeholder="e.g. Vocabulary") }}
+                                {% for error in form.mark4Criteria.errors %}
+                                    <span class="error">*{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group mb-5">
-                        {{ form.description.label(class_="form-label") }}
-                        {{ form.description(class_="form-control form-styling", size=64, placeholder="e.g. Korean 1") }}
-                        {% for error in form.description.errors %}
-                            <span class="error">*{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                    <div class="form-group mb-5">
-                        {{ form.mark1Criteria.label(class_="form-label") }}
-                        {{ form.mark1Criteria(class_="form-control form-styling", size=64, placeholder="e.g. Accuracy") }}
-                        {% for error in form.mark1Criteria.errors %}
-                            <span class="error">*{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                    <div class="form-group mb-5">
-                        {{ form.mark2Criteria.label(class_="form-label") }}
-                        {{ form.mark2Criteria(class_="form-control form-styling", size=64, placeholder="e.g. Fluency") }}
-                        {% for error in form.mark2Criteria.errors %}
-                            <span class="error">*{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                    <div class="form-group mb-5">
-                        {{ form.mark3Criteria.label(class_="form-label") }}
-                        {{ form.mark3Criteria(class_="form-control form-styling", size=64, placeholder="e.g. Grammar") }}
-                        {% for error in form.mark3Criteria.errors %}
-                            <span class="error">*{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                    <div class="form-group mb-5">
-                        {{ form.mark4Criteria.label(class_="form-label") }}
-                        {{ form.mark4Criteria(class_="form-control form-styling", size=64, placeholder="e.g. Vocabulary") }}
-                        {% for error in form.mark4Criteria.errors %}
-                            <span class="error">*{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                    <div class="text-center">
+                    <div class="text-center mt-3">
                         {{ form.submit(class="btn green-btn") }}
                     </div>
                 </form>
@@ -101,9 +111,33 @@
     </div>
 </div>
 
-
 <!-- <a href="">Database Cleanup</a></h3>
 <p>This button cleans up database for new semester. It will delete all student accounts, delete unit pages and clean up stored recordings</p> -->
+<div id="reset-database-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div id="reset-database-modal-content" class="modal-content">
+            <h3 class="modal-title">Clean the database</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <div class="modal-body">
+                <form action="" method="post">
+                    {{ formReset.hidden_tag() }}
+                    <div class="form-group mb-5">
+                        {{ formReset.passwordResetter.label(class_="form-label") }}
+                        {{ formReset.passwordResetter(class_="form-control form-styling", size=32) }}
+                        {% for error in formReset.passwordResetter.errors %}
+                            <span class="error">*{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="text-center">
+                        {{ formReset.submit(class="btn green-btn") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 {% endblock %}

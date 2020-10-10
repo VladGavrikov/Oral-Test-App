@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Oral Test App - {{ title }}</title>
+        <title>Speakfluent - {{ title }}</title>
 
         <!-- Bootstrap -->
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
@@ -8,7 +8,8 @@
         <!-- jQuery -->
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
-
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js" integrity="sha512-3j3VU6WC5rPQB4Ld1jnLV7Kd5xr+cq9avvhwqzbH/taCRNURoeEpoPBK9pDyeukwSxwRPJ8fDgvYXd6SkaZ2TA==" crossorigin="anonymous"></script>
+        
         <!-- Bootstrap js -->
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 
@@ -30,7 +31,7 @@
     <body>
         {% if current_user.isTeacher %}
             <div class="sidenav">
-                <img id="logo" src="{{ url_for('static', filename='img/speakfluent-logo.png') }}" alt="Speakfluent logo" style="width:220;">
+                <img id="logo" src="{{ url_for('static', filename='img/speakfluent-logo.png') }}" alt="Speakfluent logo">
                 <div class="nav-parent">
                     <a href="{{ url_for('unitManager') }}">Units</a>
                 </div>
@@ -56,7 +57,8 @@
 
             <div class="main">
         {% else %}
-            <div class="student-topbar">
+            <div class="row student-topbar">
+                <img id="logo-student" src="{{ url_for('static', filename='img/speakfluent-logo-black.png') }}" alt="Speakfluent logo">
                 <a href="{{ url_for('dashboard') }}">Dashboard  </a>|
                 <a href="{{ url_for('enrolment') }}"> Enrolment </a>|
                 
@@ -69,6 +71,7 @@
 
             <div class="student-main">
         {% endif %}
+
                 {% block content %} {% endblock %}
             </div>
 

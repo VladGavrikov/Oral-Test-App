@@ -48,13 +48,11 @@
                     <tr>
                         <td>{{ test.body }}</td>
                         {% if testFB[loop.index0].feedbackReleased == True %}
-                            <td class="td-btns" style="padding-top:4px; padding-bottom:4px"> 
-                                {% if testFB[loop.index0].mark1 == None %}
-                                <p>0</p>
-                                {% else %}
-                                <p>{{testFB[loop.index0].mark1+testFB[loop.index0].mark2+testFB[loop.index0].mark3+testFB[loop.index0].mark4}}</p>
-                                {% endif %}
-                            </td>
+                            {% if testFB[loop.index0].mark1 == None %}
+                                <td>0</td>
+                            {% else %}
+                                <td>{{testFB[loop.index0].mark1+testFB[loop.index0].mark2+testFB[loop.index0].mark3+testFB[loop.index0].mark4}}</td>
+                            {% endif %}
                             <td class="td-btns" style="padding-top:4px; padding-bottom:4px"> 
                                 <a href="{{ url_for('viewFeedback',test = testFB[loop.index0].test_id, studentNumber = user.id, questionNumber=1)  }}"><button class="btn table-btn">View</button></a>
                             </td>

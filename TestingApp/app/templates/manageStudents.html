@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Manage Students which are enrolled in this unit</h2>
-<p>Here you can unenroll students which are enrolled into specific unit and delete students</p>
+<h2>Manage Students enrolled in {{ unit.name }}</h2>
+<p>Here you can unenroll students who are enrolled in a specific unit and delete students</p>
 {%for student in students %}  
     {{ student.id }}
     {{ student.email }}

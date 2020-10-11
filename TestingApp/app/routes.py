@@ -235,7 +235,7 @@ def testQuestion(test, studentNumber, questionNumber):
             db.session.add(answer)
             db.session.commit()
             print("dbcommited")
-            return render_template('testSubmittedSuccess.html')
+            return render_template('testSubmittedSuccess.html', title='Test Submitted')
 
         else: 
             print("2")
@@ -385,7 +385,7 @@ def testCreated(test):
     usersDoingUnit = User.query.filter_by(unit_id=createdTest.unit_id).all()
     units = Unit.query.all()
     if(len(questions)==0):
-        return render_template('testCreationFailure.html', test = test, unitpage = createdTest.unit_id, units = units)
+        return render_template('testCreationFailure.html', title='Empty Task', test = test, unitpage = createdTest.unit_id, units = units)
     else:
         for user in usersDoingUnit:
             markFB = TestMark(user_id=user.id, test_id=int(test),unit_id = createdTest.unit_id) 
@@ -410,7 +410,7 @@ def unitEnrolled(unit):
                 markFB = TestMark(user_id=user.id, test_id=test.id,unit_id = unit)
                 db.session.add(markFB)
     db.session.commit()
-    return render_template('unitEnrollmentSuccess.html', title='Enrollment Success')
+    return render_template('unitEnrollmentSuccess.html', title='Enrolment Success')
     
 
 @app.route('/enrolment')

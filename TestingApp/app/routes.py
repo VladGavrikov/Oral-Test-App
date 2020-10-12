@@ -33,8 +33,10 @@ def dashboard():
     unit = Unit.query.filter_by(name=user.unit_id).first()
     testFB = TestMark.query.filter_by(unit_id=user.unit_id).filter_by(user_id = user.id).all()
     test = Test.query.join(TestMark).filter_by(unit_id=user.unit_id).filter_by(user_id = user.id).all()
+    currentDate = datetime.now().date()
+    currentTime = datetime.now().time()
     print(test)
-    return render_template('dashboard.html', title='Dashboard', user=user, tests = test, testFB = testFB, unit=unit)
+    return render_template('dashboard.html', title='Dashboard', user=user, tests = test, testFB = testFB, unit=unit, currentDate = currentDate, currentTime = currentTime)
 
 @app.route('/attempt/<test>/<studentNumber>', methods=['GET', 'POST'])
 @login_required

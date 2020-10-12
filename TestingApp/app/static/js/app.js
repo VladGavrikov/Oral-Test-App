@@ -169,10 +169,14 @@ function createDownloadLink(blob) {
 		  xhr.send(fd);
 		  xhr.onreadystatechange = function(e) {
 			if (xhr.readyState == 4) {
-				closeModal();
-				location.reload();
+				
 			}
 		};
+		xhr.addEventListener("load", function (evt) {
+			closeModal();
+			location.reload();
+		}, false);
+
 	li.appendChild(document.createTextNode (" "))//add a space in between
 	li.appendChild(upload)//add the upload link to li
 	

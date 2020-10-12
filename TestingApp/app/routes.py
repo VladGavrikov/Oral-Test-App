@@ -13,8 +13,9 @@ from app.models import User, Unit, Test, Question, Answer, TestMark, Feedback
 from app import db
 from app.forms import RegistrationForm, CreateUnitForm, CreateQuestionForm, CreateTestForm, CreateAnswerForm, StartTest, CreateFeedbackForm, TestEvaluationForm, TestEvaluationForm, ReleaseFeedbackForm, RenameTestForm, ResetDatabaseForm,DeleteQuestionForm
 from datetime import datetime
+import os
+os.environ["OMP_NUM_THREADS"] = "1"
 import numpy as np
-import os.path
 from random import randint
 
 import io
@@ -511,11 +512,11 @@ def test(unitpage, test,questionNumber):
                     randomNumber = randint(0, 10000000000)
                     pathtoPage = "/static/music/Test"+test+"QNum"+str(int(questionNumber)-1)+".wav"+"?noCache="+str(randomNumber)
                     print("PRINT3")
-                    question = Question(id=eachQuestion.id, body =repr(questionForm.name.data.encode())[2:-1],path=pathtoPage,test_id=test)
+                    question = Question(id=eachQuestion.id, body =questionForm.name.data,path=pathtoPage,test_id=test)
                     db.session.merge(question)
                 else: 
                     print("PRINT4")
-                    question = Question(id=eachQuestion.id, body =repr(questionForm.name.data.encode())[2:-1],path="empty",test_id=test)
+                    question = Question(id=eachQuestion.id, body =questionForm.name.data,path="empty",test_id=test)
                     db.session.merge(question)
         db.session.delete(eachQuestion)
         db.session.commit()
@@ -536,17 +537,17 @@ def test(unitpage, test,questionNumber):
             if(eachQuestion=="" or eachQuestion==None):
                 if(os.path.isfile(prefix+path)):
                     print("PRINT1")
-                    question = Question( body =repr(questionForm.name.data.encode())[2:-1],path=pathtoPage,test_id=test)
+                    question = Question( body =questionForm.name.data,path=pathtoPage,test_id=test)
                 else: 
                     print("PRINT2")
-                    question = Question( body =repr(questionForm.name.data.encode())[2:-1],path="empty",test_id=test)
+                    question = Question( body = questionForm.name.data,path="empty",test_id=test)
             else:
                 if(os.path.isfile(prefix+path)):
                     print("PRINT3")
-                    question = Question(id=eachQuestion.id, body =repr(questionForm.name.data.encode())[2:-1],path=pathtoPage,test_id=test)
+                    question = Question(id=eachQuestion.id, body =questionForm.name.data,path=pathtoPage,test_id=test)
                 else: 
                     print("PRINT4")
-                    question = Question(id=eachQuestion.id, body =repr(questionForm.name.data.encode())[2:-1],path="empty",test_id=test)
+                    question = Question(id=eachQuestion.id, body = questionForm.name.data,path="empty",test_id=test)
             db.session.merge(question)
             db.session.commit()
             return redirect(url_for('test', unitpage = unit.name, test= test,questionNumber=int(questionNumber)+1))

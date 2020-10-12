@@ -124,7 +124,7 @@ def markings(test):
         for test in tests: 
             test[1].feedbackReleased = True
             db.session.commit()
-        flash('Feedback has been released')
+        # flash('Feedback has been released')
         return redirect(url_for('unitManager'))
     return render_template('allTestsForMarking.html', title='Marking', tests = tests, t = t, form=form, units=units)
 
@@ -237,7 +237,7 @@ def testQuestion(test, studentNumber, questionNumber):
             db.session.add(answer)
             db.session.commit()
             print("dbcommited")
-            return render_template('testSubmittedSuccess.html')
+            return render_template('testSubmittedSuccess.html', title='Test Submitted')
 
         else: 
             print("2")
@@ -303,7 +303,7 @@ def markingTest(test, studentNumber, questionNumber):
             f = request.files['audio_data']
             with open((prefix+path), 'wb') as audio:
                 f.save(audio)
-            flash("File was successfully uploaded")
+            # flash("File was successfully uploaded")
         if ((qnumb+1) == len(questions)):
             if(os.path.isfile(prefix+path)):
                 feedback = Feedback(body=form.body.data, path=pathtoPage, question_id=questions[qnumb].id, answer_id = answerToQuestion.id)
@@ -391,7 +391,7 @@ def testCreated(test):
     usersDoingUnit = User.query.filter_by(unit_id=createdTest.unit_id).all()
     units = Unit.query.all()
     if(len(questions)==0):
-        return render_template('testCreationFailure.html', test = test, unitpage = createdTest.unit_id, units = units)
+        return render_template('testCreationFailure.html', title='Empty Task', test = test, unitpage = createdTest.unit_id, units = units)
     else:
         for user in usersDoingUnit:
             markFB = TestMark(user_id=user.id, test_id=int(test),unit_id = createdTest.unit_id) 
@@ -416,7 +416,7 @@ def unitEnrolled(unit):
                 markFB = TestMark(user_id=user.id, test_id=test.id,unit_id = unit)
                 db.session.add(markFB)
     db.session.commit()
-    return render_template('unitEnrollmentSuccess.html', title='Enrollment Success')
+    return render_template('unitEnrollmentSuccess.html', title='Enrolment Success')
     
 
 @app.route('/enrolment')

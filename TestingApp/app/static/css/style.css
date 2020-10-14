@@ -426,7 +426,7 @@ a:hover {
 }
 
 #add-unit-modal-content {
-    height: 650px;
+    height: 640px;
     width: 700px;
 }
 
@@ -434,7 +434,7 @@ a:hover {
     height: 560px;
 }
 
-#release-feedback-modal-content {
+#release-feedback-modal-content, #reset-database-modal-content {
     height: 300px;
 }
 
@@ -444,6 +444,10 @@ a:hover {
 
 #delete-task-modal-content, #submit-task-modal-content {
     height: 130px;
+}
+
+#reset-database-modal-content > h3 {
+    font-size: 42px;
 }
 
 /* Forms */

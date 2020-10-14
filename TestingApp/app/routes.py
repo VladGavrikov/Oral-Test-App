@@ -473,7 +473,7 @@ def manageStudents(unitpage):
     unit = Unit.query.filter_by(name=unitpage).first()
     units = Unit.query.all()
     students = User.query.filter_by(unit_id = unit.name).all()
-    return render_template('manageStudents.html', unit=unit, students=students, units=units)
+    return render_template('manageStudents.html', title="Manage Students", unit=unit, students=students, units=units)
 
 @app.route("/unitManager/<unitpage>/<test>/<questionNumber>", methods=['GET', 'POST'])
 def test(unitpage, test,questionNumber):

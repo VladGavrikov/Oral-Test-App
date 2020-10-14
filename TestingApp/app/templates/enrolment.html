@@ -1,6 +1,36 @@
 {% extends "base.html" %}
-<h2>Explore Some Questions</h2>
-{%for unit in units %}  
-{{ unit.name }}
-{{ unit.description }}
-{%endfor%}
+
+{% block content %}
+
+<div class="mx-2">
+    <h2 class="page-title">Enrolment</h2>
+    <!-- <p class="pt-2"> Changing enrolment in the middle of the semester will not clear your previous test submissions, however please check you are enrolling in the correct unit. </p> -->
+</div>
+
+<div class="content-container">
+    {% if units %}
+    <div class="table-full">
+        <table id="unit-list" class="table table-hover table-striped table-list">
+            <thead>
+                <tr>
+                    <th>Unit Code</th>
+                    <th>Unit Name</th>
+                    <th>Enrol in this unit</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for unit in units %}  
+                <tr>
+                    <td>{{ unit.name }}</td>
+                    <td>{{ unit.description }}</td>
+                    <td style="padding-top:4px; padding-bottom:4px;"><a href= "{{ url_for('unitEnrolled', unit= unit.name)  }}"><button class="btn table-btn">Enrol</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+    <br>
+</div>
+
+{% endblock %}

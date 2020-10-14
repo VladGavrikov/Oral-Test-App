@@ -1,0 +1,15 @@
+    {% extends "base.html" %}
+{% block content %}
+<div class="content-container">
+    <h3 class="page-description">You are about to start {{ test.body }}!</h3>
+    <p>The test will have to be completed in one sitting. <br>
+        To answer the question, press the record button to start and stop button when you are done. <br>
+        Click the 'save answer' button to save your response and upload the recording.</p>
+    <p>Please press the button below to start.</p>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>{{ form.submit(class="btn green-btn") }}</p>
+    </form>
+</div>
+
+{% endblock %}

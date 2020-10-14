@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row mx-2">
+    <h2 class="page-title">Marking: {{ t.body }} - {{ student.firstName }} {{ student.LastName }}</h2>
+</div>
+
+<div class="content-container" style="position:relative;">
+    <div>
+        {% if submissionInTime == False %}
+            <p class="warning">Warning: test was submitted past deadline</p>
+            <p>Due Date:&nbsp;&nbsp; {{ due_date.strftime('%d/%m/%Y') }} {{ due_time.strftime('%I:%M %p')}}<br>
+            Submitted: {{ submittionDate.strftime('%d/%m/%Y') }} {{ submittionTime.strftime('%I:%M %p')}}</p>
+        {% elif submissionInTime == None %}
+            <p class="warning">Warning: test was not submitted</p>
+        {% endif%}
+    </div>
+
+    <div class="mt-3">
+        <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <table id="task-grades" class="table table-borderless" style="width:fit-content">
+                <thead>
+                    <tr>
+                        <th>MARKING CRITERIA</th>
+                        <th>MARK</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>{{unit.mark1Criteria}}</th>
+                        <td class="table-input">
+                            {{ form.mark1(size=32) }}<br>
+                {% for error in form.mark1.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>{{unit.mark2Criteria}}</th>
+                        <td>
+                            {{ form.mark2(size=32) }}<br>
+                {% for error in form.mark2.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>{{unit.mark3Criteria}}</th>
+                        <td>
+                            {{ form.mark3(size=32) }}<br>
+                            {% for error in form.mark3.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>{{unit.mark4Criteria}}</th>
+                        <td>
+                            {{ form.mark4(size=32) }}<br>
+                {% for error in form.mark4.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+                        </td>
+                    </tr>
+        
+                </tbody>
+            </table>
+            <div class="btns-bottom" style="bottom:15px">
+                {{ form.submit(class="btn green-btn") }}
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}}

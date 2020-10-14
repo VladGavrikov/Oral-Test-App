@@ -19,6 +19,7 @@ def send_password_reset_email(user):
                text_body=render_template('email/reset_password.txt',
                                          user=user, token=token),
                html_body=render_template('email/reset_password.html',
+<<<<<<< HEAD
                                          user=user, token=token))
 
 def send_confirm_user_email(user):
@@ -30,3 +31,6 @@ def send_confirm_user_email(user):
                                             user = user , token = token),
                 html_body= render_template('email/confirm_email.html',
                                             user = user, token = token))                                         
+=======
+                                         user=user, token=token))
+>>>>>>> Vlad-Gavrikov

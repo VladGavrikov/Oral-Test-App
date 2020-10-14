@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% block javascript %}
+    <script>
+    navigator.mediaDevices.getUserMedia({ audio: true })
+    .then(function(stream) {
+        console.log('You let me use your mic!')
+    })
+    .catch(function(err) {
+        console.log('No mic for you!')
+	});
+	window.onload = function () {
+		
+		var seconds = 00; 
+		var tens = 00;
+		var minutes = 0; 
+		var appendTens = document.getElementById("tens")
+		var appendSeconds = document.getElementById("seconds")
+		var appendMinutes = document.getElementById("minutes")
+		var buttonStart = document.getElementById('recordButton');
+		var buttonStop = document.getElementById('pauseButton');
+		var buttonReset = document.getElementById('stopButton');
+		var Interval ;
+
+		buttonStart.onclick = function() {
+			
+			clearInterval(Interval);
+			Interval = setInterval(startTimer, 10);
+		}
+		
+			buttonStop.onclick = function() {
+			clearInterval(Interval);
+		}
+		
+
+		buttonReset.onclick = function() {
+			clearInterval(Interval);
+			tens = "00";
+			seconds = "00";
+			minutes = "0";
+			appendTens.innerHTML = tens;
+			appendSeconds.innerHTML = seconds;
+			appendMinutes.innerHTML = minutes;
+		}
+		
+		
+		
+		function startTimer () {
+			tens++; 
+			
+			if(tens < 9){
+			appendTens.innerHTML = "0" + tens;
+			}
+			
+			if (tens > 9){
+			appendTens.innerHTML = tens;
+			
+			} 
+			
+			if (tens > 99) {
+			seconds++;
+			appendSeconds.innerHTML = "0" + seconds;
+			tens = 0;
+			appendTens.innerHTML = "0" + 0;
+			}
+			
+			if (seconds > 9){
+			appendSeconds.innerHTML = seconds;
+			}
+			if (seconds > 59){
+			minutes++;
+			appendMinutes.innerHTML = minutes;
+			seconds = 0;
+			appendSeconds.innerHTML = "0" + 0;
+			}
+
+		
+		}
+		
+
+		}
+    </script>
+
+{% endblock %}
+<div class="row mx-2">
+    <h2 class="page-title">Edit task: {{ unit.name }} - {{ t.body }}</h2>
+    <div class="btns mt-4">
+        <button id="rename-task-btn" class="btn green-btn btn-margin" data-toggle="modal" data-target="#rename-task-modal">Rename task</button>
+        <button id="rename-task-btn" class="btn green-btn btn-margin" data-toggle="modal" data-target="#delete-question-modal">Delete Question</button>
+        <button id="save-task-btn" class="btn green-btn btn-margin"><a href="{{ url_for('unitpage', unitpage = unit.name) }}">Save & exit</a></button>
+        <!-- <button id="make-available-btn" class="btn green-btn" data-toggle="modal" data-target="#make-available-modal">Make available</button> -->
+    </div>
+</div>
+
+<div id="fade"></div>
+<div id="modal">
+    <img id="loader" style="padding: 0px 0px 0px !important; border: 0px solid #ababab !important;" src="{{ url_for('static', filename='img/loading.gif') }}" />
+</div>
+
+<div class="content-container" style="overflow-y: scroll">  
+    <div class="row h-100">
+        <div class="question-nav">
+            <ul class="nav nav-pills">
+                {% if questionNumber|int != 1 %}
+                    <li><a href="{{  url_for('test', unitpage = unit.name, test= test,questionNumber=questionNumber|int-1) }}" class="vertical-text"><i class="fas fa-long-arrow-alt-up"></i>&nbsp;Prev</a></li>
+                {% else %}
+                    <li class="vertical-text invisible"><i class="fas fa-long-arrow-alt-up"></i>&nbsp;Prev</a></li>
+                {% endif %}
+                {% for question in range(numOfQuestions+1)%}
+                    {% if questionNumber|int-1 == question and question==numOfQuestions%}
+                    <li class="nav-item active">
+                        <a href="{{ url_for('test', unitpage = unit.name, test= test,questionNumber=question+1) }}">+</a>
+                    </li>
+                    {% elif questionNumber|int-1 == question %}
+                    <li class="nav-item active">
+                        <a href="{{ url_for('test', unitpage = unit.name, test= test,questionNumber=question+1) }}">{{(question+1)}}</a>
+                    </li>
+                    {% elif question==numOfQuestions%}
+                    <li class="nav-item">
+                        <a href="{{ url_for('test', unitpage = unit.name, test= test,questionNumber=question+1) }}">+</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a href="{{ url_for('test', unitpage = unit.name, test= test,questionNumber=question+1) }}">{{(question+1)}}</a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+                {% if questionNumber|int <= numOfQuestions %}   
+                    <li><a href="{{ url_for('test', unitpage = unit.name, test= test,questionNumber=questionNumber|int+1) }}" class="vertical-text">Next&nbsp;<i class="fas fa-long-arrow-alt-down"></i></a></li>
+                {% else %}
+                    <li class="vertical-text invisible">Next&nbsp;<i class="fas fa-long-arrow-alt-down"></i></a></li>
+                {% endif %}
+            </ul>
+        </div>
+        
+        <div class="col-sm-5 h-100" style="position:relative">
+            <h3 class="question-heading mb-3"><span class="line">|</span>Question {{ questionNumber }}</h3>
+            <form action="" method="post" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                    {{ form.name(class_="form-control", id="inputName", size=150, style="resize: none;") }}<br>
+                    {% for error in form.name.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                    <div class="btns-bottom">
+                        {% if questionNumber|int <= numOfQuestions %}   
+                            <button class="btn green-btn" role="button">Save question</button>
+                        {% else %}
+                            {{ form.submit(class_="btn green-btn") }}
+                        {% endif %}
+                    </div>
+            </form>
+        </div>
+        <div class="col-sm-6 justify-content-center text-center" style="position:relative">
+            <h3 class="question-heading">(Optional) Add audio to your question:</h3>
+            <div class="audio-recorder">
+                <div id="controls">
+                    <button id="recordButton">Record</button>
+                    <button id="pauseButton" disabled>Pause</button>
+                    <button id="stopButton" disabled>Stop</button>
+                </div>
+                <audio src={{path}} id= "player" controls="controls"></audio>
+                <div id="formats">Not Recording</div>
+        </div>
+        <br>
+
+        <p><strong>Recordings:</strong></p>
+        <ol id="recordingsList"></ol>
+
+		<p><span id="minutes">00</span>:<span id="seconds">00</span>:<span id="tens">00</span></p>
+        
+        <!-- <a href= "{{ url_for('testCreated', test= test)  }}">Finalize Test</a> -->
+    
+    </div>
+</div>
+
+
+<!-- Modal for rename task -->
+<div id="rename-task-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div id="rename-task-modal-content" class="modal-content">
+            <h3 class="modal-title">Rename task</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <div class="modal-body">
+                <form action="" method="post" novalidate>
+                    {{ renameForm.hidden_tag() }}
+                    <div class="form-group mb-5">
+                        {{  renameForm.newTestName.label(class_="form-label", placeholder="New task name") }}
+                        {{  renameForm.newTestName(class_="form-control form-styling") }}
+                    </div>
+                    {% for error in form.name.errors %}
+                        <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                    <div class="row justify-content-center">
+                        <button type="button" class="btn green-btn btn-margin" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">Cancel</span>
+                        </button>
+                        {{ renameForm.submitRename(class="btn green-btn") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for rename task -->
+<div id="delete-question-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div id="rename-task-modal-content" class="modal-content">
+            <h3 class="modal-title">Delete Question</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <div class="modal-body">
+                <form action="" method="post" novalidate>
+                    {{ deleteForm.hidden_tag() }}
+                    <div class="row justify-content-center">
+                        <button type="button" class="btn green-btn btn-margin" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">Cancel</span>
+                        </button>
+                        {{ deleteForm.submitDelete(class="btn green-btn") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

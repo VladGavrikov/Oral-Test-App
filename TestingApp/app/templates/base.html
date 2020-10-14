@@ -1,12 +1,35 @@
 <html>
     <head>
-        {% if title %}
-        <title>{{ title }} - Oral Testing App</title>
-        {% else %}
-        <title>microblog</title>
-        {% endif %}
+        <title>Speakfluent - {{ title }}</title>
+
+        <!-- Bootstrap -->
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js" integrity="sha512-3j3VU6WC5rPQB4Ld1jnLV7Kd5xr+cq9avvhwqzbH/taCRNURoeEpoPBK9pDyeukwSxwRPJ8fDgvYXd6SkaZ2TA==" crossorigin="anonymous"></script>
+        
+        <!-- Bootstrap js -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+        <!-- Bootstrap js bundle -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Google fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Cabin&family=DM+Sans&family=Mulish&family=Roboto&family=Ubuntu:wght@300&display=swap" rel="stylesheet">
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+        <!-- Icons -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css">
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        
     </head>
+
     <body>
+<<<<<<< HEAD
       <div>
         Oral Testing App
         
@@ -31,8 +54,55 @@
             <li>{{ message }}</li>
             {% endfor %}
         </ul>
+=======
+        {% if current_user.isTeacher %}
+            <div class="sidenav">
+                <img id="logo" src="{{ url_for('static', filename='img/speakfluent-logo.png') }}" alt="Speakfluent logo">
+                <div class="nav-parent">
+                    <a href="{{ url_for('unitManager') }}">Units</a>
+                </div>
+                {% for unit in units %}
+                <div class="nav-child">
+                    <a class="nav-child" href="{{ url_for('unitpage', unitpage = unit.name) }}">{{ unit.name }}
+                        <span class="nav-icon"><i class="fas fa-chevron-right"></i></span>
+                    </a>
+                </div>
+                {% endfor %}
+                <div class="nav-parent">
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                </div>
+            </div>
+
+            <div class="topbar">
+                <p class="name">Admin
+                    <a href="{{ (url_for('logout')) }}">
+                        <i id="logout-icon" class="fas fa-sign-out-alt"></i>
+                    </a>
+                </p>
+            </div>
+
+            <div class="main">
+        {% else %}
+            <div class="row student-topbar">
+                <img id="logo-student" src="{{ url_for('static', filename='img/speakfluent-logo-black.png') }}" alt="Speakfluent logo">
+                <a href="{{ url_for('dashboard') }}">Dashboard  </a>|
+                <a href="{{ url_for('enrolment') }}"> Enrolment </a>|
+                
+                <span class="name"> {{ current_user.firstName }} {{ current_user.LastName }}
+                    <a href="{{ (url_for('logout')) }}">
+                        <i id="logout-icon" class="fas fa-sign-out-alt"></i>
+                    </a>
+                </span>
+            </div>
+
+            <div class="student-main">
+>>>>>>> Vlad-Gavrikov
         {% endif %}
-        {% endwith %}
-        {% block content %}{% endblock %}
+
+                {% block content %} {% endblock %}
+            </div>
+
+        <script src="/static/js/recorder.js"></script>
+        <script src="/static/js/app.js"></script>
     </body>
 </html>

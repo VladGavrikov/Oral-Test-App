@@ -11,10 +11,9 @@ from flask_login import logout_user
 from flask_login import login_required
 from app.models import User, Unit, Test, Question, Answer, TestMark, Feedback
 from app import db
-<<<<<<< HEAD
+
 from app.forms import RegistrationForm
-<<<<<<< Updated upstream
-=======
+
 from app.forms import CreateUnitForm
 from app.forms import CreateQuestionForm
 from app.forms import CreateTestForm
@@ -27,22 +26,21 @@ from flask_admin import Admin, AdminIndexView
 from flask_admin.contrib.sqla import ModelView
 from datetime import datetime
 import numpy as np
->>>>>>> Stashed changes
+
 
 import flask.views
 import os
 import functools
 import flask
-import wavio 
-from subprocess import PIPE, run
-=======
+
+
 from app.forms import RegistrationForm, CreateUnitForm, CreateQuestionForm, CreateTestForm, CreateAnswerForm, StartTest, CreateFeedbackForm, TestEvaluationForm, TestEvaluationForm, ReleaseFeedbackForm, RenameTestForm, ResetDatabaseForm,DeleteQuestionForm
 from datetime import datetime
 import os
 os.environ["OMP_NUM_THREADS"] = "1"
 import numpy as np
 from random import randint
->>>>>>> Vlad-Gavrikov
+
 
 import io
 import csv
@@ -604,6 +602,8 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
+        if user.email_confirm == False:
+            flash('Please Confirm Email')
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
             return redirect(url_for('dashboard'))
@@ -625,7 +625,7 @@ def logout():
     return redirect(url_for('login'))
 
 @app.route('/profile/<username>')
-@login.login_required
+@login_required
 def profile(username):
     user = User.query.filter_by(username = username).first_or_404
     test_completed = TestComplete.query.filter_by(user_id = user.id)
@@ -645,33 +645,17 @@ def register():
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
-@app.route('/record')
-def record():
-    #wavio.write("static/music/test1.wav")
-    return render_template('record.html')
- 
 
-class Music(flask.views.MethodView):
-    
-    def get(self):
-        songs = os.listdir('app/static/music')
-        return flask.render_template("music.html", songs=songs)
 
-<<<<<<< Updated upstream
-app.add_url_rule('/music/',
-                 view_func=Music.as_view('music'),
-                 methods=['GET'])
-=======
 from app.forms import ResetPasswordRequestForm
 from app.email import send_password_reset_email
 from app.email import send_confirm_user_email
 
-<<<<<<< HEAD
-=======
+
 from app.forms import ResetPasswordRequestForm
 from app.email import send_password_reset_email
 
->>>>>>> Vlad-Gavrikov
+
 @app.route('/reset_password_request', methods=['GET', 'POST'])
 def reset_password_request():
     if current_user.is_authenticated:
@@ -686,20 +670,12 @@ def reset_password_request():
     return render_template('reset_password_request.html',
                            title='Reset Password', form=form)
 
-<<<<<<< HEAD
->>>>>>> Stashed changes
 
-    
-
-
-<<<<<<< Updated upstream
-=======
-=======
 
 from app.forms import ResetPasswordForm
 
 
->>>>>>> Vlad-Gavrikov
+
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     if current_user.is_authenticated:
@@ -713,7 +689,7 @@ def reset_password(token):
         db.session.commit()
         flash('Your password has been reset.')
         return redirect(url_for('login'))
-<<<<<<< HEAD
+
     return render_template('reset_password.html', form=form)
 
 @app.route('/confirm_email/<token>', methods=['GET', 'POST'])
@@ -730,7 +706,6 @@ def confirm_email(token):
         flash('Your password has been reset.')
         return redirect(url_for('login'))
     return render_template('confirm_email.html', form=form)    
->>>>>>> Stashed changes
-=======
+
     return render_template('reset_password.html', form=form)
->>>>>>> Vlad-Gavrikov
+

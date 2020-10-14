@@ -3,19 +3,15 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, Integ
 from flask_wtf.file import FileField, FileRequired
 from wtforms.validators import ValidationError, DataRequired,InputRequired, Email, EqualTo, NumberRange
 from app.models import User
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
 from wtforms.fields.html5 import EmailField
 from wtforms import Form
 from wtforms.fields.html5 import DateField, TimeField, DateTimeField
 import re
->>>>>>> Stashed changes
-=======
+
 from wtforms.fields.html5 import EmailField
 from wtforms import Form
 from wtforms.fields.html5 import DateField, TimeField, DateTimeField
->>>>>>> Vlad-Gavrikov
+
 
 class LoginForm(FlaskForm):
     # email = EmailField('Email', validators=[DataRequired(), Email()])

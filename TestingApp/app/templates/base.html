@@ -56,7 +56,7 @@
             </div>
 
             <div class="main">
-        {% else %}
+        {% elif current_user.isTeacher==False %}
             <div class="row student-topbar">
                 <img id="logo-student" src="{{ url_for('static', filename='img/speakfluent-logo-black.png') }}" alt="Speakfluent logo">
                 <a href="{{ url_for('dashboard') }}">Dashboard  </a>|
@@ -69,6 +69,11 @@
                 </span>
             </div>
 
+            <div class="student-main">
+        {% else %}
+            <div class="row student-topbar">
+                <img id="logo-student" src="{{ url_for('static', filename='img/speakfluent-logo-black.png') }}" alt="Speakfluent logo">
+            </div>
             <div class="student-main">
         {% endif %}
 

@@ -16,9 +16,8 @@ html, body {
 }
 
 /* Text */
-.website-title {
-    color: #FFFFFF;
-    text-align: center;
+.title {
+    color: #000000;
     font-size: 30px;
     font-family: 'Mulish', sans-serif;
 }

@@ -4,23 +4,23 @@
 <div class="text-center">
     <h1>SIGN IN</h1>
 </div>
+
 <div class="row justify-content-center login-items">   
     <!-- Invalid username or password message-->
     {% with messages = get_flashed_messages() %}
     {% if messages %}
-        <span class="login-error"> {{ messages[0] }} </span>
+        <p class="login-error"> {{ messages[0] }} </p>
     {% endif %}
     {% endwith %}  
 
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
-        <div class="form-group mt-5 mb-5">
+        <div class="form-group mt-5 mb-5"> 
             {{ form.email(class_="form-control", size=32) }}
             {{ form.email.label(class_="floating-label") }}
             {% for error in form.email.errors %}
             <span class="error">*{{ error }}</span>
             {% endfor %}
-            
         </div>
 
         <div class="form-group mb-5">
@@ -34,7 +34,7 @@
         </div>
         
         <div class="text-center">
-            {{ form.submit(id="login-btn") }}
+            {{ form.submit(class="login-btn") }}
             <div class="row justify-content-center remember-me">
                 {{ form.remember_me() }} &nbsp;
                 {{ form.remember_me.label }}

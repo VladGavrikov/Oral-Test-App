@@ -1,3 +1,13 @@
+:root {
+    --testapp-main-text: #5B595F;
+    --testapp-dark-navy: #3E4F5A; /* sidenav */
+    --testapp-navy: #496C7F;
+    --testapp-green: #1EB69E;
+    --testapp-light-green: #7EDDC3;
+    --testapp-light-grey: #EBEBEB; /* background */
+    --testapp-grey: #8F8F8F;
+}
+
 html, body {
     height: 100%;
 }
@@ -25,9 +35,9 @@ body {
     margin-bottom: 15px;
 }
 
-.login-items, .register-items {
+.login-items, .register-items, .reset-pass-items {
     top: 290px;
-    border: 1px solid #8F8F8F;
+    border: 1px solid var(--testapp-grey);
     border-radius: 48px;
     padding: 15px;
     background-color: #ffffff;
@@ -47,7 +57,25 @@ body {
     padding-right: 50px;
 }
 
-#login-btn {
+.reset-pass-items {
+    height: 280px;
+    width: 430px;
+    padding-left: 50px;
+    padding-right: 50px;
+}
+
+.green-btn {
+    background-color: var(--testapp-green);
+    color: #FFFFFF;
+    border-radius: 5px;
+}
+
+.green-btn:hover, .green-btn a:hover {
+    background-color: #1A9E8A;
+    color: #FFFFFF;
+}
+
+.login-btn {
     color: #ffffff;
     border-radius: 15px;
     background-image: linear-gradient(to right, #7EDDC3, #1EB69E);
@@ -109,15 +137,22 @@ body {
     margin-top: 480px;
 }
 
+#know-password {
+    position: absolute;
+    font-size: 13px;
+    color: #5B595F;
+    margin-top: 240px;
+}
+
 #forgot-password a {
     color: #5B595F;
 }
 
-#sign-up a, #sign-in a {
+#sign-up a, #sign-in a, #know-password a {
     color: #496C7F;
 }
 
-#forgot-password a:hover, #sign-up a:hover, #sign-in a:hover {
+#forgot-password a:hover, #sign-up a:hover, #sign-in a:hover, #know-password a:hover {
     color: #1EB69E;
     text-decoration: none;
 }
@@ -130,6 +165,12 @@ body {
 
 .login-error {
     font-size: 14px;
+}
+
+.login-error-long {
+    font-size: 14px;
+    color: #FF0000;
+    margin-bottom: 0px;
 }
 
 .floating-label {

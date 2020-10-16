@@ -100,7 +100,7 @@
 
 <div class="content-container" style="overflow-y: scroll">  
     <div class="row h-100">
-        <div class="question-nav">
+        <div class="question-nav" style="overflow-y:scroll">
             <ul class="nav nav-pills">
                 {% if questionNumber|int != 1 %}
                     <li><a href="{{  url_for('test', unitpage = unit.name, test= test,questionNumber=questionNumber|int-1) }}" class="vertical-text"><i class="fas fa-long-arrow-alt-up"></i>&nbsp;Prev</a></li>
@@ -155,19 +155,22 @@
             <h3 class="question-heading">(Optional) Add audio to your question:</h3>
             <div class="audio-recorder">
                 <div id="controls">
-                    <button id="recordButton">Record</button>
-                    <button id="pauseButton" disabled>Pause</button>
-                    <button id="stopButton" disabled>Stop</button>
+                    <button id="recordButton" class="btn green-btn">Record</button>
+                    <button id="pauseButton" disabled class="btn green-btn">Pause</button>
+                    <button id="stopButton" disabled class="btn green-btn">Stop</button>
                 </div>
-                <audio src={{path}} id= "player" controls="controls"></audio>
+                <!-- <ol id="recordingsList"></ol> -->
+
+                <p class="stopwatch mt-3 mb-0"><span id="minutes">00</span>:<span id="seconds">00</span>:<span id="tens">00</span></p>
+                <p class="audio-warning">Please note, re-recording will overwrite your previous recording.</p>
+                <!-- <p>Record duration is limited: 1.5m</p> -->
                 <div id="formats">Not Recording</div>
+
+                <audio src={{path}} id= "player" controls="controls"></audio>
         </div>
         <br>
 
-        <p><strong>Recordings:</strong></p>
-        <ol id="recordingsList"></ol>
 
-		<p><span id="minutes">00</span>:<span id="seconds">00</span>:<span id="tens">00</span></p>
         
         <!-- <a href= "{{ url_for('testCreated', test= test)  }}">Finalize Test</a> -->
     

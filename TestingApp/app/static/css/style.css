@@ -557,14 +557,6 @@ input:not(:focus):valid + .floating-label {
     bottom: 0px;
 }
 
-.audio-recorder {
-    border: 2px solid var(--testapp-green);
-    border-radius: 5px;
-    width: fit-content;
-    margin: auto;
-    padding: 30px 30px;
-}
-
 .audio-btn {
     height: 70px;
     width: 70px;
@@ -585,6 +577,48 @@ input:not(:focus):valid + .floating-label {
 
 #inputName {
     height: 160px;
+}
+
+/* Audio recorder */
+.audio-recorder {
+    /* border: 2px solid var(--testapp-green); */
+    background-color: var(--testapp-light-grey);
+    border-radius: 5px;
+    width: fit-content;
+    margin: auto;
+    padding: 30px 30px;
+}
+
+.controls {
+    text-align: center;
+}
+
+/* .icon-circle {
+    background-color: white;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 1px solid grey;
+    padding: 10px;
+    display: inline-block;
+}
+
+.icon-circle-stop {
+    background-color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 1px solid grey;
+    padding: 10px;
+    display: inline-block;
+} */
+
+.stopwatch {
+    font-size: 25px;
+}
+
+.audio-warning {
+    font-size: 13px;
 }
 
 /* Test feedback */

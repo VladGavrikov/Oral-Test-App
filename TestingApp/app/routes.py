@@ -22,6 +22,7 @@ import io
 import csv
 from flask import make_response
 
+
 @app.route('/dashboard')
 @login_required
 def dashboard():
@@ -598,20 +599,45 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+from app.token import generate_confirmation_token, confirm_token
+from app.email import send_email
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(id=form.studentNumber.data, email=form.email.data, firstName= form.firstName.data, LastName = form.lastName.data)
+        user = User(id=form.studentNumber.data, email=form.email.data, firstName= form.firstName.data, LastName = form.lastName.data, confirmed=False)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash('Congratulations, you are now a registered user!')
+        token = generate_confirmation_token(user.email)
+        confirm_url = url_for('confirm_email', token=token, _external=True)
+        html = render_template('email/activate.html', confirm_url=confirm_url)
+        subject = "Please confirm your email"
+        send_email(user.email, subject, html)
+        flash('A confirmation email has been sent via email.', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
+@app.route('/confirm/<token>')
+def confirm_email(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
+    try:
+        email = confirm_token(token)
+    except:
+        flash('The confirmation link is invalid or has expired.', 'danger')
+    user = User.query.filter_by(email=email).first_or_404()
+    if user.confirmed:
+        flash('Account already confirmed. Please login.', 'success')
+    else:
+        user.confirmed = True
+        db.session.add(user)
+        db.session.commit()
+        flash('You have confirmed your account. Thanks!', 'success')
+    return redirect(url_for('login'))
 
 from app.forms import ResetPasswordRequestForm
 from app.email import send_password_reset_email

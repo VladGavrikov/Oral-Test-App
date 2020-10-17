@@ -148,9 +148,10 @@ def unenroll(studentNumber):
     unenrollStudent = TestMark.query.filter_by(unit_id=user.unit_id).filter_by(user_id=user.id).all()
     print("UNENROLLING FROM: ",unenrollStudent)
     units = Unit.query.all()
+    unit = user.unit_id
     user.unit_id = None
     db.session.commit()
-    return render_template('studentUnenrolledSuccess.html', title='Unenroll', units =units)
+    return render_template('studentUnenrolledSuccess.html', title='Unenroll', units = units, unit = unit)
 
 
 # @app.route('/releaseFeedback/<test>', methods=['GET', 'POST'])
@@ -472,7 +473,7 @@ def feedbackDownload(unitpage, test):
         else:
             csv = csv +(testmark[0].LastName +","+testmark[0].firstName+","+str(testmark[0].id)+","+str(testmark[1].mark1+testmark[1].mark2+testmark[1].mark3+testmark[1].mark4)+"\n")
     response = make_response(csv)
-    cd = 'attachment; filename='+unitpage+test.body+'FB.csv'
+    cd = 'attachment; filename='+unitpage+' '+test.body+' Results.csv'
     response.headers['Content-Disposition'] = cd 
     response.mimetype='text/csv'
 

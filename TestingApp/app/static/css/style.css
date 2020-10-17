@@ -559,6 +559,11 @@ input:not(:focus):valid + .floating-label {
     top: 100px; */
 }
 
+.question-nav::-webkit-scrollbar{
+    display: none;  /* Chrome, Safari, Edge, Opera */
+    scrollbar-width: none;  /* Firefox */
+  }
+
 .nav-pills {
     display: block;
     color: #FFFFFF;

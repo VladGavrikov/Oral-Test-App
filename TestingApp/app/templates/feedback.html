@@ -1,6 +1,91 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+    {% block javascript %}
+        <script>
+            navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(function(stream) {
+                console.log('You let me use your mic!')
+            })
+            .catch(function(err) {
+                console.log('No mic for you!')
+            });
+
+            window.onload = function () {
+            
+                var seconds = 00; 
+                var tens = 00;
+                var minutes = 0; 
+                var appendTens = document.getElementById("tens")
+                var appendSeconds = document.getElementById("seconds")
+                var appendMinutes = document.getElementById("minutes")
+                var buttonStart = document.getElementById('recordButton');
+                var buttonStop = document.getElementById('pauseButton');
+                var buttonReset = document.getElementById('stopButton');
+                var Interval ;
+
+                buttonStart.onclick = function() {
+                    
+                    clearInterval(Interval);
+                    Interval = setInterval(startTimer, 10);
+                }
+                
+                buttonStop.onclick = function() {
+                    if(document.getElementById("pauseButton").innerHTML == "Pause"){
+                        clearInterval(Interval);
+                        Interval = setInterval(startTimer, 10);
+                    }
+                    else{
+                        clearInterval(Interval);
+                    }
+                }
+
+                buttonReset.onclick = function() {
+                    clearInterval(Interval);
+                    tens = "00";
+                    seconds = "00";
+                    minutes = "0";
+                    appendTens.innerHTML = tens;
+                    appendSeconds.innerHTML = seconds;
+                    appendMinutes.innerHTML = minutes;
+                }
+                
+                function startTimer () {
+                    tens++; 
+                    
+                    if(tens < 9){
+                    appendTens.innerHTML = "0" + tens;
+                    }
+                    
+                    if (tens > 9){
+                    appendTens.innerHTML = tens;
+                    
+                    } 
+                    
+                    if (tens > 99) {
+                    seconds++;
+                    appendSeconds.innerHTML = "0" + seconds;
+                    tens = 0;
+                    appendTens.innerHTML = "0" + 0;
+                    }
+                    
+                    if (seconds > 9){
+                    appendSeconds.innerHTML = seconds;
+                    }
+                    if (seconds > 59){
+                    minutes++;
+                    appendMinutes.innerHTML = minutes;
+                    seconds = 0;
+                    appendSeconds.innerHTML = "0" + 0;
+                    }
+                
+                }
+
+            }
+        </script>
+    {% endblock %}
+
     <div id="fade"></div>
     <div id="modal">
         <img id="loader" src="{{ url_for('static', filename='img/loading.gif') }}" />
@@ -62,12 +147,17 @@
             <h3 class="question-heading">Audio Feedback:</h3>
             <div class="audio-recorder">
                 <div id="controls">
-                    <button id="recordButton">Record</button>
-                    <button id="pauseButton" disabled>Pause</button>
-                    <button id="stopButton" disabled>Stop</button>
+                    <button id="recordButton" class="btn green-btn">Record</button>
+                    <button id="pauseButton" disabled class="btn green-btn">Pause</button>
+                    <button id="stopButton" disabled class="btn green-btn">Stop</button>
                 </div>
-                <audio src={{path}} id= "player" controls="controls" ></audio>
-                <div id="formats">Not Recording</div>
+
+                <p class="stopwatch mt-3 mb-0"><span id="minutes">00</span>:<span id="seconds">00</span>:<span id="tens">00</span></p>
+                <p class="audio-warning">Please note, re-recording will overwrite your previous recording.</p>
+                <!-- <p>Record duration is limited: 1.5m</p> -->
+                <div id="formats">Not recording</div>
+                <audio src={{path}} id= "player" controls="controls"></audio>
+
             </div>
             <h3 class="question-heading mt-5">Written feedback:</h3>
             <form action="" method="post" enctype="multipart/form-data">

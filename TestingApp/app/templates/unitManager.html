@@ -105,6 +105,13 @@
                     <div class="text-center mt-3">
                         {{ form.submit(class="btn green-btn") }}
                     </div>
+                    {% if form.errors %}
+                    <script>
+                        $(document).ready(function() {
+                            $('#add-unit-modal').modal('show');
+                        });
+                    </script>
+                    {% endif %}
                 </form>
             </div>
         </div>

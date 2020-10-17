@@ -626,7 +626,7 @@ def register():
         html = render_template('email/activate.html', confirm_url=confirm_url)
         subject = "Please confirm your email"
         send_email(user.email, subject, html)
-        flash('A confirmation email has been sent via email.', 'success')
+        flash('A confirmation link has been sent to your email.', 'success')
         return redirect(url_for('unconfirmed'))
     return render_template('register.html', title='Register', form=form)
 

@@ -8,12 +8,18 @@
 <div class="content-container" style="position:relative;">
     <div>
         {% if submissionInTime == False %}
-            <p class="warning">Warning: test was submitted past deadline</p>
+            <p class="warning">Warning: task was submitted past deadline</p>
             <p>Due Date:&nbsp;&nbsp; {{ due_date.strftime('%d/%m/%Y') }} {{ due_time.strftime('%I:%M %p')}}<br>
-            Submitted: {{ submittionDate.strftime('%d/%m/%Y') }} {{ submittionTime.strftime('%I:%M %p')}}</p>
-            {{(submittedDateANDTime-dueDateANDTime)}}
+            Submitted: {{ submittionDate.strftime('%d/%m/%Y') }} {{ submittionTime.strftime('%I:%M %p')}}<br>
+            {% if (submittedDateANDTime-dueDateANDTime).seconds//3600 < 1 %}
+                Task was submitted {{ (submittionDate-due_date).days }} days late
+            {% else %}
+                Task was submitted {{ (submittionDate-due_date).days }} days, and {{ (submittedDateANDTime-dueDateANDTime).hours }} hours late
+            {% endif %}
+        </p>
+            {# (submittedDateANDTime-dueDateANDTime) #}
         {% elif submissionInTime == None %}
-            <p class="warning">Warning: test was not submitted</p>
+            <p class="warning">Warning: task was not submitted</p>
         {% endif%}
     </div>
 

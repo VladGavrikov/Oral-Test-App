@@ -289,6 +289,16 @@ a:hover {
     /* position: relative; */
 }
 
+.table-btns td {
+    display: table-cell;
+    vertical-align: middle;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    margin-top: auto;
+    margin-bottom: auto;
+    border-top: none;
+}
+
 #unit-list tbody {
     height: 100%;
 }
@@ -337,6 +347,7 @@ a:hover {
     border-radius: 5px;
     padding: 5px 10px;
     font-size: 15px;
+    height: 36px;
 }
 
 .table-btn:hover, .table-btn a:hover {
@@ -356,6 +367,7 @@ a:hover {
     border-radius: 5px;
     padding: 5px 10px;
     font-size: 15px;
+    height: 36px;
 }
 
 .table-btn-navy:hover, .table-btn-navy a:hover {
@@ -599,31 +611,15 @@ input:not(:focus):valid + .floating-label {
     text-align: center;
 }
 
-/* .icon-circle {
-    background-color: white;
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    border: 1px solid grey;
-    padding: 10px;
-    display: inline-block;
-}
-
-.icon-circle-stop {
-    background-color: white;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: 1px solid grey;
-    padding: 10px;
-    display: inline-block;
-} */
-
 .stopwatch {
     font-size: 25px;
 }
 
 .audio-warning {
+    font-size: 13px;
+}
+
+#formats {
     font-size: 13px;
 }
 

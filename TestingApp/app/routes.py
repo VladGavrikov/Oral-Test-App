@@ -17,13 +17,16 @@ import os
 os.environ["OMP_NUM_THREADS"] = "1"
 import numpy as np
 from random import randint
+from app.decorators import check_confirmed
 
 import io
 import csv
 from flask import make_response
 
+
 @app.route('/dashboard')
 @login_required
+@check_confirmed
 def dashboard():
     user = User.query.filter_by(email=current_user.email).first_or_404()
     if(user.isTeacher==True):
@@ -177,6 +180,10 @@ def testEvaluation(test, studentNumber):
     submittionTime = testMarking.due_time
     due_date = testQ.due_date
     due_time = testQ.due_time
+    #finding out how late submittion was
+    submittedDateANDTime = datetime.combine(submittionDate,  submittionTime)
+    dueDateANDTime = datetime.combine(due_date,  due_time)
+
     submissionInTime = None
     if(submittionDate ==None or submittionTime == None):
         testWasntSubmitted = True
@@ -200,7 +207,8 @@ def testEvaluation(test, studentNumber):
         db.session.commit()
         return render_template('testMarkedSuccess.html',units = units, test = test)
     return render_template('testEvaluation.html', title='Evaluation', form = form, unit=unit,units=units, student = student, t = testQ, 
-    submissionInTime=submissionInTime, submittionDate = submittionDate, submittionTime =submittionTime, due_date=due_date, due_time=due_time)
+    submissionInTime=submissionInTime, submittionDate = submittionDate, submittionTime =submittionTime, due_date=due_date, due_time=due_time,
+    submittedDateANDTime=submittedDateANDTime,dueDateANDTime=dueDateANDTime)
 
 @app.route('/attempt/<test>/<studentNumber>/<questionNumber>', methods=['GET', 'POST'])
 @login_required
@@ -403,6 +411,7 @@ def testCreated(test):
 
 @app.route('/enrolment/<unit>', methods=['GET', 'POST'])
 @login_required
+@check_confirmed
 def unitEnrolled(unit):
     user = User.query.filter_by(email=current_user.email).first_or_404()
     user.unit_id = unit
@@ -420,6 +429,7 @@ def unitEnrolled(unit):
     
 
 @app.route('/enrolment')
+@check_confirmed
 @login_required
 def enrolment():
     units = Unit.query.all()
@@ -598,20 +608,45 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+from app.token import generate_confirmation_token, confirm_token
+from app.email import send_email
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(id=form.studentNumber.data, email=form.email.data, firstName= form.firstName.data, LastName = form.lastName.data)
+        user = User(id=form.studentNumber.data, email=form.email.data, firstName= form.firstName.data, LastName = form.lastName.data, confirmed=False)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash('Congratulations, you are now a registered user!')
-        return redirect(url_for('login'))
+        token = generate_confirmation_token(user.email)
+        confirm_url = url_for('confirm_email', token=token, _external=True)
+        html = render_template('email/activate.html', confirm_url=confirm_url)
+        subject = "Please confirm your email"
+        send_email(user.email, subject, html)
+        flash('A confirmation email has been sent via email.', 'success')
+        return redirect(url_for('unconfirmed'))
     return render_template('register.html', title='Register', form=form)
 
+@app.route('/confirm/<token>')
+def confirm_email(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
+    try:
+        email = confirm_token(token)
+    except:
+        flash('The confirmation link is invalid or has expired.', 'danger')
+    user = User.query.filter_by(email=email).first_or_404()
+    if user.confirmed:
+        flash('Account already confirmed. Please login.', 'success')
+    else:
+        user.confirmed = True
+        db.session.add(user)
+        db.session.commit()
+        flash('You have confirmed your account. Thanks!', 'success')
+    return redirect(url_for('login'))
 
 from app.forms import ResetPasswordRequestForm
 from app.email import send_password_reset_email
@@ -647,4 +682,23 @@ def reset_password(token):
         db.session.commit()
         flash('Your password has been reset.')
         return redirect(url_for('login'))
-    return render_template('reset_password.html', title='Reset Password', form=form)
+    return render_template('reset_password.html', form=form)
+
+@app.route('/unconfirmed')
+@login_required
+def unconfirmed():
+    if current_user.confirmed:
+        return redirect('dashboard')
+    flash('Please confirm your account!', 'warning')
+    return render_template('unconfirmed.html')
+
+@app.route('/resend')
+@login_required
+def resend_confirmation():
+    token = generate_confirmation_token(current_user.email)
+    confirm_url = url_for('confirm_email', token=token, _external=True)
+    html = render_template('email/activate.html', confirm_url=confirm_url)
+    subject = "Please confirm your email"
+    send_email(current_user.email, subject, html)
+    flash('A new confirmation email has been sent.', 'success')
+    return redirect(url_for('unconfirmed'))

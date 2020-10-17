@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, TextAreaField
 from flask_wtf.file import FileField, FileRequired
-from wtforms.validators import ValidationError, DataRequired,InputRequired, Email, EqualTo, NumberRange
+from wtforms.validators import ValidationError, DataRequired,InputRequired, Email, EqualTo, NumberRange, Regexp,Length
 from app.models import User
 from wtforms.fields.html5 import EmailField
 from wtforms import Form
@@ -35,7 +35,7 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Please use a different email address.')
 
 class CreateUnitForm(FlaskForm):
-    name = StringField('Unit Code', validators=[DataRequired()])
+    name = StringField('Unit Code', validators=[Regexp(r'^[\w.]+$', message="Invalid Characters."),Length(min=- 1, max=20), DataRequired()])
     description = StringField('Unit Name', validators=[DataRequired()])
     mark1Criteria = StringField('Marking criteria 1', validators=[DataRequired()])
     mark2Criteria = StringField('Marking criteria 2', validators=[DataRequired()])

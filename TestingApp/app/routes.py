@@ -17,6 +17,7 @@ import os
 os.environ["OMP_NUM_THREADS"] = "1"
 import numpy as np
 from random import randint
+from app.decorators import check_confirmed
 
 import io
 import csv
@@ -25,6 +26,7 @@ from flask import make_response
 
 @app.route('/dashboard')
 @login_required
+@check_confirmed
 def dashboard():
     user = User.query.filter_by(email=current_user.email).first_or_404()
     if(user.isTeacher==True):
@@ -404,6 +406,7 @@ def testCreated(test):
 
 @app.route('/enrolment/<unit>', methods=['GET', 'POST'])
 @login_required
+@check_confirmed
 def unitEnrolled(unit):
     user = User.query.filter_by(email=current_user.email).first_or_404()
     user.unit_id = unit
@@ -421,6 +424,7 @@ def unitEnrolled(unit):
     
 
 @app.route('/enrolment')
+@check_confirmed
 @login_required
 def enrolment():
     units = Unit.query.all()
@@ -618,7 +622,7 @@ def register():
         subject = "Please confirm your email"
         send_email(user.email, subject, html)
         flash('A confirmation email has been sent via email.', 'success')
-        return redirect(url_for('login'))
+        return redirect(url_for('unconfirmed'))
     return render_template('register.html', title='Register', form=form)
 
 @app.route('/confirm/<token>')
@@ -674,3 +678,11 @@ def reset_password(token):
         flash('Your password has been reset.')
         return redirect(url_for('login'))
     return render_template('reset_password.html', form=form)
+
+
+@app.route('/unconfirmed')
+def unconfirmed():
+    if current_user.confirmed:
+        return redirect('dashboard')
+    flash('Please confirm your account!', 'warning')
+    return render_template('unconfirmed.html')

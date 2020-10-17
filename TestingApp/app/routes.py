@@ -180,6 +180,10 @@ def testEvaluation(test, studentNumber):
     submittionTime = testMarking.due_time
     due_date = testQ.due_date
     due_time = testQ.due_time
+    #finding out how late submittion was
+    submittedDateANDTime = datetime.combine(submittionDate,  submittionTime)
+    dueDateANDTime = datetime.combine(due_date,  due_time)
+
     submissionInTime = None
     if(submittionDate ==None or submittionTime == None):
         testWasntSubmitted = True
@@ -203,7 +207,8 @@ def testEvaluation(test, studentNumber):
         db.session.commit()
         return render_template('testMarkedSuccess.html',units = units, test = test)
     return render_template('testEvaluation.html', title='Evaluation', form = form, unit=unit,units=units, student = student, t = testQ, 
-    submissionInTime=submissionInTime, submittionDate = submittionDate, submittionTime =submittionTime, due_date=due_date, due_time=due_time)
+    submissionInTime=submissionInTime, submittionDate = submittionDate, submittionTime =submittionTime, due_date=due_date, due_time=due_time,
+    submittedDateANDTime=submittedDateANDTime,dueDateANDTime=dueDateANDTime)
 
 @app.route('/attempt/<test>/<studentNumber>/<questionNumber>', methods=['GET', 'POST'])
 @login_required

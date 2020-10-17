@@ -100,12 +100,12 @@
 
 <div class="content-container" style="overflow-y: scroll">  
     <div class="row h-100">
-        <div class="question-nav" style="overflow-y:scroll">
+        <div class="question-nav">
             <ul class="nav nav-pills">
                 {% if questionNumber|int != 1 %}
                     <li><a href="{{  url_for('test', unitpage = unit.name, test= test,questionNumber=questionNumber|int-1) }}" class="vertical-text"><i class="fas fa-long-arrow-alt-up"></i>&nbsp;Prev</a></li>
-                {% else %}
-                    <li class="vertical-text invisible"><i class="fas fa-long-arrow-alt-up"></i>&nbsp;Prev</a></li>
+                {# else #}
+                    <!-- <li class="vertical-text invisible"><i class="fas fa-long-arrow-alt-up"></i>&nbsp;Prev</a></li> -->
                 {% endif %}
                 {% for question in range(numOfQuestions+1)%}
                     {% if questionNumber|int-1 == question and question==numOfQuestions%}
@@ -128,8 +128,8 @@
                 {% endfor %}
                 {% if questionNumber|int <= numOfQuestions %}   
                     <li><a href="{{ url_for('test', unitpage = unit.name, test= test,questionNumber=questionNumber|int+1) }}" class="vertical-text">Next&nbsp;<i class="fas fa-long-arrow-alt-down"></i></a></li>
-                {% else %}
-                    <li class="vertical-text invisible">Next&nbsp;<i class="fas fa-long-arrow-alt-down"></i></a></li>
+                {# else #}
+                    <!-- <li class="vertical-text invisible">Next&nbsp;<i class="fas fa-long-arrow-alt-down"></i></a></li> -->
                 {% endif %}
             </ul>
         </div>
@@ -143,8 +143,10 @@
                     <span style="color: red;">[{{ error }}]</span>
                     {% endfor %}
                     <div class="btns-bottom">
-                        {% if questionNumber|int <= numOfQuestions %}   
+                        {% if questionNumber|int < numOfQuestions %}   
                             <button class="btn green-btn" role="button">Save question</button>
+                        {% elif questionNumber|int == numOfQuestions %}
+                            <button class="btn green-btn" role="button">Save and add a new question</button>
                         {% else %}
                             {{ form.submit(class_="btn green-btn") }}
                         {% endif %}

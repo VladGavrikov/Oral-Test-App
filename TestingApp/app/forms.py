@@ -52,7 +52,7 @@ class CreateTestForm(FlaskForm):
 class CreateQuestionForm(FlaskForm):
     #name = TextAreaField('Question', validators=[DataRequired()])
     name = TextAreaField('Question', validators=[DataRequired()])
-    submit = SubmitField('Add question')
+    submit = SubmitField('Save and add a new question')
 
 class CreateAnswerForm(FlaskForm):
     audio = FileField(validators=[FileRequired()])

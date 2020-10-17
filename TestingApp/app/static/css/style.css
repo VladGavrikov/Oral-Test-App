@@ -511,9 +511,10 @@ input:not(:focus):valid + .floating-label {
     padding-right: 5px;
     display: flex;
     justify-content: center;
-    align-items: center;
+    /* align-items: center; */
     border-right: 1px solid rgba(126, 221, 195, 0.5);
     margin-right: 30px;
+    overflow-y: auto;
 
     /* these don't work */
     /* position: sticky;
@@ -550,6 +551,11 @@ input:not(:focus):valid + .floating-label {
 .active {
     background-color: var(--testapp-green);
     opacity: 100%;
+}
+
+.test-content {
+    width: 95%; 
+    overflow-y: auto;
 }
 
 .btns-bottom {

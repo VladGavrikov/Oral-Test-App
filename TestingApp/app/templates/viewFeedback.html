@@ -27,7 +27,7 @@
                     {% endif %}
                 {% endfor %}
                 {% if questionNumber < questions|length %}   
-                    <li><a href="{{ url_for('viewFeedback',test = testPassed, studentNumber = user.id, questionNumber=questionNumber+1)  }}" class="vertical-text">Next&nbsp;<i class="fas fa-long-arrow-alt-down"></i></a></li>
+                    <li><a href="{{ url_for('viewFeedback',test = testPassed, studentNumber = user.id, questionNumber=questionNumber+1)  }}" class="vertical-text text-margin">Next&nbsp;<i class="fas fa-long-arrow-alt-down"></i></a></li>
                 {% endif %}
             </ul>
         </div>

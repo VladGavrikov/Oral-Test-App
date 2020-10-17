@@ -129,7 +129,7 @@
                     {% endif %}
                 {% endfor %}
                 {% if questionNumber|int <= numOfQuestions %}   
-                    <li><a href="{{ url_for('test', unitpage = unit.name, test= test,questionNumber=questionNumber|int+1) }}" class="vertical-text">Next&nbsp;<i class="fas fa-long-arrow-alt-down"></i></a></li>
+                    <li><a href="{{ url_for('test', unitpage = unit.name, test= test,questionNumber=questionNumber|int+1) }}" class="vertical-text text-margin">Next&nbsp;<i class="fas fa-long-arrow-alt-down"></i></a></li>
                 {# else #}
                     <!-- <li class="vertical-text invisible">Next&nbsp;<i class="fas fa-long-arrow-alt-down"></i></a></li> -->
                 {% endif %}

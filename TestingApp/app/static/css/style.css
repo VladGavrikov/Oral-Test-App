@@ -556,8 +556,12 @@ input:not(:focus):valid + .floating-label {
     color: #FFFFFF;
 }
 
-.nav-item:nth-last-child(2) {
+/* .nav-item:nth-last-child(2) {
     margin-bottom: 25px;
+} */
+
+.text-margin {
+    margin-top: 25px;
 }
 
 .active {

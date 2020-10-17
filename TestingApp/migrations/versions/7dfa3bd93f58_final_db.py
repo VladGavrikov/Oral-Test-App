@@ -1,9 +1,7 @@
 """final db
-
 Revision ID: 7dfa3bd93f58
 Revises: 
 Create Date: 2020-10-02 23:42:13.912107
-
 """
 from alembic import op
 import sqlalchemy as sa

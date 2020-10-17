@@ -22,6 +22,7 @@ app.config.update(dict(
     TESTING=False,
     MAIL_USERNAME = 'speakfluentapp@gmail.com',
     MAIL_PASSWORD = 'CITS3200Group15',
+	MAIL_DEFAULT_SENDER = 'speakfluentapp@gmail.com',
 ))
 
 mail = Mail(app)

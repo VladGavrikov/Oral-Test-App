@@ -30,7 +30,13 @@
 		}
 		
 			buttonStop.onclick = function() {
-			clearInterval(Interval);
+			if(document.getElementById("pauseButton").innerHTML == "Pause"){
+				clearInterval(Interval);
+				Interval = setInterval(startTimer, 10);
+			}
+			else{
+				clearInterval(Interval);
+			}
 		}
 		
 

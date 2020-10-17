@@ -383,7 +383,7 @@ def unitManager():
                     db.session.delete(testmark)
                 
                 db.session.commit()
-                flash("Database Successfully cleaned")
+                # flash("Database Successfully cleaned")
                 return redirect(url_for('unitManager'))
             else:
                 flash("Password is incorrect")

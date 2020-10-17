@@ -481,6 +481,7 @@ def manageStudents(unitpage):
     return render_template('manageStudents.html', unit=unit, students=students, units=units)
 
 @app.route("/unitManager/<unitpage>/<test>/<questionNumber>", methods=['GET', 'POST'])
+
 def test(unitpage, test,questionNumber):
     units = Unit.query.all()
     unit = Unit.query.filter_by(name=unitpage).first()
@@ -605,6 +606,7 @@ def logout():
 
 from app.token import generate_confirmation_token, confirm_token
 from app.email import send_email
+import re
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -613,6 +615,13 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(id=form.studentNumber.data, email=form.email.data, firstName= form.firstName.data, LastName = form.lastName.data, confirmed=False)
+        if re.search('@uwa.edu.au', form.email.data):
+            user.isTeacher = True
+        #if "student" in form.email.data:
+         #   user.isTeacher = False
+        #else:
+        #    user.isTeacher = True 
+
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()

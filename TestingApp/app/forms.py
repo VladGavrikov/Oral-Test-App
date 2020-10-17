@@ -6,6 +6,7 @@ from app.models import User
 from wtforms.fields.html5 import EmailField
 from wtforms import Form
 from wtforms.fields.html5 import DateField, TimeField, DateTimeField
+import re
 
 class LoginForm(FlaskForm):
     # email = EmailField('Email', validators=[DataRequired(), Email()])
@@ -31,6 +32,9 @@ class RegistrationForm(FlaskForm):
 
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
+        
+        #if not re.search("@uwa.edu.au", email.data):
+        #    raise ValidationError('Please use UWA email')
         if user is not None:
             raise ValidationError('Please use a different email address.')
 

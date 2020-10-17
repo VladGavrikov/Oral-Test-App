@@ -1,7 +1,9 @@
 from functools import wraps
 
 from flask import flash, redirect, url_for
-from flask_login import current_user, login_user
+
+from flask_login import current_user
+
 
 def check_confirmed(func):
     @wraps(func)

@@ -35,7 +35,7 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Please use a different email address.')
 
 class CreateUnitForm(FlaskForm):
-    name = StringField('Unit Code', validators=[DataRequired()])
+    name = StringField('Unit Code', validators=[Regexp(r'^[\w.]+$'), DataRequired()])
     description = StringField('Unit Name', validators=[DataRequired()])
     mark1Criteria = StringField('Marking criteria 1', validators=[DataRequired()])
     mark2Criteria = StringField('Marking criteria 2', validators=[DataRequired()])

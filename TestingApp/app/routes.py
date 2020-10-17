@@ -1,5 +1,5 @@
 from flask import render_template
-from app import app
+from app import app, admin
 from app.forms import LoginForm
 from flask import render_template, flash, redirect, url_for
 from flask import Flask, json
@@ -710,3 +710,12 @@ def resend_confirmation():
     send_email(current_user.email, subject, html)
     flash('A new confirmation email has been sent.', 'success')
     return redirect(url_for('unconfirmed'))
+
+
+from flask_admin import Admin, AdminIndexView
+from flask_admin.contrib.sqla import ModelView
+
+
+admin.add_view(ModelView(User,db.session))
+admin.add_view(ModelView(TestMark,db.session))
+admin.add_view(ModelView(Feedback,db.session))

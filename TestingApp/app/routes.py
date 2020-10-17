@@ -690,7 +690,7 @@ def unconfirmed():
     if current_user.confirmed:
         return redirect('dashboard')
     flash('Please confirm your account!', 'warning')
-    return render_template('unconfirmed.html')
+    return render_template('unconfirmed.html', title='Welcome!')
 
 @app.route('/resend')
 @login_required

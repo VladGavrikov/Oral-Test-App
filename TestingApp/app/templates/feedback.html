@@ -19,8 +19,6 @@
             <ul class="nav nav-pills">
                 {% if questionNumber != 0 %}
                     <li><a href="{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = questionNumber) }}" class="vertical-text"><i class="fas fa-long-arrow-alt-up"></i>&nbsp;Prev</a></li>
-                {% else %}
-                    <li class="vertical-text invisible"><i class="fas fa-long-arrow-alt-up"></i>&nbsp;Prev</a></li>
                 {% endif %}
                 {% for question in range(questions|length)%}
                     {% if questionNumber == question %}
@@ -35,8 +33,6 @@
                 {% endfor %}
                 {% if questionNumber+1 < questions|length %}   
                     <li><a href="{{ url_for('markingTest', test = test.test_id, studentNumber = test.user_id, questionNumber = questionNumber+2) }}" class="vertical-text">Next&nbsp;<i class="fas fa-long-arrow-alt-down"></i></a></li>
-                {% else %}
-                    <li class="vertical-text invisible">Next&nbsp;<i class="fas fa-long-arrow-alt-down"></i></a></li>
                 {% endif %}
             </ul>
         </div>

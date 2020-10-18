@@ -14,14 +14,15 @@ login.login_view = 'login'
 
 app.config.update(dict(
     DEBUG = True,
-    MAIL_SERVER = 'smtp.gmail.com',
+    MAIL_SERVER = 'smtp.sendgrid.net',
     MAIL_PORT = 587,
     MAIL_USE_TLS = True,
     MAIL_USE_SSL = False,
     MAIL_SUPPRESS_SEND=False,
     TESTING=False,
-    MAIL_USERNAME = 'speakfluentapp@gmail.com',
-    MAIL_PASSWORD = 'CITS3200Group15',
+    MAIL_USERNAME = 'apikey',
+    MAIL_PASSWORD = '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',
+    #CITS3200Group15CITS3200Group15
 	MAIL_DEFAULT_SENDER = 'speakfluentapp@gmail.com',
 ))
 

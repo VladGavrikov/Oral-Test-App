@@ -18,6 +18,13 @@ recordButton.addEventListener("click", startRecording);
 stopButton.addEventListener("click", stopRecording);
 pauseButton.addEventListener("click", pauseRecording);
 
+function populateField() {
+	var question = sessionStorage.getItem("storedQuestion");
+	console.log(storedQuestion);
+	document.getElementById("inputName").innerHTML = question;
+	// $("#inputName").append(question);
+}
+
 function openModal() {
 	document.getElementById('modal').style.display = 'block';
 	document.getElementById('fade').style.display = 'block';

@@ -299,6 +299,10 @@ a:hover {
     border-top: none;
 }
 
+/* .table-btns-both td {
+
+} */
+
 #unit-list tbody {
     height: 100%;
 }
@@ -319,7 +323,7 @@ a:hover {
 /* Buttons */
 .btns {
     position: absolute;
-    right: 70px;
+    right: 75px;
     font-size: 14px;
 }
 

@@ -9,7 +9,7 @@
     })
     .catch(function(err) {
         console.log('No mic for you!')
-	});
+    });
 
     window.onload = function () {
             
@@ -142,7 +142,7 @@
             <h3 class="question-heading mb-3"><span class="line">|</span>Question {{ questionNumber }}</h3>
             <form action="" method="post" enctype="multipart/form-data">
                 {{ form.hidden_tag() }}
-                    {{ form.name(class_="form-control", id="inputName", size=150, style="resize: none;") }}<br>
+                    {{ form.name(class_="form-control", id="inputName", size=150, style="resize: none", placeholder="Please record audio (if required) before typing your question here") }}
                     {% for error in form.name.errors %}
                     <span style="color: red;">[{{ error }}]</span>
                     {% endfor %}
@@ -152,11 +152,12 @@
                         {% elif questionNumber|int == numOfQuestions %}
                             <button class="btn green-btn" role="button">Save and add a new question</button>
                         {% else %}
-                            {{ form.submit(class_="btn green-btn") }}
+                            {{ form.submit(class_="btn green-btn", id="submitBtn") }}
                         {% endif %}
                     </div>
             </form>
         </div>
+
         <div class="col-sm-6 justify-content-center text-center" style="position:relative">
             <h3 class="question-heading">(Optional) Add audio to your question:</h3>
             <div class="audio-recorder">
@@ -168,7 +169,6 @@
 
                 <p class="stopwatch mt-3 mb-0"><span id="minutes">00</span>:<span id="seconds">00</span>:<span id="tens">00</span></p>
                 <p class="audio-warning">Please note, re-recording will overwrite your previous recording.</p>
-                <!-- <p>Record duration is limited: 1.5m</p> -->
                 <div id="formats">Not recording</div>
 
                 <audio src={{path}} id= "player" controls="controls"></audio>

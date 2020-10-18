@@ -44,12 +44,12 @@
     <h3 class="subheading">Completed Tasks</h3>
     <div class="row mx-2"> Please see LMS for your final mark </div>
     <div class="table-half">
-        <table id="task-list" class="table table-hover table-striped table-list table-btns">
+        <table id="task-list" class="table table-hover table-striped table-list">
             <thead>
                 <tr>
                     <th>Task name</th>
-                    <th>Task mark</th>
-                    <th>View feedback</th>
+                    <th style="width:300px;">Task mark</th>
+                    <th style="width:500px;">View feedback</th>
                 </tr>
             </thead>
             <tbody>
@@ -59,18 +59,16 @@
                         <td>{{ test.body }}</td>
                         {% if testFB[loop.index0].feedbackReleased == True %}
                             {% if testFB[loop.index0].mark1 == None %}
-                                <td>0</td>
+                                <td style="width:300px;">0</td>
                             {% else %}
-                                <td>{{testFB[loop.index0].mark1+testFB[loop.index0].mark2+testFB[loop.index0].mark3+testFB[loop.index0].mark4}}</td>
+                                <td style="width:300px;">{{testFB[loop.index0].mark1+testFB[loop.index0].mark2+testFB[loop.index0].mark3+testFB[loop.index0].mark4}}</td>
                             {% endif %}
-                            <td> 
+                            <td style="width:500px;padding-top:4px;padding-bottom:4px;"> 
                                 <a href="{{ url_for('viewFeedback',test = testFB[loop.index0].test_id, studentNumber = user.id, questionNumber=1)  }}"><button class="btn table-btn">View</button></a>
                             </td>
                         {% else %}
-                            <td> 
-                                <p></p>
-                            </td>
-                            <td>No feedback currently available</td>
+                            <td style="width:300px;">-</td>
+                            <td style="width:500px;">No feedback currently available</td>
                         {% endif %}
                     </tr>
                     {% endif %}

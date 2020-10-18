@@ -124,7 +124,9 @@
 
             
         <div class="col-sm-5 row-fit" style="position:relative">
-            
+            {% if answerToQuestion.body == "empty" %}
+            <p class="warning">Question Unattempted</p>
+            {% endif %}
             <h3 class="question-heading"><span class="line">|</span>Question {{ questionNumber+1 }}</h3>
             <div class="question">
                 <p>{{ question.body }}</p>
@@ -134,10 +136,6 @@
                 {% if answerToQuestion.body != "empty" %}
                     <h3 class="question-heading mt-3">Student answer</h3>
                     <audio src={{answerToQuestion.body}} id= "player" controls="controls"></audio>
-                {# endif #}  
-                {# if answerToQuestion.body == "empty" #}
-                {% else %}
-                    <h4>Question Unattempted</h4>
                 {% endif%} 
             </div>
             

@@ -14,8 +14,6 @@
             <ul class="nav nav-pills">
                 {% if questionNumber != 1 %}
                     <li><a href="{{ url_for('viewFeedback',test = testPassed, studentNumber = user.id, questionNumber=questionNumber-1)  }}" class="vertical-text"><i class="fas fa-long-arrow-alt-up"></i>&nbsp;Prev</a></li>
-                {% else %}
-                    <li class="vertical-text invisible"><i class="fas fa-long-arrow-alt-up"></i>&nbsp;Prev</a></li>
                 {% endif %}
                 {% for question in range(questions|length)%}
                     {% if questionNumber == question+1 %}
@@ -29,57 +27,57 @@
                     {% endif %}
                 {% endfor %}
                 {% if questionNumber < questions|length %}   
-                    <li><a href="{{ url_for('viewFeedback',test = testPassed, studentNumber = user.id, questionNumber=questionNumber+1)  }}" class="vertical-text">Next&nbsp;<i class="fas fa-long-arrow-alt-down"></i></a></li>
-                {% else %}
-                    <li class="vertical-text invisible">Next&nbsp;<i class="fas fa-long-arrow-alt-down"></i></a></li>
+                    <li><a href="{{ url_for('viewFeedback',test = testPassed, studentNumber = user.id, questionNumber=questionNumber+1)  }}" class="vertical-text text-margin">Next&nbsp;<i class="fas fa-long-arrow-alt-down"></i></a></li>
                 {% endif %}
             </ul>
         </div>
-
-        <div class="col-sm-5">
-            <h3 class="question-heading"><span class="line">|</span>Question {{ questionNumber }}</h3>
-            <div class="question">
-                <p>{{ questions[questionNumber-1].body }}</p>
-                {% if questions[questionNumber-1].path != "empty" %}
-                    <audio src={{questions[questionNumber-1].path}} id= "player" controls="controls"></audio><br>
-                {% endif %}
-                <h3 class="question-heading mt-3">Your answer</h3>
-                {% if answers[0] != None%}
-                    {% if answers[0].body != "empty" %}
-                        <audio src={{answers[0].body}} id= "player" controls="controls"></audio>
+        
+        <div class="row test-content">
+            <div class="col-sm-6">
+                <h3 class="question-heading"><span class="line">|</span>Question {{ questionNumber }}</h3>
+                <div class="question">
+                    <p>{{ questions[questionNumber-1].body }}</p>
+                    {% if questions[questionNumber-1].path != "empty" %}
+                        <audio src={{questions[questionNumber-1].path}} id= "player" controls="controls"></audio><br>
                     {% endif %}
-                    {% if answers[0].body == "empty" %}
+                    <h3 class="question-heading mt-3">Your answer</h3>
+                    {% if answers[0] != None%}
+                        {% if answers[0].body != "empty" %}
+                            <audio src={{answers[0].body}} id= "player" controls="controls"></audio>
+                        {% endif %}
+                        {% if answers[0].body == "empty" %}
+                            <p>Question unattempted</p>
+                        {% endif %}
+                    {% else %}
                         <p>Question unattempted</p>
                     {% endif %}
-                {% else %}
-                    <p>Question unattempted</p>
-                {% endif %}
+                </div>
+                
+                {% if answers[0].body == "empty" or answers[0]==None%}
+                    <div id="plot" class="audio-graphs" style="display:none"></div>
+                {%else%}
+                    <div id="plot" class="audio-graphs"></div>
+                {% endif%}
             </div>
-            
-            {% if answers[0].body == "empty" or answers[0]==None%}
-                <div id="plot" class="audio-graphs" style="display:none"></div>
-            {%else%}
-                <div id="plot" class="audio-graphs"></div>
-            {% endif%}
-        </div>
 
-        <div class="col-sm-6">
-            <h3 class="question-heading">Written feedback</h3>
-            <p>{{ feedbacks[0].body}}</p>
-            <h3 class="question-heading">Audio feedback</h3>
-            {% if feedbacks[0] != None %}
-                {% if feedbacks[0].path != "empty" %}
-                    <audio src={{feedbacks[0].path}} id= "player" controls="controls"></audio>
+            <div class="col-sm-6">
+                <h3 class="question-heading">Written feedback</h3>
+                <p>{{ feedbacks[0].body}}</p>
+                <h3 class="question-heading">Audio feedback</h3>
+                {% if feedbacks[0] != None %}
+                    {% if feedbacks[0].path != "empty" %}
+                        <audio src={{feedbacks[0].path}} id= "player" controls="controls"></audio>
+                    {% endif %}
+                {% else %}
+                    <p>No audio feedback avaliable</p>
                 {% endif %}
-            {% else %}
-                <p>No audio feedback avaliable</p>
-            {% endif %}
 
-            {% if feedbacks[0].path == "empty" or feedbacks[0] == None %}
-                <div id="plot2" class="audio-graphs" style="display: none;"></div>
-            {% else %}
-                <div id="plot2" class="audio-graphs"></div>
-            {% endif%}
+                {% if feedbacks[0].path == "empty" or feedbacks[0] == None %}
+                    <div id="plot2" class="audio-graphs" style="display: none;"></div>
+                {% else %}
+                    <div id="plot2" class="audio-graphs"></div>
+                {% endif%}
+            </div>
         </div>
 
 

@@ -10,82 +10,84 @@
     .catch(function(err) {
         console.log('No mic for you!')
 	});
-	window.onload = function () {
-		
-		var seconds = 00; 
-		var tens = 00;
-		var minutes = 0; 
-		var appendTens = document.getElementById("tens")
-		var appendSeconds = document.getElementById("seconds")
-		var appendMinutes = document.getElementById("minutes")
-		var buttonStart = document.getElementById('recordButton');
-		var buttonStop = document.getElementById('pauseButton');
-		var buttonReset = document.getElementById('stopButton');
-		var Interval ;
 
-		buttonStart.onclick = function() {
-			
-			clearInterval(Interval);
-			Interval = setInterval(startTimer, 10);
-		}
-		
-			buttonStop.onclick = function() {
-			clearInterval(Interval);
-		}
-		
+    window.onload = function () {
+            
+            var seconds = 00; 
+            var tens = 00;
+            var minutes = 0; 
+            var appendTens = document.getElementById("tens")
+            var appendSeconds = document.getElementById("seconds")
+            var appendMinutes = document.getElementById("minutes")
+            var buttonStart = document.getElementById('recordButton');
+            var buttonStop = document.getElementById('pauseButton');
+            var buttonReset = document.getElementById('stopButton');
+            var Interval ;
 
-		buttonReset.onclick = function() {
-			clearInterval(Interval);
-			tens = "00";
-			seconds = "00";
-			minutes = "0";
-			appendTens.innerHTML = tens;
-			appendSeconds.innerHTML = seconds;
-			appendMinutes.innerHTML = minutes;
-		}
-		
-		
-		
-		function startTimer () {
-			tens++; 
-			
-			if(tens < 9){
-			appendTens.innerHTML = "0" + tens;
-			}
-			
-			if (tens > 9){
-			appendTens.innerHTML = tens;
-			
-			} 
-			
-			if (tens > 99) {
-			seconds++;
-			appendSeconds.innerHTML = "0" + seconds;
-			tens = 0;
-			appendTens.innerHTML = "0" + 0;
-			}
-			
-			if (seconds > 9){
-			appendSeconds.innerHTML = seconds;
-			}
-			if (seconds > 59){
-			minutes++;
-			appendMinutes.innerHTML = minutes;
-			seconds = 0;
-			appendSeconds.innerHTML = "0" + 0;
-			}
+            buttonStart.onclick = function() {
+                
+                clearInterval(Interval);
+                Interval = setInterval(startTimer, 10);
+            }
+            
+            buttonStop.onclick = function() {
+                if(document.getElementById("pauseButton").innerHTML == "Pause"){
+                    clearInterval(Interval);
+                    Interval = setInterval(startTimer, 10);
+                }
+                else{
+                    clearInterval(Interval);
+                }
+            }
 
-		
-		}
-		
+            buttonReset.onclick = function() {
+                clearInterval(Interval);
+                tens = "00";
+                seconds = "00";
+                minutes = "0";
+                appendTens.innerHTML = tens;
+                appendSeconds.innerHTML = seconds;
+                appendMinutes.innerHTML = minutes;
+            }
+            
+            function startTimer () {
+                tens++; 
+                
+                if(tens < 9){
+                appendTens.innerHTML = "0" + tens;
+                }
+                
+                if (tens > 9){
+                appendTens.innerHTML = tens;
+                
+                } 
+                
+                if (tens > 99) {
+                seconds++;
+                appendSeconds.innerHTML = "0" + seconds;
+                tens = 0;
+                appendTens.innerHTML = "0" + 0;
+                }
+                
+                if (seconds > 9){
+                appendSeconds.innerHTML = seconds;
+                }
+                if (seconds > 59){
+                minutes++;
+                appendMinutes.innerHTML = minutes;
+                seconds = 0;
+                appendSeconds.innerHTML = "0" + 0;
+                }
+            
+            }
 
-		}
+        }
     </script>
 
 {% endblock %}
 <div class="row mx-2">
     <h2 class="page-title">Edit task: {{ unit.name }} - {{ t.body }}</h2>
-    <div class="btns mt-4">
+    <div class="btns" style="margin-top:40px;">
         <button id="rename-task-btn" class="btn green-btn btn-margin" data-toggle="modal" data-target="#rename-task-modal">Rename task</button>
         {% if numOfQuestions != (questionNumber|int)-1 and numOfQuestions != -1 %}
             <button id="rename-task-btn" class="btn green-btn btn-margin" data-toggle="modal" data-target="#delete-question-modal">Delete Question</button>
@@ -100,14 +102,14 @@
     <img id="loader" style="padding: 0px 0px 0px !important; border: 0px solid #ababab !important;" src="{{ url_for('static', filename='img/loading.gif') }}" />
 </div>
 
-<div class="content-container" style="overflow-y: scroll">  
+<div class="content-container" style="margin-top:50px;">  
     <div class="row h-100">
         <div class="question-nav">
             <ul class="nav nav-pills">
                 {% if questionNumber|int != 1 %}
                     <li><a href="{{  url_for('test', unitpage = unit.name, test= test,questionNumber=questionNumber|int-1) }}" class="vertical-text"><i class="fas fa-long-arrow-alt-up"></i>&nbsp;Prev</a></li>
-                {% else %}
-                    <li class="vertical-text invisible"><i class="fas fa-long-arrow-alt-up"></i>&nbsp;Prev</a></li>
+                {# else #}
+                    <!-- <li class="vertical-text invisible"><i class="fas fa-long-arrow-alt-up"></i>&nbsp;Prev</a></li> -->
                 {% endif %}
                 {% for question in range(numOfQuestions+1)%}
                     {% if questionNumber|int-1 == question and question==numOfQuestions%}
@@ -129,9 +131,9 @@
                     {% endif %}
                 {% endfor %}
                 {% if questionNumber|int <= numOfQuestions %}   
-                    <li><a href="{{ url_for('test', unitpage = unit.name, test= test,questionNumber=questionNumber|int+1) }}" class="vertical-text">Next&nbsp;<i class="fas fa-long-arrow-alt-down"></i></a></li>
-                {% else %}
-                    <li class="vertical-text invisible">Next&nbsp;<i class="fas fa-long-arrow-alt-down"></i></a></li>
+                    <li><a href="{{ url_for('test', unitpage = unit.name, test= test,questionNumber=questionNumber|int+1) }}" class="vertical-text text-margin">Next&nbsp;<i class="fas fa-long-arrow-alt-down"></i></a></li>
+                {# else #}
+                    <!-- <li class="vertical-text invisible">Next&nbsp;<i class="fas fa-long-arrow-alt-down"></i></a></li> -->
                 {% endif %}
             </ul>
         </div>
@@ -145,8 +147,10 @@
                     <span style="color: red;">[{{ error }}]</span>
                     {% endfor %}
                     <div class="btns-bottom">
-                        {% if questionNumber|int <= numOfQuestions %}   
+                        {% if questionNumber|int < numOfQuestions %}   
                             <button class="btn green-btn" role="button">Save question</button>
+                        {% elif questionNumber|int == numOfQuestions %}
+                            <button class="btn green-btn" role="button">Save and add a new question</button>
                         {% else %}
                             {{ form.submit(class_="btn green-btn") }}
                         {% endif %}
@@ -157,19 +161,21 @@
             <h3 class="question-heading">(Optional) Add audio to your question:</h3>
             <div class="audio-recorder">
                 <div id="controls">
-                    <button id="recordButton">Record</button>
-                    <button id="pauseButton" disabled>Pause</button>
-                    <button id="stopButton" disabled>Stop</button>
+                    <button id="recordButton" class="btn green-btn">Record</button>
+                    <button id="pauseButton" disabled class="btn green-btn">Pause</button>
+                    <button id="stopButton" disabled class="btn green-btn">Stop</button>
                 </div>
+
+                <p class="stopwatch mt-3 mb-0"><span id="minutes">00</span>:<span id="seconds">00</span>:<span id="tens">00</span></p>
+                <p class="audio-warning">Please note, re-recording will overwrite your previous recording.</p>
+                <!-- <p>Record duration is limited: 1.5m</p> -->
+                <div id="formats">Not recording</div>
+
                 <audio src={{path}} id= "player" controls="controls"></audio>
-                <div id="formats">Not Recording</div>
         </div>
         <br>
 
-        <p><strong>Recordings:</strong></p>
-        <ol id="recordingsList"></ol>
 
-		<p><span id="minutes">00</span>:<span id="seconds">00</span>:<span id="tens">00</span></p>
         
         <!-- <a href= "{{ url_for('testCreated', test= test)  }}">Finalize Test</a> -->
     

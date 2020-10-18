@@ -489,7 +489,7 @@ def manageStudents(unitpage):
     unit = Unit.query.filter_by(name=unitpage).first()
     units = Unit.query.all()
     students = User.query.filter_by(unit_id = unit.name).all()
-    return render_template('manageStudents.html', unit=unit, students=students, units=units)
+    return render_template('manageStudents.html', title="Manage Students", unit=unit, students=students, units=units)
 
 @app.route("/unitManager/<unitpage>/<test>/<questionNumber>", methods=['GET', 'POST'])
 def test(unitpage, test,questionNumber):
@@ -633,7 +633,7 @@ def register():
         html = render_template('email/activate.html', confirm_url=confirm_url)
         subject = "Please confirm your email"
         send_email(user.email, subject, html)
-        flash('A confirmation email has been sent via email.', 'success')
+        flash('A confirmation link has been sent to your email.', 'success')
         return redirect(url_for('unconfirmed'))
     return render_template('register.html', title='Register', form=form)
 
@@ -667,8 +667,8 @@ def reset_password_request():
         user = User.query.filter_by(email=form.email.data).first()
         if user:
             send_password_reset_email(user)
-        flash('Check your email for the instructions to reset your password (check Spam)')
-        return redirect(url_for('login'))
+        flash('Check your email for the instructions to reset your password (check your spam folder)')
+        # return redirect(url_for('login'))
     return render_template('reset_password_request.html',
                            title='Reset Password', form=form)
 
@@ -691,17 +691,13 @@ def reset_password(token):
         return redirect(url_for('login'))
     return render_template('reset_password.html', form=form)
 
-
 @app.route('/unconfirmed')
 @login_required
 def unconfirmed():
     if current_user.confirmed:
         return redirect('dashboard')
     flash('Please confirm your account!', 'warning')
-    return render_template('unconfirmed.html')
-
-
-
+    return render_template('unconfirmed.html', title='Welcome!')
 
 @app.route('/resend')
 @login_required

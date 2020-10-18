@@ -1,14 +1,35 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+<div class="mx-2">
+    <h2 class="page-title">{{ unit.name }} - Manage Students </h2>
+    <!-- <p class="pt-2">Manage the students enrolled in this unit. Here, you can unenrol students enroled in specific units</p> -->
+</div>
+
 <div class="content-container">
-    <h2>Manage Students which are enrolled in this unit</h2>
-    <p>Here you can unenroll students which are enrolled into specific unit and delete students</p>
-    {%for student in students %}  
-        {{ student.id }}
-        {{ student.email }}
-        <a href= "{{ url_for('unenroll',studentNumber = student.id)  }}">Unenroll</a>
-        <br>
-    {%endfor%}
+    {% if units %}
+    <div class="table-full">
+        <table id="unit-list" class="table table-hover table-striped table-list">
+            <thead>
+                <tr>
+                    <th>Student name</th>
+                    <th>Student number</th>
+                    <th>Unenrol student?</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}  
+                <tr>
+                    <td>{{ student.firstName }} {{ student.LastName }}</td>
+                    <td>{{ student.id }}</td>
+                    <td style="padding-top:4px; padding-bottom:4px;"><a href= "{{ url_for('unenroll',studentNumber = student.id)  }}"><button class="btn table-btn">Unenrol</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+    <br>
 </div>
 {% endblock %}

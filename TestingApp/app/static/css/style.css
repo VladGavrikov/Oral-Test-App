@@ -16,9 +16,8 @@ html, body {
 }
 
 /* Text */
-.website-title {
-    color: #FFFFFF;
-    text-align: center;
+.title {
+    color: #000000;
     font-size: 30px;
     font-family: 'Mulish', sans-serif;
 }
@@ -290,6 +289,16 @@ a:hover {
     /* position: relative; */
 }
 
+.table-btns td {
+    display: table-cell;
+    vertical-align: middle;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    margin-top: auto;
+    margin-bottom: auto;
+    border-top: none;
+}
+
 #unit-list tbody {
     height: 100%;
 }
@@ -338,6 +347,7 @@ a:hover {
     border-radius: 5px;
     padding: 5px 10px;
     font-size: 15px;
+    height: 36px;
 }
 
 .table-btn:hover, .table-btn a:hover {
@@ -357,6 +367,7 @@ a:hover {
     border-radius: 5px;
     padding: 5px 10px;
     font-size: 15px;
+    height: 36px;
 }
 
 .table-btn-navy:hover, .table-btn-navy a:hover {
@@ -426,7 +437,7 @@ a:hover {
 }
 
 #add-unit-modal-content {
-    height: 650px;
+    height: 640px;
     width: 700px;
 }
 
@@ -434,7 +445,7 @@ a:hover {
     height: 560px;
 }
 
-#release-feedback-modal-content {
+#release-feedback-modal-content, #reset-database-modal-content {
     height: 300px;
 }
 
@@ -444,6 +455,10 @@ a:hover {
 
 #delete-task-modal-content, #submit-task-modal-content {
     height: 130px;
+}
+
+#reset-database-modal-content > h3 {
+    font-size: 42px;
 }
 
 /* Forms */
@@ -508,9 +523,10 @@ input:not(:focus):valid + .floating-label {
     padding-right: 5px;
     display: flex;
     justify-content: center;
-    align-items: center;
+    /* align-items: center; */
     border-right: 1px solid rgba(126, 221, 195, 0.5);
     margin-right: 30px;
+    overflow-y: auto;
 
     /* these don't work */
     /* position: sticky;
@@ -540,8 +556,12 @@ input:not(:focus):valid + .floating-label {
     color: #FFFFFF;
 }
 
-.nav-item:nth-last-child(2) {
+/* .nav-item:nth-last-child(2) {
     margin-bottom: 25px;
+} */
+
+.text-margin {
+    margin-top: 25px;
 }
 
 .active {
@@ -549,17 +569,14 @@ input:not(:focus):valid + .floating-label {
     opacity: 100%;
 }
 
+.test-content {
+    width: 95%; 
+    overflow-y: auto;
+}
+
 .btns-bottom {
     position: absolute;
     bottom: 0px;
-}
-
-.audio-recorder {
-    border: 2px solid var(--testapp-green);
-    border-radius: 5px;
-    width: fit-content;
-    margin: auto;
-    padding: 30px 30px;
 }
 
 .audio-btn {
@@ -582,6 +599,32 @@ input:not(:focus):valid + .floating-label {
 
 #inputName {
     height: 160px;
+}
+
+/* Audio recorder */
+.audio-recorder {
+    /* border: 2px solid var(--testapp-green); */
+    background-color: var(--testapp-light-grey);
+    border-radius: 5px;
+    width: fit-content;
+    margin: auto;
+    padding: 30px 30px;
+}
+
+.controls {
+    text-align: center;
+}
+
+.stopwatch {
+    font-size: 25px;
+}
+
+.audio-warning {
+    font-size: 13px;
+}
+
+#formats {
+    font-size: 13px;
 }
 
 /* Test feedback */

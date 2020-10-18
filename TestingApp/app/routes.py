@@ -166,6 +166,8 @@ def unenroll(studentNumber):
 #             return redirect(url_for('unitManager'))
 #     return render_template('releaseFeedback.html', form = form)
 
+
+
 @app.route('/evaluation/<test>/<studentNumber>', methods=['GET', 'POST'])
 @login_required
 def testEvaluation(test, studentNumber):
@@ -183,7 +185,11 @@ def testEvaluation(test, studentNumber):
     #finding out how late submittion was
     submittedDateANDTime = datetime.combine(submittionDate,  submittionTime)
     dueDateANDTime = datetime.combine(due_date,  due_time)
-
+    difference = submittedDateANDTime-dueDateANDTime
+    days = difference.days
+    seconds = difference.seconds 
+    hours = seconds//3600
+    minutes = (seconds//60)%60
     submissionInTime = None
     if(submittionDate ==None or submittionTime == None):
         testWasntSubmitted = True
@@ -208,7 +214,7 @@ def testEvaluation(test, studentNumber):
         return render_template('testMarkedSuccess.html',units = units, test = test)
     return render_template('testEvaluation.html', title='Evaluation', form = form, unit=unit,units=units, student = student, t = testQ, 
     submissionInTime=submissionInTime, submittionDate = submittionDate, submittionTime =submittionTime, due_date=due_date, due_time=due_time,
-    submittedDateANDTime=submittedDateANDTime,dueDateANDTime=dueDateANDTime)
+    days=days, hours=hours, minutes=minutes)
 
 @app.route('/attempt/<test>/<studentNumber>/<questionNumber>', methods=['GET', 'POST'])
 @login_required
@@ -447,7 +453,7 @@ def TestStart(test,user):
 def unitpage(unitpage):
     units = Unit.query.all()
     unit = Unit.query.filter_by(name=unitpage).first()
-    tests = Test.query.filter_by(unit_id=unitpage).all()
+    tests = Test.query.filter_by(unit_id=unitpage).order_by(Test.id.desc()).all()
     testmark = TestMark.query.filter_by(unit_id=unitpage).all()
     testForm = CreateTestForm()
     if testForm.validate_on_submit():
@@ -564,7 +570,8 @@ def test(unitpage, test,questionNumber):
             db.session.commit()
             return redirect(url_for('test', unitpage = unit.name, test= test,questionNumber=int(questionNumber)+1))
     print(questions)
-    return render_template('test.html', title="Edit task", unit=unit,deleteForm=deleteForm, form=questionForm, renameForm=renameForm, question=eachQuestion, questionNumber= questionNumber, numOfQuestions= len(questions)-1, test = test, t = t, units = units,path=pathtoPage)
+    return render_template('test.html', title="Edit task", unit=unit,deleteForm=deleteForm, form=questionForm, renameForm=renameForm, question=eachQuestion, questionNumber= questionNumber, 
+    numOfQuestions= len(questions)-1, test = test, t = t, units = units,path=pathtoPage)
 
 @app.route("/unitManager/<unitpage>/<test>/delete", methods=['GET', 'POST'])
 def deleteTest(unitpage, test):

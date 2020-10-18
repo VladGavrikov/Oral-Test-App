@@ -89,7 +89,9 @@
     <h2 class="page-title">Edit task: {{ unit.name }} - {{ t.body }}</h2>
     <div class="btns" style="margin-top:40px;">
         <button id="rename-task-btn" class="btn green-btn btn-margin" data-toggle="modal" data-target="#rename-task-modal">Rename task</button>
-        <button id="rename-task-btn" class="btn green-btn btn-margin" data-toggle="modal" data-target="#delete-question-modal">Delete Question</button>
+        {% if numOfQuestions != (questionNumber|int)-1 and numOfQuestions != -1 %}
+            <button id="rename-task-btn" class="btn green-btn btn-margin" data-toggle="modal" data-target="#delete-question-modal">Delete Question</button>
+        {% endif %}
         <button id="save-task-btn" class="btn green-btn btn-margin"><a href="{{ url_for('unitpage', unitpage = unit.name) }}">Save & exit</a></button>
         <!-- <button id="make-available-btn" class="btn green-btn" data-toggle="modal" data-target="#make-available-modal">Make available</button> -->
     </div>

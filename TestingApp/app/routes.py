@@ -611,6 +611,21 @@ def deleteTest(unitpage, test):
 
     return redirect(url_for('unitpage', unitpage = unit.name))
 
+@app.route("/unitManager/<unitpage>/delete", methods=['GET', 'POST'])
+def deleteUnit(unitpage):
+    if(current_user.isTeacher):
+        unit = Unit.query.filter_by(name=unitpage).first()
+        db.session.delete(unit)
+        db.session.commit()
+        studnetsEntrolled = User.query.filter_by(unit_id=unitpage).all()
+        for eachStudent in studnetsEntrolled:
+            eachStudent.unit_id = None
+        else:
+            internal_error(500)
+
+    return redirect(url_for('unitpage', unitpage = unit.name))
+
+
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])

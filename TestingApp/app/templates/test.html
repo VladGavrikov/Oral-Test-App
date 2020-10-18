@@ -122,7 +122,7 @@
                     </li>
                     {% elif question==numOfQuestions%}
                     <li class="nav-item">
-                        <a href="{{ url_for('test', unitpage = unit.name, test= test,questionNumber=question+1) }}">+</a>
+                        <a href="{{ url_for('test', unitpage = unit.name, test= test,questionNumber=question+1) }}" style="padding-left:1px;line-height:22px;">+</a>
                     </li>
                     {% else %}
                     <li class="nav-item">
@@ -150,7 +150,7 @@
                         {% if questionNumber|int < numOfQuestions %}   
                             <button class="btn green-btn" role="button">Save question</button>
                         {% elif questionNumber|int == numOfQuestions %}
-                            <button class="btn green-btn" role="button">Save and add a new question</button>
+                            <button class="btn green-btn" role="button">Save question</button>
                         {% else %}
                             {{ form.submit(class_="btn green-btn", id="submitBtn") }}
                         {% endif %}

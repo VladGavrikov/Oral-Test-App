@@ -619,8 +619,8 @@ def deleteUnit(unitpage):
         unit = Unit.query.filter_by(name=unitpage).first()
         db.session.delete(unit)
         db.session.commit()
-        studnetsEntrolled = User.query.filter_by(unit_id=unitpage).all()
-        for eachStudent in studnetsEntrolled:
+        studentsEntrolled = User.query.filter_by(unit_id=unitpage).all()
+        for eachStudent in studentsEntrolled:
             eachStudent.unit_id = None
         else:
             internal_error(500)

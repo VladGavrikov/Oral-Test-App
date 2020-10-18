@@ -35,7 +35,7 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Please use a different email address.')
 
 class CreateUnitForm(FlaskForm):
-    name = StringField('Unit Code', validators=[Regexp(r'^[\w.]+$', message="Invalid Characters."),Length(min=- 1, max=20), DataRequired()])
+    name = StringField('Unit Code', validators=[Regexp(r'^[\w.]+$', message="Invalid. Please remove any spaces or special characters."),Length(min=- 1, max=20), DataRequired()])
     description = StringField('Unit Name', validators=[DataRequired()])
     mark1Criteria = StringField('Marking criteria 1', validators=[DataRequired()])
     mark2Criteria = StringField('Marking criteria 2', validators=[DataRequired()])
@@ -52,7 +52,7 @@ class CreateTestForm(FlaskForm):
 class CreateQuestionForm(FlaskForm):
     #name = TextAreaField('Question', validators=[DataRequired()])
     name = TextAreaField('Question', validators=[DataRequired()])
-    submit = SubmitField('Save and add a new question')
+    submit = SubmitField('Add question')
 
 class CreateAnswerForm(FlaskForm):
     audio = FileField(validators=[FileRequired()])

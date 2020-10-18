@@ -66,6 +66,7 @@ class Test(db.Model):
     body = db.Column(db.String(140))
     due_date = db.Column(db.Date)
     due_time = db.Column(db.Time)
+    feedbackReleased = db.Column(db.Boolean, default=False)
     isFinalized = db.Column(db.Boolean, default=False)
     unit_id = db.Column(db.String(20), db.ForeignKey('unit.name'))
     questions = db.relationship('Question', backref='author', lazy='dynamic')

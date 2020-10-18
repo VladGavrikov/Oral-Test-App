@@ -70,7 +70,27 @@ def viewFeedback(test, studentNumber, questionNumber):
     testQ = Test.query.filter_by(id=test).first()
     testMarks = TestMark.query.filter_by(user_id = studentNumber).filter_by(test_id = test).first()
     testmarksForaverage = db.session.query(User, TestMark).outerjoin(TestMark, User.id==TestMark.user_id).filter_by(test_id=test).filter_by(unit_id=User.unit_id).all()
-    print("PRINTER",testmarksForaverage)
+    listOfTotalMarksForAVG = []
+    for eachMarkForAverage in testmarksForaverage:
+        if(eachMarkForAverage[1].mark1!=None):
+            totalEachMark = eachMarkForAverage[1].mark1+eachMarkForAverage[1].mark2+eachMarkForAverage[1].mark3+eachMarkForAverage[1].mark4
+        else:
+            totalEachMark = 0
+        listOfTotalMarksForAVG.append(totalEachMark)
+        listOfTotalMarksForAVG.sort()
+    if(testMarks.mark1!=None):
+        totalMark = testMarks.mark1 + testMarks.mark2 + testMarks.mark3 + testMarks.mark4
+    else: 
+        totalMark = 0
+    positionInClass= len(listOfTotalMarksForAVG)+1
+    for eachIteration in listOfTotalMarksForAVG:
+        if(totalMark>=eachIteration):
+            positionInClass = positionInClass -1
+        else: 
+            break
+    print("POSITION: ", positionInClass)
+    avgOfTest= sum(listOfTotalMarksForAVG)/len(listOfTotalMarksForAVG)
+
     feedbacks = []
     numOfQuestions = len(questions)
     answers = []
@@ -103,7 +123,9 @@ def viewFeedback(test, studentNumber, questionNumber):
             pitch_track2 = sound2.to_pitch().selected_array['frequency']
             data2 = json.dumps(pitch_track2.tolist())
     print("TEMPANSWER", tempAnswer)
-    return render_template('viewFeedback.html', units=units, title='Feedback', user=user, questions = questions,answers=answers, test=testQ, numOfQuestions = numOfQuestions, feedbacks = feedbacks, testMarks = testMarks, data = data, data2 = data2, unit = unit, questionNumber = questionNumber, testPassed = test)
+    return render_template('viewFeedback.html', units=units, title='Feedback', user=user, questions = questions,answers=answers, test=testQ,
+     numOfQuestions = numOfQuestions, feedbacks = feedbacks, testMarks = testMarks, data = data, data2 = data2, unit = unit, 
+     questionNumber = questionNumber, testPassed = test, avgOfTest=avgOfTest, positionInClass= positionInClass, lengthOfClass=len(listOfTotalMarksForAVG))
 
 
 @app.route('/marking/<test>', methods=['GET', 'POST'])

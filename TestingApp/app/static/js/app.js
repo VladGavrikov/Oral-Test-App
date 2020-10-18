@@ -97,10 +97,12 @@ function pauseRecording(){
 		//pause
 		rec.stop();
 		pauseButton.innerHTML="Resume";
+		document.getElementById("formats").innerHTML="Recording paused"
 	}else{
 		//resume
 		rec.record()
 		pauseButton.innerHTML="Pause";
+		document.getElementById("formats").innerHTML="Currently recording"
 
 	}
 }

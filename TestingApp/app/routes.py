@@ -220,6 +220,8 @@ def testEvaluation(test, studentNumber):
 @login_required
 def testQuestion(test, studentNumber, questionNumber):
     user = User.query.filter_by(email=current_user.email).first_or_404()
+    tests = Test.query.filter_by(id=test).first()
+    print(tests)
     questions = Question.query.filter_by(test_id = test).all()
     qnumb = int(questionNumber)-1
     prefix = "app/"
@@ -266,7 +268,7 @@ def testQuestion(test, studentNumber, questionNumber):
             print(questionNumber)
             return redirect(url_for('testQuestion',test = test, studentNumber = user.id, questionNumber = qnumber))
     print("Printing sS var ", successfullySubmitted)
-    return render_template('answer.html', title='Test In Progress',test = test, user = user, question = questions[qnumb], questionNumber = questionNumber, form = form, numbOfQuestions = len(questions), path=pathtoPage, successfullySubmitted = successfullySubmitted)
+    return render_template('answer.html', title='Test In Progress',test = test, tests = tests, user = user, question = questions[qnumb], questionNumber = questionNumber, form = form, numbOfQuestions = len(questions), path=pathtoPage, successfullySubmitted = successfullySubmitted)
 
 #FUTURE WORKS MARKING
 @app.route('/marking/<test>/<studentNumber>/<questionNumber>', methods=['GET', 'POST'])
@@ -453,7 +455,7 @@ def TestStart(test,user):
 def unitpage(unitpage):
     units = Unit.query.all()
     unit = Unit.query.filter_by(name=unitpage).first()
-    tests = Test.query.filter_by(unit_id=unitpage).order_by(Test.id.desc()).all()
+    tests = Test.query.filter_by(unit_id=unitpage).order_by(Test.due_date.desc(), Test.due_time.desc()).all()
     testmark = TestMark.query.filter_by(unit_id=unitpage).all()
     testForm = CreateTestForm()
     if testForm.validate_on_submit():

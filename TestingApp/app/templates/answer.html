@@ -84,17 +84,20 @@
         </script>
     {% endblock %}
 
-    <div id="fade"></div>
-    <div id="modal">
-        <img id="loader" src="{{ url_for('static', filename='img/loading.gif') }}" />
+<div id="fade"></div>
+<div id="modal">
+    <img id="loader" src="{{ url_for('static', filename='img/loading.gif') }}" />
+</div>
+
+
+<div class="row mx-2">
+    <h2 class="page-title"> {{ tests.body }} </h2>
+    <div class="btns mt-4">
+        <button id="submit-task-btn" class="btn green-btn" data-toggle="modal" data-target="#submit-task-modal">Submit task</button>
     </div>
-    
-<div class="btns">
-    <button id="submit-task-btn" class="btn green-btn" data-toggle="modal" data-target="#submit-task-modal">Submit task</button>
 </div>
 
 <div class="content-container">
-  
     <div class="row h-100">
         <div class="question-nav">
             <ul class="nav nav-pills">

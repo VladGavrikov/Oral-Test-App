@@ -150,17 +150,20 @@
                             {% endif %}
                         </tr>
                         <tr>
-                            <th>TOTAL</th>
+                            <th>YOUR TOTAL</th>
                             {% if testMarks.mark1==None or testMarks.mark2==None or testMarks.mark3==None or testMarks.mark4==None %}
                                 <td>0</td>
                             {% else %}
                                 <td>{{testMarks.mark1+testMarks.mark2+ testMarks.mark3+testMarks.mark4}}</td>
                             {% endif %}
                         </tr>
+                        <tr>
+                            <th>TASK AVERAGE</th>
+                            <td>{{ avgOfTest }}</td>
+                        </tr>
                     </tbody>
-                    Class average: {{avgOfTest}}
                 </table>
-                <p>You are {{positionInClass}} from {{lengthOfClass}} people</p>
+                <p>You are placed {{positionInClass}} / {{lengthOfClass}} in the cohort</p>
             </div>
         </div>
     </div>

@@ -442,7 +442,7 @@ a:hover {
 
 #add-unit-modal-content {
     height: 640px;
-    width: 700px;
+    width: 730px;
 }
 
 #add-task-modal-content {
@@ -457,12 +457,16 @@ a:hover {
     height: 320px; 
 }
 
-#delete-task-modal-content, #submit-task-modal-content {
+#delete-task-modal-content, #submit-task-modal-content, #delete-unit-modal-content {
     height: 130px;
 }
 
 #reset-database-modal-content > h3 {
     font-size: 42px;
+}
+
+#task-results-modal-content {
+    height: 520px;
 }
 
 /* Forms */

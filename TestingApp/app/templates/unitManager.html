@@ -17,45 +17,39 @@
 <div class="content-container">
     {% if units %}
     <div class="table-full">
-        <table id="unit-list" class="table table-hover table-striped table-list">
+        <table id="unit-list" class="table table-hover table-striped table-list table-btns">
             <thead>
                 <tr>
                     <th>Unit Code</th>
                     <th>Unit Name</th>
-                    <th style="width:180px;">Delete?</th>
+                    <th style="width:250px;">Delete?</th>
                 </tr>
             </thead>
             <tbody>
                 {% for unit in units %}  
-                <tr>
-                    <td><a href="{{ url_for('unitpage',unitpage = unit.name)  }}">{{ unit.name }}</a></td>
-                    <td><a href="{{ url_for('unitpage',unitpage = unit.name)  }}">{{ unit.description }}</a></td>
-                    <td style="width:180px;"><button id="detele-task-btn{{unit.id}}" class="btn table-btn" data-toggle="modal" data-target="#delete-task-modal{{unit.id}}">Delete</button></td>
-                    <div id="delete-task-modal{{unit.id}}" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                    <tr>
+                        <td><a href="{{ url_for('unitpage',unitpage = unit.name)  }}">{{ unit.name }}</a></td>
+                        <td><a href="{{ url_for('unitpage',unitpage = unit.name)  }}">{{ unit.description }}</a></td>
+                        <td style="width:250px;"><button id="detele-task-btn{{unit.id}}" class="btn table-btn" data-toggle="modal" data-target="#delete-unit-modal{{unit.id}}">Delete</button></td>
+                    </tr>
+                    <div id="delete-unit-modal{{unit.id}}" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div id="delete-task-modal-content" class="modal-content text-center">
+                            <div id="delete-unit-modal-content" class="modal-content text-center">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
-                                    <p>Are you sure you want to delete the unit:'{{ unit.name }}?</p>
+                                    <p>Are you sure you want to delete the unit '{{ unit.name }}'?</p>
                                     
                                         <div class="row justify-content-center">
                                             <button type="button" class="btn green-btn btn-margin" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">Cancel</span>
                                             </button>
-                                            <a href="{{ url_for('deleteUnit', unitpage = unit.name) }}" class="submit btn green-btn btn-margin" role="button">Delete task</a>
-                                            <!-- this will be form 'delete' button -->
-                                            {# form.submit(class="btn green-btn") #}
-                            
-                                        
-                                    <!-- </form> -->
+                                            <a href="{{ url_for('deleteUnit', unitpage = unit.name) }}" class="submit btn green-btn btn-margin" role="button">Delete unit</a>
+
                                         </div>
                             </div>
                         </div>
                     </div>
-
-                </tr>
-                </tr>
                 {% endfor %}
             </tbody>
         </table>

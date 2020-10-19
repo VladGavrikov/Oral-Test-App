@@ -3,30 +3,37 @@ from app import mail
 from flask import render_template
 from app import app
 
-def send_email(subject, sender, recipients, text_body, html_body):
-    msg = Message(subject, sender=sender, recipients=recipients)
-    msg.body = text_body
-    msg.html = html_body
-    mail.send(msg)
+import sendgrid
+import os
+from sendgrid.helpers.mail import *
 
 
-
-def send_password_reset_email(user):
+def send_password_reset_email(user, email):
     token = user.get_reset_password_token()
-    send_email('[SpeakFluent] Reset Your Password',
-               sender='speakfluentapp@gmail.com',
-               recipients=[user.email],
-               text_body=render_template('email/reset_password.txt',
-                                         user=user, token=token),
-               html_body=render_template('email/reset_password.html',
-                                         user=user, token=token))
+    sg = sendgrid.SendGridAPIClient(api_key='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')
+    from_email = Email("speakfluentapp@gmail.com")
+    to_email = email
+    subject = "PASSWORD RESET"
+    content = render_template('email/reset_password.txt',
+                                         user=user, token=token)
+    mail = Mail(from_email, to_email, subject, content)
+    response = sg.client.mail.send.post(request_body=mail.get())
+    print(response.status_code)
+    print(response.body)
+    print(response.headers)
+
+
 
 
 def send_email(to, subject, template):
-    msg = Message(
-        subject,
-        recipients=[to],
-        html=template,
-        sender=app.config['MAIL_DEFAULT_SENDER']
-    )
-    mail.send(msg)
+    print("USING API \n")
+    sg = sendgrid.SendGridAPIClient(api_key='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')
+    from_email = Email("speakfluentapp@gmail.com")
+    to_email = to
+    subject = subject
+    content = template
+    mail = Mail(from_email, to_email, subject, content)
+    response = sg.client.mail.send.post(request_body=mail.get())
+    print(response.status_code)
+    print(response.body)
+    print(response.headers)

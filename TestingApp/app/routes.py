@@ -69,7 +69,7 @@ def attempt(test, studentNumber):
 @app.route('/feedback/<test>/<studentNumber>/<questionNumber>', methods=['GET', 'POST'])
 @login_required
 def viewFeedback(test, studentNumber, questionNumber):
-    if(current_user.is_authenticated==False or current_user.isTeacher==False):
+    if(current_user.is_authenticated==False):
         return render_template("500.html")
     else:
         units = Unit.query.all()
@@ -735,20 +735,18 @@ def register():
     if form.validate_on_submit():
         splitted = form.email.data.split("@")
         if(splitted[1]=="uwa.edu.au"):
-            user = User(id=form.studentNumber.data, email=form.email.data, firstName= form.firstName.data, LastName = form.lastName.data, confirmed=False, isTeacher=True)
+            user = User(id=form.studentNumber.data, email=form.email.data, firstName= form.firstName.data, LastName = form.lastName.data, confirmed=True, isTeacher=True)
+            user.set_password(form.password.data)
+       	    db.session.add(user)
+            db.session.commit()
         else:
-            user = User(id=form.studentNumber.data, email=form.email.data, firstName= form.firstName.data, LastName = form.lastName.data, confirmed=False, isTeacher=False) 
-        user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        token = generate_confirmation_token(user.email)
-        confirm_url = url_for('confirm_email', token=token, _external=True)
-        html = render_template('email/activate.html', confirm_url=confirm_url)
-        subject = "Please confirm your email"
-        send_email(user.email, subject, html)
-        flash('A confirmation email has been sent via email.', 'success')
-        return redirect(url_for('unconfirmed'))
+            user = User(id=form.studentNumber.data, email=form.email.data, firstName= form.firstName.data, LastName = form.lastName.data, confirmed=True, isTeacher=False)
+            user.set_password(form.password.data)
+            db.session.add(user)
+            db.session.commit() 
+        return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
+
 
 @app.route('/confirm/<token>')
 def confirm_email(token):

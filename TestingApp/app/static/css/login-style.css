@@ -128,7 +128,8 @@ body {
     position: absolute;
     font-size: 13px;
     color: #5B595F;
-    text-align: right;
+    /* text-align: right; */
+    transform: translate(120px, 0px);
 }
 
 #sign-up {

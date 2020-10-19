@@ -63,7 +63,8 @@ function startRecording() {
 		audioContext = new AudioContext();
 
 		//update the format 
-		document.getElementById("formats").innerHTML="Format: 1 channel pcm @ "+audioContext.sampleRate/1000+"kHz"
+		// document.getElementById("formats").innerHTML="Format: 1 channel pcm @ "+audioContext.sampleRate/1000+"kHz"
+		document.getElementById("formats").innerHTML="Currently recording"
 
 		/*  assign to gumStream for later use  */
 		gumStream = stream;
@@ -160,16 +161,26 @@ function createDownloadLink(blob) {
 		  xhr.onload=function(e) {
 		      if(this.readyState === 4) {
 				  console.log("Server returned: ",e.target.responseText);
-				  closeModal();
-		      }
+			  }
+			  
 		  };
 		  var fd=new FormData();
 		  fd.append("audio_data",blob, filename);
 		  xhr.open("POST",window.location.href,true);
 		  xhr.send(fd);
+		  xhr.onreadystatechange = function(e) {
+			if (xhr.readyState == 4) {
+				
+			}
+		};
+		xhr.addEventListener("load", function (evt) {
+			closeModal();
+			location.reload();
+		}, false);
+
 	li.appendChild(document.createTextNode (" "))//add a space in between
 	li.appendChild(upload)//add the upload link to li
-
+	
 	//add the li element to the ol
 	recordingsList.appendChild(li);
 }

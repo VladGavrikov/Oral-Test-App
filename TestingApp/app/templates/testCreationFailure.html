@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="content-container">
+    <h3 class="page-description">The task is empty please create some questions</h3>
+    <a href="{{ url_for('test', test=test, unitpage=unitpage, questionNumber=1) }}">Return to Test</a>
+</div>
+{% endblock %}}

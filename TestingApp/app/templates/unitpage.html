@@ -4,17 +4,17 @@
 {% block content %}
 
 <div class="row mx-2">
-    <h2 class="page-title">{{ unit.description }}</h2>
+    <h2 class="page-title">{{ unit.name }}: {{ unit.description }}</h2>
     <div class="btns">
-        <button id="manage-students-btn" class="btn green-btn btn-margin" data-toggle="modal" data-target="#manage-students-modal">Manage students <i class="fas fa-users"></i></button>
+        <a href= "{{ url_for('manageStudents', unitpage = unit.name)  }}"><button class="btn green-btn btn-margin">Manage Students<i class="fas fa-users"></i></button></a>
         <button id="add-task-btn" class="btn green-btn" data-toggle="modal" data-target="#add-task-modal">New task <i class="fas fa-plus"></i></button>
     </div>
 </div>
 
 <div class="content-container">
-    <h3 class="subheading">Active Tasks</h3>
+    <h3 class="subheading">Draft Tasks</h3>
     <div class="table-half">
-        <table id="task-list" class="table table-hover table-striped table-list">
+        <table id="task-list" class="table table-hover table-striped table-list table-btns">
             <thead>
                 <tr>
                     <th>Task name</th>
@@ -24,53 +24,74 @@
             </thead>
             <tbody>
                 {% for test in tests %}
-                {% if not test.isFinalized %}
-                <tr>
-                    <td>{{ test.body }}</td>
-                    <td>{{ test.due_date }} {{ test.due_time }}</a></td>
-                    <td style="width: 900px; padding-top:4px; padding-bottom:4px">
-                        <button class="btn table-btn btn-margin"><a href= "{{ url_for('test', unitpage = unit.name, test= test.id)  }}">Edit</a></button> 
-                        {% if not test.isFinalized %}
-                            <button class="btn table-btn-navy btn-margin"><a href= "{{ url_for('testCreated', test= test.id)  }}">Make available</a></button>
-                        {% else %}
-                            <button class="btn table-btn-static btn-margin">Available</button>
-                        {% endif %}
-                        <button class="btn table-btn">Delete</button>
-                    </td>
-                </tr>
-                {% endif %}
+                    {% if not test.isFinalized %}
+                        <tr>
+                            <td>{{ test.body }}</td>
+                            <td>{{ test.due_date.strftime('%d/%m/%Y') }} {{ test.due_time.strftime('%I:%M %p') }}</a></td>
+                            <!-- ^note: can change strftime back to %H:%M instead of %I:%M %p -->
+                            <td style="width: 900px;">
+                                <a href="{{ url_for('test', unitpage = unit.name, test= test.id, questionNumber=1)  }}" class="btn table-btn btn-margin" role="button">Edit</a>
+                                {% if not test.isFinalized %}
+                                    <a href="{{ url_for('testCreated', test= test.id)  }}" class="btn table-btn-navy btn-margin" role="button">Make available</a>
+                                {% else %}
+                                    <button class="btn table-btn-static btn-margin">Available</button>
+                                {% endif %}
+                                <button id="detele-task-btn{{test.id}}" class="btn table-btn" data-toggle="modal" data-target="#delete-task-modal{{test.id}}">Delete</button>
+                                <!-- <form id="delete-test-form" action="{{ url_for('deleteTest', unitpage = unit.name, test=test.id) }}"
+                                onsubmit="return confirm('Are you sure you want to delete this test?')" method="POST"><button type="submit" class="btn table-btn">Delete</button>
+                                </form> -->
+                            </td>
+                        </tr>
+                        <div id="delete-task-modal{{test.id}}" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div id="delete-task-modal-content" class="modal-content text-center">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                        <p>Are you sure you want to delete the task '{{ test.body }}?</p>
+                                        
+                                            <div class="row justify-content-center">
+                                                <button type="button" class="btn green-btn btn-margin" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">Cancel</span>
+                                                </button>
+                                                <a href="{{ url_for('deleteTest', unitpage = unit.name, test=test.id) }}" class="submit btn green-btn btn-margin" role="button">Delete task</a>
+                                                <!-- this will be form 'delete' button -->
+                                                {# form.submit(class="btn green-btn") #}
+                                
+                                            
+                                        <!-- </form> -->
+                                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
                 {% endfor %}
             </tbody>
         </table>
     </div>
 
-    <h3 class="subheading">Completed Tasks</h3>
-    <div class="table-half table-responsive">
-        <table id="task-list" class="table table-hover table-striped table-list">
+    <h3 class="subheading">Published Tasks</h3>
+    <div class="table-half">
+        <table id="task-list" class="table table-hover table-striped table-list table-btns">
             <thead>
                 <tr>
                     <th>Task name</th>
+                    <th>Deadline</th>
                     <th>Mark tasks</th>
-                    <th>Release marks & feedback</th>
+                    <th>Download</th>
                 </tr>
             </thead>
             <tbody>
                 {% for test in tests %}
-                {% if test.isFinalized %}
-                <tr>
-                    <td>{{ test.body }}</td>
-                    <td style="padding-top:4px; padding-bottom: 4px;"><button class="btn table-btn-navy"><a href="{{ url_for('markings',test= test.id)  }}">Mark</a></button></td>
-                    <!-- !!!!!!!! MAKE BUTTON table-btn if already marked ALL tests -->
-                    {% if testmark.feedbackReleased == True %}
-                        <td> 
-                        Already released
-                    {% else %}
-                        <td style="padding-top:4px; padding-bottom: 4px;">  
-                            <button class="btn table-btn-navy"><a href= "{{ url_for('releaseFeedback', test = tests[0].test_id) }}">Release marks</a></button>
-                    </td>
+                    {% if test.isFinalized %}
+                        <tr>
+                            <td>{{ test.body }}</td>
+                            <td>{{ test.due_date.strftime('%d/%m/%Y') }} {{ test.due_time.strftime('%I:%M %p') }}</a></td>
+                            <td style="padding-top:4px; padding-bottom: 4px;"><a href="{{ url_for('markings',test= test.id)  }}" class="btn table-btn-navy" role="button">Mark</a></td>
+                            <td style="padding-top:4px; padding-bottom: 4px;"><a href="{{ url_for('feedbackDownload',unitpage = test.unit_id, test=test.id)  }}" class="btn table-btn-navy" role="button">Download<i class="fas fa-download"></i></a></td>
+
+                        </tr>
                     {% endif %}
-                </tr>
-                {% endif %}
                 {% endfor %}
             </tbody>
         </table>
@@ -117,6 +138,9 @@
         </div>
     </div>
 </div>
+
+<!-- Modal for delete task -->
+
 
 {% endblock %}
 

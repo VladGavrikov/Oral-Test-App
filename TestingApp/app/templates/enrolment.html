@@ -4,8 +4,6 @@
 
 <div class="mx-2">
     <h2 class="page-title">Enrolment</h2>
-    <p class="pt-2"> Please be careful when unenrolling and enrolling in the middle of semester as active tests will become unavaliable
-    </p>
 </div>
 
 <div class="content-container">
@@ -16,7 +14,7 @@
                 <tr>
                     <th>Unit Code</th>
                     <th>Unit Name</th>
-                    <th>Enrol?</th>
+                    <th>Enrol in this unit</th>
                 </tr>
             </thead>
             <tbody>
@@ -25,7 +23,7 @@
                     <td>{{ unit.name }}</td>
                     <td>{{ unit.description }}</td>
                     {# if user.unit_id != unit.name #}
-                        <td style="padding-top:4px; padding-bottom:4px"><button class="btn table-btn"><a href= "{{ url_for('unitEnrolled', unit= unit.name)  }}">Enrol</a></td>
+                        <td style="padding-top:4px; padding-bottom:4px;"><a href= "{{ url_for('unitEnrolled', unit= unit.name)  }}"><button class="btn table-btn">Enrol</button></a></td>
                     {# endif #}
                 </tr>
                 {% endfor %}

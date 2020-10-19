@@ -1,15 +1,176 @@
 {% extends "base.html" %}
 {% block content %}
-<h3>Feedback for the test</h3>
-{%for i in range(numOfQuestions) %} 
-    <h4>{{ questions[i].body }}</h4>
-    <audio src={{answers[i].body}} id= "player" controls="controls"></audio>
-    <h5>{{ feedbacks[i].body}}</h5>
-    <audio src={{feedbacks[i].path}} id= "player" controls="controls"></audio>
-    <hr>
-{%endfor%}
-    <p>Accuracy: {{testMarks.mark1}}</p>
-    <p>Fluency: {{testMarks.mark2}}</p>
-    <p>Grammar: {{testMarks.mark3}}</p>
-    <p>Vocabulary: {{testMarks.mark4}}</p>
+
+<div class="row mx-2">
+    <h2 class="page-title">Task feedback and results: {{ test.body }}</h2>
+    <div class="btns">
+        <button id="task-results-btn" class="btn green-btn" data-toggle="modal" data-target="#task-results-modal">Task results</button>
+    </div>
+</div>
+
+<div class="content-container">
+    <div class="row h-100">
+        <div class="question-nav">
+            <ul class="nav nav-pills">
+                {% if questionNumber != 1 %}
+                    <li><a href="{{ url_for('viewFeedback',test = testPassed, studentNumber = user.id, questionNumber=questionNumber-1)  }}" class="vertical-text"><i class="fas fa-long-arrow-alt-up"></i>&nbsp;Prev</a></li>
+                {% endif %}
+                {% for question in range(questions|length)%}
+                    {% if questionNumber == question+1 %}
+                    <li class="nav-item active">
+                        <a href="{{ url_for('viewFeedback',test = testPassed, studentNumber = user.id, questionNumber=question+1)  }}">{{(question+1)}}</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a href="{{ url_for('viewFeedback',test = testPassed, studentNumber = user.id, questionNumber=question+1)  }}">{{(question+1)}}</a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+                {% if questionNumber < questions|length %}   
+                    <li><a href="{{ url_for('viewFeedback',test = testPassed, studentNumber = user.id, questionNumber=questionNumber+1)  }}" class="vertical-text">Next&nbsp;<i class="fas fa-long-arrow-alt-down"></i></a></li>
+                {% endif %}
+            </ul>
+        </div>
+        
+        <div class="row test-content">
+            <div class="col-sm-6">
+                <h3 class="question-heading"><span class="line">|</span>Question {{ questionNumber }}</h3>
+                <div class="question">
+                    <p>{{ questions[questionNumber-1].body }}</p>
+                    {% if questions[questionNumber-1].path != "empty" %}
+                        <audio src={{questions[questionNumber-1].path}} id= "player" controls="controls"></audio><br>
+                    {% endif %}
+                    <h3 class="question-heading mt-3">Your answer</h3>
+                    {% if answers[0] != None%}
+                        {% if answers[0].body != "empty" %}
+                            <audio src={{answers[0].body}} id= "player" controls="controls"></audio>
+                        {% endif %}
+                        {% if answers[0].body == "empty" %}
+                            <p>Question unattempted</p>
+                        {% endif %}
+                    {% else %}
+                        <p>Question unattempted</p>
+                    {% endif %}
+                </div>
+                
+                {% if answers[0].body == "empty" or answers[0]==None%}
+                    <div id="plot" class="audio-graphs" style="display:none"></div>
+                {%else%}
+                    <div id="plot" class="audio-graphs"></div>
+                {% endif%}
+            </div>
+
+            <div class="col-sm-6">
+                <h3 class="question-heading">Written feedback</h3>
+                <p>{{ feedbacks[0].body}}</p>
+                <h3 class="question-heading">Audio feedback</h3>
+                {% if feedbacks[0] != None %}
+                    {% if feedbacks[0].path != "empty" %}
+                        <audio src={{feedbacks[0].path}} id= "player" controls="controls"></audio>
+                    {% endif %}
+                {% else %}
+                    <p>No audio feedback avaliable</p>
+                {% endif %}
+
+                {% if feedbacks[0].path == "empty" or feedbacks[0] == None %}
+                    <div id="plot2" class="audio-graphs" style="display: none;"></div>
+                {% else %}
+                    <div id="plot2" class="audio-graphs"></div>
+                {% endif%}
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+    
+{% block javascript %}
+    <script type="text/javascript">
+        data = JSON.parse({{ data | tojson }})
+        data2 = JSON.parse({{ data2 | tojson }})
+        Plotly.newPlot("plot", [{ x: [...Array(data.length).keys()],
+            y: data.map(function(data) { return data == 0.0 ? undefined : data; }),mode: 'markers', marker: { size: 3, color: 'blue'},
+            type: "scatter" }],{title: 'Answer Pitch'});
+        Plotly.newPlot("plot2", 
+                                [{ x: [...Array(data2.length).keys()],y: data2.map(function(data2) { return data2 == 0.0 ? undefined : data2; }),mode: 'markers', marker: { size: 3, color: 'blue'},
+                                    type: "scatter"}],{title: 'Feedback Pitch'}
+                        );
+        
+    </script>
+{% endblock %}
+
+<!-- Modal for task results -->
+<div id="task-results-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div id="task-results-modal-content" class="modal-content">
+            <h3 class="modal-title">Task Results</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <div class="modal-body">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Marking Criteria</th>
+                            <th>Mark</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>{{unit.mark1Criteria}}</th>
+                            {% if testMarks.mark1==None %}
+                                <td>0</td>
+                            {% else %}
+                                <td>{{testMarks.mark1}}</td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            <th>{{unit.mark2Criteria}}</th>
+                            {% if testMarks.mark2==None %}
+                                <td>0</td>
+                            {% else %}
+                                <td>{{testMarks.mark2}}</td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            <th>{{unit.mark3Criteria}}</th>
+                            {% if testMarks.mark3==None %}
+                                <td>0</td>
+                            {% else %}
+                                <td>{{testMarks.mark3}}</td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            <th>{{unit.mark4Criteria}}</th>
+                            {% if testMarks.mark4==None %}
+                                <td>0</td>
+                            {% else %}
+                                <td>{{testMarks.mark4}}</td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            <th>TOTAL</th>
+                            {% if testMarks.mark1==None or testMarks.mark2==None or testMarks.mark3==None or testMarks.mark4==None %}
+                                <td>0</td>
+                            {% else %}
+                                <td>{{testMarks.mark1+testMarks.mark2+ testMarks.mark3+testMarks.mark4}}</td>
+                            {% endif %}
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        if ($.cookie('pop') == null) {
+            $('#task-results-modal').modal('show');
+            $.cookie('pop', '1');
+        }
+    });
+</script>
+
 {% endblock %}

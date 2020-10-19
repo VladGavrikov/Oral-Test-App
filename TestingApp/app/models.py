@@ -2,6 +2,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from app import db
 from app import login
+from time import time
+import jwt
+from app import app
 
 from flask_login import UserMixin
 
@@ -20,6 +23,7 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     isTeacher = db.Column(db.Boolean, default=False)
     answer = db.relationship('Answer', backref='user', lazy='dynamic')
+    confirmed = db.Column(db.Boolean, default=False)
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
@@ -28,11 +32,30 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return '<User {}>'.format(self.id)
+    
+
+    def get_reset_password_token(self, expires_in=600):
+         return jwt.encode(
+            {'reset_password': self.id, 'exp': time() + expires_in},
+            app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
+
+    @staticmethod
+    def verify_reset_password_token(token):
+        try:
+            id = jwt.decode(token, app.config['SECRET_KEY'],
+                            algorithms=['HS256'])['reset_password']
+        except:
+            return
+        return User.query.get(id) 
 
 
 class Unit(db.Model):
     name = db.Column(db.String(20), primary_key=True)
     description = db.Column(db.String(50))
+    mark1Criteria = db.Column(db.String(50))
+    mark2Criteria = db.Column(db.String(50))
+    mark3Criteria = db.Column(db.String(50))
+    mark4Criteria = db.Column(db.String(50))
     tests = db.relationship('Test', backref='author', lazy='dynamic')
 
     def __repr__(self):
@@ -101,3 +124,10 @@ class TestMark(db.Model):
     tests = db.relationship(Test)
     def __repr__(self):
         return '<TestMark {}>'.format(self.id)
+
+
+
+
+from time import time
+import jwt
+from app import app
